@@ -84,6 +84,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/greundzo/so1920/src/gestore.c">
+			<Option target="so1920"/>
+		</Unit>
 		<Unit filename="/home/greundzo/so1920/src/shared.h">
 			<Option target="so1920"/>
 		</Unit>

@@ -12,16 +12,14 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/syscall.h>
+#include <sys/wait.h>
 #include <semaphore.h>
 
-// Generates and prints 'count' random
-// numbers in range [lower, upper].
-void printRandoms(int lower, int upper,
-                  int count)
-{
-    int i;
-    for (i = 0; i < count; i++) {
-        int num = (rand() %
-                   (upper - lower + 1)) + lower;
-    }
+int generate_random_integer(int minNum, int maxNum, pid_t pid) {
+    int span = maxNum - minNum + 1;
+    int snNum = maxNum - maxNum % span;
+    int a;
+    srand(pid);
+    do a = rand(); while (a >= snNum);
+    return minNum + a % span;
 }

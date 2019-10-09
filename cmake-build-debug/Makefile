@@ -123,6 +123,33 @@ so1920/fast:
 	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/build
 .PHONY : so1920/fast
 
+src/gestore.o: src/gestore.c.o
+
+.PHONY : src/gestore.o
+
+# target to build an object file
+src/gestore.c.o:
+	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/gestore.c.o
+.PHONY : src/gestore.c.o
+
+src/gestore.i: src/gestore.c.i
+
+.PHONY : src/gestore.i
+
+# target to preprocess a source file
+src/gestore.c.i:
+	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/gestore.c.i
+.PHONY : src/gestore.c.i
+
+src/gestore.s: src/gestore.c.s
+
+.PHONY : src/gestore.s
+
+# target to generate assembly for a file
+src/gestore.c.s:
+	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/gestore.c.s
+.PHONY : src/gestore.c.s
+
 src/student.o: src/student.c.o
 
 .PHONY : src/student.o
@@ -159,6 +186,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... so1920"
 	@echo "... edit_cache"
+	@echo "... src/gestore.o"
+	@echo "... src/gestore.i"
+	@echo "... src/gestore.s"
 	@echo "... src/student.o"
 	@echo "... src/student.i"
 	@echo "... src/student.s"

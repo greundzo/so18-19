@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
+  "/home/greundzo/so1920/src/gestore.c" "/home/greundzo/so1920/cmake-build-debug/CMakeFiles/so1920.dir/src/gestore.c.o"
   "/home/greundzo/so1920/src/student.c" "/home/greundzo/so1920/cmake-build-debug/CMakeFiles/so1920.dir/src/student.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")

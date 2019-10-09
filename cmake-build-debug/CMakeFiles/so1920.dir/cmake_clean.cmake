@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/so1920.dir/student.c.o"
+  "CMakeFiles/so1920.dir/src/student.c.o"
   "so1920"
   "so1920.pdb"
 )

@@ -57,27 +57,27 @@ include CMakeFiles/so1920.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/so1920.dir/flags.make
 
-CMakeFiles/so1920.dir/student.c.o: CMakeFiles/so1920.dir/flags.make
-CMakeFiles/so1920.dir/student.c.o: ../student.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/greundzo/so1920/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/so1920.dir/student.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/so1920.dir/student.c.o   -c /home/greundzo/so1920/student.c
+CMakeFiles/so1920.dir/src/student.c.o: CMakeFiles/so1920.dir/flags.make
+CMakeFiles/so1920.dir/src/student.c.o: ../src/student.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/greundzo/so1920/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/so1920.dir/src/student.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/so1920.dir/src/student.c.o   -c /home/greundzo/so1920/src/student.c
 
-CMakeFiles/so1920.dir/student.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/so1920.dir/student.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/greundzo/so1920/student.c > CMakeFiles/so1920.dir/student.c.i
+CMakeFiles/so1920.dir/src/student.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/so1920.dir/src/student.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/greundzo/so1920/src/student.c > CMakeFiles/so1920.dir/src/student.c.i
 
-CMakeFiles/so1920.dir/student.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/so1920.dir/student.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/greundzo/so1920/student.c -o CMakeFiles/so1920.dir/student.c.s
+CMakeFiles/so1920.dir/src/student.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/so1920.dir/src/student.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/greundzo/so1920/src/student.c -o CMakeFiles/so1920.dir/src/student.c.s
 
 # Object files for target so1920
 so1920_OBJECTS = \
-"CMakeFiles/so1920.dir/student.c.o"
+"CMakeFiles/so1920.dir/src/student.c.o"
 
 # External object files for target so1920
 so1920_EXTERNAL_OBJECTS =
 
-so1920: CMakeFiles/so1920.dir/student.c.o
+so1920: CMakeFiles/so1920.dir/src/student.c.o
 so1920: CMakeFiles/so1920.dir/build.make
 so1920: CMakeFiles/so1920.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/greundzo/so1920/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable so1920"

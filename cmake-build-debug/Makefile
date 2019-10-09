@@ -123,32 +123,32 @@ so1920/fast:
 	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/build
 .PHONY : so1920/fast
 
-student.o: student.c.o
+src/student.o: src/student.c.o
 
-.PHONY : student.o
+.PHONY : src/student.o
 
 # target to build an object file
-student.c.o:
-	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/student.c.o
-.PHONY : student.c.o
+src/student.c.o:
+	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/student.c.o
+.PHONY : src/student.c.o
 
-student.i: student.c.i
+src/student.i: src/student.c.i
 
-.PHONY : student.i
+.PHONY : src/student.i
 
 # target to preprocess a source file
-student.c.i:
-	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/student.c.i
-.PHONY : student.c.i
+src/student.c.i:
+	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/student.c.i
+.PHONY : src/student.c.i
 
-student.s: student.c.s
+src/student.s: src/student.c.s
 
-.PHONY : student.s
+.PHONY : src/student.s
 
 # target to generate assembly for a file
-student.c.s:
-	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/student.c.s
-.PHONY : student.c.s
+src/student.c.s:
+	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/student.c.s
+.PHONY : src/student.c.s
 
 # Help Target
 help:
@@ -159,9 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... so1920"
 	@echo "... edit_cache"
-	@echo "... student.o"
-	@echo "... student.i"
-	@echo "... student.s"
+	@echo "... src/student.o"
+	@echo "... src/student.i"
+	@echo "... src/student.s"
 .PHONY : help
 
 

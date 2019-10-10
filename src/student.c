@@ -4,9 +4,11 @@
 #include "shared.h"
 
 int matricola, voto_AdE, nof_elements, nof_invites, max_reject;
+void * st_memory;
 
 int main(int argc, char ** argv)
 {
+    st_memory = connect((int) argv[0]);
     voto_AdE = generate_random_integer(18,30, getpid());
     printf("%d", voto_AdE);
     puts("");

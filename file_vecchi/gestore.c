@@ -20,11 +20,11 @@ int main(int argc, char** argv) {
   scanf("%d", &POP_SIZE);
   puts("Insert the simulation time (minutes).");
   scanf("%d", &sim_time);
-
+/*
   shmid = get_mem(POP_SIZE);
   mainlog = (struct data*)shmat(shmid,NULL,0);
   //mainlog[0].student = getpid();
-
+*/
   spawn(POP_SIZE);
   remove_mem(shmid);
 

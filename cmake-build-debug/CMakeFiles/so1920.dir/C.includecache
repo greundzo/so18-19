@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/greundzo/so1920/src/gestore.c
+shared.h
+/home/greundzo/so1920/src/shared.h
+
+/home/greundzo/so1920/src/shared.c
+shared.h
+/home/greundzo/so1920/src/shared.h
+
+/home/greundzo/so1920/src/shared.h
+stdio.h
+-
+stdlib.h
+-
+unistd.h
+-
+signal.h
+-
+sys/syscall.h
+-
+sys/wait.h
+-
+semaphore.h
+-
+
+/home/greundzo/so1920/src/student.c
+shared.h
+/home/greundzo/so1920/src/shared.h
+

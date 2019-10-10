@@ -4,6 +4,9 @@
 CMakeFiles/so1920.dir/src/gestore.c.o: ../src/gestore.c
 CMakeFiles/so1920.dir/src/gestore.c.o: ../src/shared.h
 
+CMakeFiles/so1920.dir/src/shared.c.o: ../src/shared.c
+CMakeFiles/so1920.dir/src/shared.c.o: ../src/shared.h
+
 CMakeFiles/so1920.dir/src/student.c.o: ../src/shared.h
 CMakeFiles/so1920.dir/src/student.c.o: ../src/student.c
 

@@ -1,5 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/so1920.dir/src/gestore.c.o"
+  "CMakeFiles/so1920.dir/src/shared.c.o"
+  "CMakeFiles/so1920.dir/src/shm.c.o"
   "CMakeFiles/so1920.dir/src/student.c.o"
   "so1920"
   "so1920.pdb"

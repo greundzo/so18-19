@@ -10,16 +10,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <signal.h>
+#include <string.h>
+
 #include <sys/syscall.h>
 #include <sys/wait.h>
-#include <semaphore.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/stat.h>
+#include <sys/shm.h>
+#include <sys/sem.h>
+#include <sys/msg.h>
 
-int generate_random_integer(int minNum, int maxNum, pid_t pid) {
-    int span = maxNum - minNum + 1;
-    int snNum = maxNum - maxNum % span;
-    int a;
-    srand(pid);
-    do a = rand(); while (a >= snNum);
-    return minNum + a % span;
-}
+#include <semaphore.h>
+#include <signal.h>
+#include <time.h>
+#include <errno.h>
+#include <fcntl.h>
+
+#define MEM 30
+
+struct student_data;
+int generate_random_integer(int minNum, int maxNum, pid_t pid);
+int create_memory(int size);
+void * connect(int id);

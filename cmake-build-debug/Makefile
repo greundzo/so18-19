@@ -150,6 +150,60 @@ src/gestore.c.s:
 	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/gestore.c.s
 .PHONY : src/gestore.c.s
 
+src/shared.o: src/shared.c.o
+
+.PHONY : src/shared.o
+
+# target to build an object file
+src/shared.c.o:
+	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/shared.c.o
+.PHONY : src/shared.c.o
+
+src/shared.i: src/shared.c.i
+
+.PHONY : src/shared.i
+
+# target to preprocess a source file
+src/shared.c.i:
+	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/shared.c.i
+.PHONY : src/shared.c.i
+
+src/shared.s: src/shared.c.s
+
+.PHONY : src/shared.s
+
+# target to generate assembly for a file
+src/shared.c.s:
+	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/shared.c.s
+.PHONY : src/shared.c.s
+
+src/shm.o: src/shm.c.o
+
+.PHONY : src/shm.o
+
+# target to build an object file
+src/shm.c.o:
+	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/shm.c.o
+.PHONY : src/shm.c.o
+
+src/shm.i: src/shm.c.i
+
+.PHONY : src/shm.i
+
+# target to preprocess a source file
+src/shm.c.i:
+	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/shm.c.i
+.PHONY : src/shm.c.i
+
+src/shm.s: src/shm.c.s
+
+.PHONY : src/shm.s
+
+# target to generate assembly for a file
+src/shm.c.s:
+	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/src/shm.c.s
+.PHONY : src/shm.c.s
+
 src/student.o: src/student.c.o
 
 .PHONY : src/student.o
@@ -189,6 +243,12 @@ help:
 	@echo "... src/gestore.o"
 	@echo "... src/gestore.i"
 	@echo "... src/gestore.s"
+	@echo "... src/shared.o"
+	@echo "... src/shared.i"
+	@echo "... src/shared.s"
+	@echo "... src/shm.o"
+	@echo "... src/shm.i"
+	@echo "... src/shm.s"
 	@echo "... src/student.o"
 	@echo "... src/student.i"
 	@echo "... src/student.s"

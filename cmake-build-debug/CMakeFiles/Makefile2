@@ -74,12 +74,12 @@ preinstall:
 CMakeFiles/so1920.dir/all:
 	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/depend
 	$(MAKE) -f CMakeFiles/so1920.dir/build.make CMakeFiles/so1920.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/greundzo/so1920/cmake-build-debug/CMakeFiles --progress-num=1,2,3 "Built target so1920"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/greundzo/so1920/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5 "Built target so1920"
 .PHONY : CMakeFiles/so1920.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/so1920.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/greundzo/so1920/cmake-build-debug/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/greundzo/so1920/cmake-build-debug/CMakeFiles 5
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/so1920.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/greundzo/so1920/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/so1920.dir/rule

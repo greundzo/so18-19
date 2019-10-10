@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(so1920
         src/student.c src/shared.h
-        src/gestore.c)
+        src/gestore.c src/shared.c)

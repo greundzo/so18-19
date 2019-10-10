@@ -1,1 +1,1 @@
-/usr/bin/cc -g   CMakeFiles/so1920.dir/src/student.c.o CMakeFiles/so1920.dir/src/gestore.c.o  -o so1920 
+/usr/bin/cc -g   CMakeFiles/so1920.dir/src/student.c.o CMakeFiles/so1920.dir/src/gestore.c.o CMakeFiles/so1920.dir/src/shared.c.o CMakeFiles/so1920.dir/src/shm.c.o  -o so1920 

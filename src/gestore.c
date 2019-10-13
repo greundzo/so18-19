@@ -3,6 +3,19 @@
 int sim_time, id_memory, sem_id;
 struct student_data * p_memory;
 
+void end_handler(int signal)
+{
+    int average = 0;
+    for (int i = 0; i < POP_SIZE; i++) {
+        pid_t child = p_memory[i].student_pid;
+        kill(child, SIGTERM);
+        wait(&child);
+    }
+    semctl(sem_id, SEM, IPC_RMID);
+    free(p_memory);
+    exit(0);
+}
+
 void spawn(int size)
 {
     int * arguments = malloc(2*sizeof(int));
@@ -19,14 +32,17 @@ void spawn(int size)
     }
 }
 
-int main() {
-    #ifndef test
+int main()
+{
+    #ifndef TEST
         puts("Insert the students' number.");
         scanf("%d", &POP_SIZE);
     #endif
 
     puts("Insert the simulation time (minutes).");
     scanf("%d", &sim_time);
+
+    signal(SIGALRM, end_handler);
 
     id_memory = create_memory(POP_SIZE);
     p_memory = connect(id_memory);
@@ -35,6 +51,6 @@ int main() {
     semctl(sem_id, 1, SETVAL, 1);
 
     spawn(POP_SIZE);
-
+    alarm(sim_time);
     wait(0);
 }

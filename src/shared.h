@@ -2,7 +2,7 @@
 // Created by greundzo on 08/10/19.
 //
 
-#ifdef test
+#ifdef TEST
 #define POP_SIZE 10
 #endif //test
 
@@ -29,8 +29,15 @@
 #define MEM 30
 #define SEM 5
 
+typedef struct student_data
+{
+    pid_t student_pid;
+    int matricule;
+    int vote_So;
+    struct sembuf * ops;
+}student_data;
+
 int POP_SIZE;
-struct student_data;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
 int create_memory(int size);
 struct student_data * connect(int id);

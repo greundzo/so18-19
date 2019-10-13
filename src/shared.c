@@ -3,14 +3,6 @@
 //
 #include "shared.h"
 
-typedef struct student_data
-{
-    pid_t student_pid;
-    int matricule;
-    int vote_So;
-    struct sembuf * ops;
-}student_data;
-
 int generate_random_integer(int minNum, int maxNum, pid_t pid)
 {
     int span = maxNum - minNum + 1;
@@ -38,8 +30,8 @@ int create_sem()
 
 int take_sem(int s_id, struct student_data * st_id, int index)
 {
-    st_id[index].ops->sem_num = 1;
-    st_id[index].ops->sem_op = -1;
+    st_id->ops->sem_num = 1;
+    st_id->ops->sem_op = -1;
     return semop(s_id, st_id[index].ops, 1);
 }
 

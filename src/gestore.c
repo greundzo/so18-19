@@ -1,7 +1,7 @@
 #include "shared.h"
 
-int POP_SIZE, sim_time, id_memory;
-void * p_memory;
+int sim_time, id_memory, sem_id;
+struct student_data * p_memory;
 
 void spawn(int size)
 {
@@ -19,16 +19,22 @@ void spawn(int size)
     }
 }
 
-int main(int argc, char ** argv) {
-  puts("Insert the students' number.");
-  scanf("%d", &POP_SIZE);
-  puts("Insert the simulation time (minutes).");
-  scanf("%d", &sim_time);
+int main() {
+    #ifndef test
+        puts("Insert the students' number.");
+        scanf("%d", &POP_SIZE);
+    #endif
 
-  id_memory = create_memory(POP_SIZE);
-  p_memory = connect(id_memory);
+    puts("Insert the simulation time (minutes).");
+    scanf("%d", &sim_time);
 
-  spawn(POP_SIZE);
+    id_memory = create_memory(POP_SIZE);
+    p_memory = connect(id_memory);
 
-  wait(0);
+    sem_id = create_sem();
+    semctl(sem_id, 1, SETVAL, 1);
+
+    spawn(POP_SIZE);
+
+    wait(0);
 }

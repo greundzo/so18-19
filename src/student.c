@@ -4,13 +4,22 @@
 #include "shared.h"
 
 int matricola, voto_AdE, nof_elements, nof_invites, max_reject;
-void * st_memory;
+struct student_data * st_memory;
 
-int main(int argc, char ** argv)
+int main(int argc, char * argv[])
 {
-    st_memory = connect((int) argv[0]);
+    st_memory = connect(atoi(argv[0]));
+    int st_pos = atoi(argv[1]);
+    int st_sem_id = create_sem();
     voto_AdE = generate_random_integer(18,30, getpid());
+    take_sem(st_sem_id, st_memory, st_pos);
     printf("%d", voto_AdE);
+    release_sem(st_sem_id, st_memory, st_pos);
+
+    take_sem(st_sem_id, st_memory, st_pos);
+    st_memory[st_pos]->student_pid = getpid();
+    release_sem(st_sem_id, st_memory, st_pos);
+
     puts("");
     exit(0);
 }

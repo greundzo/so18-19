@@ -2,10 +2,9 @@
 // Created by greundzo on 08/10/19.
 //
 
-#ifndef SO1920_SHARED_H
-#define SO1920_SHARED_H
-
-#endif //SO1920_SHARED_H
+#ifdef test
+#define POP_SIZE 10
+#endif //test
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,8 +27,13 @@
 #include <fcntl.h>
 
 #define MEM 30
+#define SEM 5
 
+int POP_SIZE;
 struct student_data;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
 int create_memory(int size);
-void * connect(int id);
+struct student_data * connect(int id);
+int create_sem();
+int take_sem(int s_id, struct student_data * st_id, int position);
+int release_sem(int s_id, struct student_data * st_id, int position);

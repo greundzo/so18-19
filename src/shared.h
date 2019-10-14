@@ -26,6 +26,7 @@
 #include <errno.h>
 #include <fcntl.h>
 
+#define GROUP 3
 #define MEM 30
 #define SEM 5
 
@@ -37,6 +38,7 @@ typedef struct student_data
 }student_data;
 
 int POP_SIZE;
+char arguments[2];
 struct sembuf * ops;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
 int create_memory(int size);

@@ -34,13 +34,13 @@ typedef struct student_data
     pid_t student_pid;
     int matricule;
     int vote_So;
-    struct sembuf * ops;
 }student_data;
 
 int POP_SIZE;
+struct sembuf * ops;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
 int create_memory(int size);
-struct student_data * connect(int id);
+void * connect(int id);
 int create_sem();
-int take_sem(int s_id, struct student_data * st_id, int position);
-int release_sem(int s_id, struct student_data * st_id, int position);
+int take_sem(int s_id);
+int release_sem(int s_id);

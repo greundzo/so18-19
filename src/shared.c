@@ -13,31 +13,32 @@ int generate_random_integer(int minNum, int maxNum, pid_t pid)
     return minNum + a % span;
 }
 
-int create_memory(int size)
+int create_memory(int student_number)
 {
-    return shmget(MEM, size*sizeof(struct student_data), IPC_CREAT|IPC_EXCL|0666);
+    return shmget(MEM, student_number * sizeof(struct student_data), IPC_CREAT|0600);
 }
 
-struct student_data * connect(int id)
+void * connect(int id)
 {
-    return (struct student_data *)shmat(id,NULL,0);
+    return shmat(id, (void *)0, 0);
 }
 
 int create_sem()
 {
+    ops = malloc(sizeof(struct sembuf));
     return semget(SEM, SEM, IPC_CREAT);
 }
 
-int take_sem(int s_id, struct student_data * st_id, int index)
+int take_sem(int s_id)
 {
-    st_id->ops->sem_num = 1;
-    st_id->ops->sem_op = -1;
-    return semop(s_id, st_id[index].ops, 1);
+    ops->sem_num = 1;
+    ops->sem_op = -1;
+    return semop(s_id, ops, 1);
 }
 
-int release_sem(int s_id, struct student_data * st_id, int index)
+int release_sem(int s_id)
 {
-    st_id[index].ops->sem_num = 1;
-    st_id[index].ops->sem_op = 1;
-    return semop(s_id, st_id[index].ops, 1);
+    ops->sem_num = 1;
+    ops->sem_op = 1;
+    return semop(s_id, ops, 1);
 }

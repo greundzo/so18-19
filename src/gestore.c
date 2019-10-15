@@ -1,6 +1,6 @@
 #include "shared.h"
 
-int sim_time, id_memory, sem_id;
+int sim_time;
 student_data * pStudentData;
 struct sigaction end_handler;
 
@@ -18,7 +18,7 @@ void end_simulation()
         wait(&child);
     }
     puts("Exiting main");
-    semctl(sem_id, SEM, IPC_RMID);
+    semctl(semid, SEM, IPC_RMID);
     free(pStudentData);
     exit(0);
 }
@@ -57,17 +57,17 @@ int main(int argc, char ** argv)
 
     sim_time = sim_time * 60;
 
-    if((id_memory = create_memory(POP_SIZE)) == -1) {
+    if((memid = create_memory(POP_SIZE)) == -1) {
         strerror(errno);
     }
 
-    pStudentData = (student_data *)connect(id_memory);
+    pStudentData = (student_data *)connect(memid);
 
-    if ((sem_id = create_sem()) == -1) {
+    if ((semid = create_sem()) == -1) {
         strerror(errno);
     }
 
-    semctl(sem_id, 1, SETVAL, 1);
+    sem_init_val(semid, 0, -1);
 
     puts("Creating students...");
 

@@ -1,7 +1,7 @@
 //
 // Created by greundzo on 08/10/19.
 //
-
+#define _XOPEN_SOURCE
 #ifdef TEST
 #define POP_SIZE 10
 #endif //test
@@ -37,27 +37,20 @@ typedef struct student_data
     int vote_So;
 }student_data;
 
-int POP_SIZE;
+int POP_SIZE, memid, semid;
 int main(int argc, char ** argv);
 char arguments[2];
-struct sembuf * ops;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
+
 int create_memory(int size);
 void * connect(int id);
-//int create_sem();
-int take_sem(int s_id);
-int release_sem(int s_id);
-
-
 
 /* SEMAFORI */ 
-
-//struct sembuf ops;
-//crea un array di nsems e restitisce l'id
-int create_sem(key_t key, int nsems);
-//inizializza a un valore 'value' il semaforo posto in posizione index nell'array
+struct sembuf * ops;
+int create_sem();
 void sem_init_val(int semid, int index, int value);
-
+int take_sem(int s_id, int num);
+int release_sem(int s_id);
 
 
 

@@ -6,7 +6,7 @@
 int matricola, voto_AdE, nof_elements, nof_invites, max_reject;
 student_data * pStudentData;
 
-struct sigaction start_handler;
+struct sigaction start_handler; 
 struct sigaction st_end_handler;
 
 void start_simulation()
@@ -28,23 +28,21 @@ int main(int argc, char ** argv)
     sigaction(SIGBUS, &start_handler, NULL);
     sigaction(SIGKILL, &st_end_handler, NULL);
 
-    int memory_id = create_memory(POP_SIZE);
-    pStudentData = (student_data *)connect(memory_id);
+    pStudentData = (student_data *)connect(memid);
     if (setpgid(getpid(), GROUP) == -1) {
         strerror(errno);
     }
 
     int st_pos = atoi(argv[1]);
-    int st_sem_id = create_sem();
     voto_AdE = generate_random_integer(18,30, getpid());
 
-    pause();
+    take_sem(semid, 0);
 
     printf("%d", voto_AdE);
 
-    take_sem(st_sem_id);
+    take_sem(semid, 0);
     pStudentData[st_pos].student_pid = getpid();
-    release_sem(st_sem_id);
+    release_sem(semid);
 
     puts("Wrote");
     pause();

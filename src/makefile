@@ -8,13 +8,13 @@ ODIR =../bin
 all: student gestore clean
 
 $(ODIR)/%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -std=gnu99 -c -o $@ $< $(CFLAGS)
 
 student: $(ODIR)/student.o $(ODIR)/shared.o
-	$(CC) -o $(ODIR)/$@ $^ $(CFLAGS)
+	$(CC) -std=gnu99 -o $(ODIR)/$@ $^ $(CFLAGS)
 
 gestore: $(ODIR)/gestore.o $(ODIR)/shared.o
-	$(CC) -o $(ODIR)/$@ $^ $(CFLAGS)
+	$(CC) -std=gnu99 -o $(ODIR)/$@ $^ $(CFLAGS)
 
 clean:
 	rm -f $(ODIR)/*.o

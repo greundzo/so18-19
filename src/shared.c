@@ -24,25 +24,21 @@ void * connect(int id)
     return shmat(id, (void *)0, 0);
 }
 /* GESTIONE DEI SEMAFORI */
-int create_sem(key_t key, int nsems){
-    
-      int s = semget(key, nsems, IPC_CREAT);
-      
-      if(s == -1){
-      	printf("Creation of semaphore failed : \n"); 
-        exit(EXIT_FAILURE);
-      }
-      return s;
+int create_sem()
+{
+	return semget(SEM, 5, IPC_CREAT); 
 }
-void sem_init_val(int s_id , int s_index , int value){
-     if(semctl(s_id,s_index,value) == -1){
-     	printf("Errore in sempahore init:\n");
-     exit(-1);
+
+void sem_init_val(int semid , int index , int value)
+{
+     if(semctl(semid, index, value) == -1) {
+     	strerror(errno);
      } 	
 }
-int take_sem(int s_id)
+
+int take_sem(int s_id, int num)
 {
-    ops->sem_num = 1;
+    ops->sem_num = num;
     ops->sem_op = -1;
     return semop(s_id, ops, 1);
 }

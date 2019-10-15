@@ -65,6 +65,8 @@ union semun {
     struct semid_ds *buf;
     unsigned short  *array;
 };
+struct sembuf semwait;
+struct sembuf semsignal;
 int create_sem();
 void sem_init_val(int index, union semun value);
 int take_sem(int num);

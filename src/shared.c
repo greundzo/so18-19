@@ -3,9 +3,6 @@
 //
 #include "shared.h"
 
-struct sembuf semwait = { 0, -1, SEM_UNDO}; // semwait
-struct sembuf semsignal = { 0, +1, SEM_UNDO}; // semsignal
-
 //genera un intero casuale
 int generate_random_integer(int minNum, int maxNum, pid_t pid)
 {
@@ -20,33 +17,39 @@ int generate_random_integer(int minNum, int maxNum, pid_t pid)
 /* GESTIONE DELLA SHM */
 int create_memory()
 {
-    return shmget(MEM, sizeof(struct shared), IPC_CREAT|0666);
+    return shmget(MEM, sizeof(struct shared), 0666|IPC_CREAT);
 }
 
 void * connect(int id)
 {
-    return shmat(id, (void *)0, 0);
+    return shmat(id, 0, 0);
 }
 
 /* GESTIONE DEI SEMAFORI */
 int create_sem()
 {
-	return semget(SEM, 5, IPC_CREAT|0666); 
+	return semget(SEM, 5, 0666|IPC_CREAT); 
 }
 
 void sem_init_val(int index , union semun value)
 {
      if(semctl(semid, index, SETVAL, value) == -1) {
-     	strerror(errno);
+     	TEST_ERROR;
      } 	
 }
 
 int take_sem(int num)
-{
+{   
+    semwait.sem_num = num;
+    semwait.sem_op  = -1;
+    semwait.sem_flg = 0;
     return semop(semid, &semwait, 1);
 }
 
 int release_sem(int num)
-{
+{   
+    semsignal.sem_num = num;
+    semsignal.sem_op  = 1;
+    semsignal.sem_flg = 0;
     return semop(semid, &semsignal, 1);
 }

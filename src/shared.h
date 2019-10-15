@@ -38,6 +38,7 @@ typedef struct student_data
 }student_data;
 
 int POP_SIZE;
+int main(int argc, char ** argv);
 char arguments[2];
 struct sembuf * ops;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);

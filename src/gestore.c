@@ -2,8 +2,9 @@
 
 int sim_time, id_memory, sem_id;
 student_data * pStudentData;
+struct sigaction end_handler;
 
-void end_handler()
+void end_simulation()
 {
     //int average = 0;
     for (int i = 0; i < POP_SIZE; i++) {
@@ -23,11 +24,10 @@ void spawn(int size)
     for(int i = 0; i < size; i++) {
         pid_t process = fork();
         argv[1] = i;
-
         if(process == -1) {
             strerror(errno);
         }else if(process==0) {
-            if (execve("./student", &argv, NULL) == -1) {
+            if (execve("./student", NULL, NULL) == -1) {
                 strerror(errno);
             }
         }
@@ -36,19 +36,18 @@ void spawn(int size)
     kill(GROUP, SIGBUS);
 }
 
-int main()
+int main(int argc, char ** argv)
 {
-    #ifndef TEST
-        puts("Insert the students' number.");
-        scanf("%d", &POP_SIZE);
-    #endif
+    end_handler.sa_handler = end_simulation;
+    sigaction(SIGALRM, &end_handler, NULL);
 
+
+    puts("Insert the students' number.");
+    scanf("%d", &POP_SIZE);
     puts("Insert the simulation time (minutes).");
     scanf("%d", &sim_time);
 
     sim_time = sim_time * 60;
-
-    signal(SIGALRM, end_handler);
 
     if((id_memory = create_memory(POP_SIZE)) == -1) {
         strerror(errno);
@@ -68,5 +67,5 @@ int main()
     puts("**********");
     puts("");
     alarm(sim_time);
-    pause();
+    wait(0);
 }

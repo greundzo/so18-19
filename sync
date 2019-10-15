@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if ["$1" == ""]
+	then git pull
+else
+	while ["$1" != ""]; do
+		git add "$#"
+		shift
+	done
+	read -r -p  'Insert commit message:'  msg
+		git commit -m "$msg"
+		git push
+fi

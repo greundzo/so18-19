@@ -1,3 +1,0 @@
-/home/greundzo/so1920/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/greundzo/so1920/cmake-build-debug/CMakeFiles/so1920.dir
-/home/greundzo/so1920/cmake-build-debug/CMakeFiles/edit_cache.dir

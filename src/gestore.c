@@ -1,7 +1,7 @@
 #include "shared.h"
 
 int sim_time;
-student_data * pStudentData;
+shared * pStudentData;
 struct sigaction end_handler;
 struct sigaction compulsory;
 union semun uni;
@@ -11,10 +11,10 @@ union semun uni;
 * in case of trouble. Set to handle SIGINT caused by user
 * pressing Ctrl + C
 */
-void emergency() 
+void emergency(int signal) 
 {
     for (int i = 0; i < POP_SIZE; i++) {
-        pid_t child = pStudentData[i].student_pid;
+        pid_t child = pStudentData->stdata->student_pid[&i];
         kill(child, SIGKILL);
         wait(&child);
     }
@@ -28,11 +28,11 @@ void emergency()
 * all children processes, frees the IPCs and then
 * terminates the execution.
 */
-void end_simulation()
+void end_simulation(int signal)
 {
     //int average = 0;
     for (int i = 0; i < POP_SIZE; i++) {
-        pid_t child = pStudentData[i].student_pid;
+        pid_t child = pStudentData->stdata->student_pid[&i];
         kill(child, SIGKILL);
         wait(&child);
     }
@@ -73,20 +73,22 @@ int main(int argc, char ** argv)
     compulsory.sa_handler = emergency;
     sigaction(SIGINT, &compulsory, NULL);
 
-    printf("%s", "Insert the students' number: ");
-    scanf("%d", &POP_SIZE);
+    #ifdef TEST
+        printf("%s", "Insert the students' number: ");
+        scanf("%d", &nums);
+    #endif    
     printf("%s", "Insert the simulation time (minutes): ");
     scanf("%d", &sim_time);
     puts("");
 
-    sim_time = sim_time * 60; //Conversion in minutes
+    //sim_time = sim_time * 60; //Conversion in minutes
 
     if((memid = create_memory(POP_SIZE)) == -1) {
         strerror(errno);
     }
 
     // Pointer to shm segment allocated at the beginning of the execution
-    pStudentData = (student_data *)connect(memid);
+    pStudentData = (shared *)connect(memid);
 
     if ((semid = create_sem()) == -1) {
         strerror(errno);

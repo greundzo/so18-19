@@ -4,7 +4,7 @@
 #include "shared.h"
 
 int matricola, voto_AdE, nof_elements, nof_invites, max_reject;
-student_data * pStudentData;
+shared * pStudentData;
 
 struct sigaction start_handler; 
 struct sigaction st_end_handler;
@@ -28,7 +28,7 @@ int main(int argc, char ** argv)
     sigaction(SIGBUS, &start_handler, NULL);
     sigaction(SIGKILL, &st_end_handler, NULL);
 
-    pStudentData = (student_data *)connect(memid);
+    pStudentData = (shared *)connect(memid);
     if (setpgid(getpid(), GROUP) == -1) {
         strerror(errno);
     }
@@ -39,7 +39,7 @@ int main(int argc, char ** argv)
     take_sem(1);
 
     printf("%d", voto_AdE);
-    //pStudentData[st_pos].student_pid = getpid();
+    //pStudentData->stdata->student_pid[&i] = getpid();
     
     release_sem(1);
 

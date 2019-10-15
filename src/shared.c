@@ -19,13 +19,14 @@ int generate_random_integer(int minNum, int maxNum, pid_t pid)
 /* GESTIONE DELLA SHM */
 int create_memory(int student_number)
 {
-    return shmget(MEM, student_number * sizeof(struct student_data), IPC_CREAT|0600);
+    return shmget(MEM, sizeof(struct shared), IPC_CREAT|0600);
 }
 
 void * connect(int id)
 {
     return shmat(id, (void *)0, 0);
 }
+
 /* GESTIONE DEI SEMAFORI */
 int create_sem()
 {

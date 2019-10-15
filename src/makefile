@@ -18,4 +18,5 @@ gestore: $(ODIR)/gestore.o $(ODIR)/shared.o
 
 clean:
 	rm -f $(ODIR)/*.o
+
 #clear

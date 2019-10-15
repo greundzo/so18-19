@@ -2,7 +2,7 @@
 // Created by greundzo on 08/10/19.
 //
 #define _XOPEN_SOURCE
-#ifdef TEST
+#ifndef TEST
 #define POP_SIZE 10
 #endif //test
 
@@ -38,9 +38,14 @@ typedef struct student_data
     int vote_So;
 }student_data;
 
-// Shared global variables
-int POP_SIZE, memid, semid;
-int main(int argc, char ** argv);
+typedef struct shared 
+{
+    struct student_data stdata[POP_SIZE];
+    int pc;
+}shared;
+
+// Shared global variables and functions
+int memid, semid;
 char arguments[2];
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
 

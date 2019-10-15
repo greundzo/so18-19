@@ -2,7 +2,7 @@
 
 if [[ "$1" == "" ]]
 	then git pull
-else
+else	
 	while [[ "$1" != "" ]]; do
 		git add "$1"
 		shift

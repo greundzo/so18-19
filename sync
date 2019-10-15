@@ -1,10 +1,10 @@
 #!/bin/bash
 
-if ["$1" == ""]
+if [[ "$1" == "" ]]
 	then git pull
 else
-	while ["$1" != ""]; do
-		git add "$#"
+	while [[ "$1" != "" ]]; do
+		git add "$1"
 		shift
 	done
 	read -r -p  'Insert commit message:'  msg

@@ -47,15 +47,16 @@ void end_simulation(int signal)
 */
 void spawn(int size)
 {
-    char * argv = malloc(sizeof(char));
+    char * args [] = {NULL, NULL, NULL};
     for(int i = 0; i < size; i++) {
         pid_t process = fork();
-        sprintf(argv, "%d", i);
+        //sprintf(args[0], "%d", i);
+        TEST_ERROR;
         if(process == -1) {
-            strerror(errno);
+            TEST_ERROR;
         } else if(process==0) {
-            if (execve("./student", NULL, NULL) == -1) { //here we could pass argument to our child
-                strerror(errno);                        //to set his own shm cell
+            if (execve("./student", args, NULL) == -1) { //here we could pass argument to our child
+                TEST_ERROR;                        //to set his own shm cell
             }
         }
     }
@@ -83,15 +84,15 @@ int main(int argc, char ** argv)
 
     //sim_time = sim_time * 60; //Conversion in minutes
 
-    if((memid = create_memory(POP_SIZE)) == -1) {
-        strerror(errno);
+    if((memid = create_memory()) == -1) {
+        TEST_ERROR;
     }
 
     // Pointer to shm segment allocated at the beginning of the execution
     pStudentData = (shared *)connect(memid);
 
     if ((semid = create_sem()) == -1) {
-        strerror(errno);
+        TEST_ERROR;
     }
 
     uni.val = 1;

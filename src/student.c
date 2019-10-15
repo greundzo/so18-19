@@ -29,20 +29,18 @@ int main(int argc, char ** argv)
     sigaction(SIGKILL, &st_end_handler, NULL);
 
     pStudentData = (shared *)connect(memid);
-    if (setpgid(getpid(), GROUP) == -1) {
-        strerror(errno);
-    }
+    
 
-    //int st_pos = atoi(argv[1]);
+    //int st_pos = atoi(argv[0]);
+    TEST_ERROR;
     voto_AdE = generate_random_integer(18,30, getpid());
 
     take_sem(1);
 
     printf("%d", voto_AdE);
-    //pStudentData->stdata->student_pid[&i] = getpid();
-    
+    //pStudentData->stdata->student_pid[&st_pos] = getpid();
+    TEST_ERROR;
     release_sem(1);
 
-    puts("Wrote");
     pause();
 }

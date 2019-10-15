@@ -16,10 +16,11 @@ int generate_random_integer(int minNum, int maxNum, pid_t pid)
     do a = rand(); while (a >= snNum);
     return minNum + a % span;
 }
+
 /* GESTIONE DELLA SHM */
-int create_memory(int student_number)
+int create_memory()
 {
-    return shmget(MEM, sizeof(struct shared), IPC_CREAT|0600);
+    return shmget(MEM, sizeof(struct shared), IPC_CREAT|0666);
 }
 
 void * connect(int id)
@@ -30,7 +31,7 @@ void * connect(int id)
 /* GESTIONE DEI SEMAFORI */
 int create_sem()
 {
-	return semget(SEM, 5, IPC_CREAT); 
+	return semget(SEM, 5, IPC_CREAT|0666); 
 }
 
 void sem_init_val(int index , union semun value)

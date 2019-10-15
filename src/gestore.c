@@ -3,7 +3,25 @@
 int sim_time;
 student_data * pStudentData;
 struct sigaction end_handler;
+struct sigaction compulsory;
 union semun uni;
+
+/*
+* Emergency handler to remove IPCs and terminate execution
+* in case of trouble. Set to handle SIGINT caused by user
+* pressing Ctrl + C
+*/
+void emergency() 
+{
+    for (int i = 0; i < POP_SIZE; i++) {
+        pid_t child = pStudentData[i].student_pid;
+        kill(child, SIGKILL);
+        wait(&child);
+    }
+    semctl(semid, SEM, IPC_RMID);
+    free(pStudentData);
+    shmctl(memid, IPC_RMID, NULL);
+}
 
 /*
 * End simulation signal handler. Kills and waits for
@@ -47,9 +65,13 @@ void spawn(int size)
 
 int main(int argc, char ** argv)
 {
+    // Program termination handler
     end_handler.sa_handler = end_simulation;
     sigaction(SIGALRM, &end_handler, NULL);
 
+    // Program troubles handler
+    compulsory.sa_handler = emergency;
+    sigaction(SIGINT, &compulsory, NULL);
 
     printf("%s", "Insert the students' number: ");
     scanf("%d", &POP_SIZE);
@@ -57,12 +79,13 @@ int main(int argc, char ** argv)
     scanf("%d", &sim_time);
     puts("");
 
-    sim_time = sim_time * 60;
+    sim_time = sim_time * 60; //Conversion in minutes
 
     if((memid = create_memory(POP_SIZE)) == -1) {
         strerror(errno);
     }
 
+    // Pointer to shm segment allocated at the beginning of the execution
     pStudentData = (student_data *)connect(memid);
 
     if ((semid = create_sem()) == -1) {

@@ -33,19 +33,22 @@
 typedef struct student_data
 {
     pid_t student_pid;
+    int class;
     int matricule;
     int vote_So;
 }student_data;
 
+// Shared global variables
 int POP_SIZE, memid, semid;
 int main(int argc, char ** argv);
 char arguments[2];
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
 
+// Shared Memory functions declaration
 int create_memory(int size);
 void * connect(int id);
 
-/* SEMAFORI */ 
+// Semaphore functions declaration 
 union semun {
     int val;
     struct semid_ds *buf;

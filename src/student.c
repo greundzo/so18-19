@@ -33,16 +33,15 @@ int main(int argc, char ** argv)
         strerror(errno);
     }
 
-    int st_pos = atoi(argv[1]);
+    //int st_pos = atoi(argv[1]);
     voto_AdE = generate_random_integer(18,30, getpid());
 
-    take_sem(semid, 0);
+    take_sem(1);
 
     printf("%d", voto_AdE);
-
-    take_sem(semid, 0);
-    pStudentData[st_pos].student_pid = getpid();
-    release_sem(semid);
+    //pStudentData[st_pos].student_pid = getpid();
+    
+    release_sem(1);
 
     puts("Wrote");
     pause();

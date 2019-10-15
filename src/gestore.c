@@ -3,6 +3,7 @@
 int sim_time;
 student_data * pStudentData;
 struct sigaction end_handler;
+union semun uni;
 
 /*
 * End simulation signal handler. Kills and waits for
@@ -50,10 +51,11 @@ int main(int argc, char ** argv)
     sigaction(SIGALRM, &end_handler, NULL);
 
 
-    puts("Insert the students' number.");
+    printf("%s", "Insert the students' number: ");
     scanf("%d", &POP_SIZE);
-    puts("Insert the simulation time (minutes).");
+    printf("%s", "Insert the simulation time (minutes): ");
     scanf("%d", &sim_time);
+    puts("");
 
     sim_time = sim_time * 60;
 
@@ -67,7 +69,8 @@ int main(int argc, char ** argv)
         strerror(errno);
     }
 
-    sem_init_val(semid, 0, -1);
+    uni.val = 1;
+    sem_init_val(0, uni);
 
     puts("Creating students...");
 
@@ -75,5 +78,5 @@ int main(int argc, char ** argv)
     puts("**********");
     puts("");
     alarm(sim_time);
-    wait(0);
+    pause();
 }

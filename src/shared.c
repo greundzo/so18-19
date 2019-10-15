@@ -3,6 +3,9 @@
 //
 #include "shared.h"
 
+struct sembuf semwait = { 0, -1, SEM_UNDO}; // semwait
+struct sembuf semsignal = { 0, +1, SEM_UNDO}; // semsignal
+
 //genera un intero casuale
 int generate_random_integer(int minNum, int maxNum, pid_t pid)
 {
@@ -29,23 +32,19 @@ int create_sem()
 	return semget(SEM, 5, IPC_CREAT); 
 }
 
-void sem_init_val(int semid , int index , int value)
+void sem_init_val(int index , union semun value)
 {
-     if(semctl(semid, index, value) == -1) {
+     if(semctl(semid, index, SETVAL, value) == -1) {
      	strerror(errno);
      } 	
 }
 
-int take_sem(int s_id, int num)
+int take_sem(int num)
 {
-    ops->sem_num = num;
-    ops->sem_op = -1;
-    return semop(s_id, ops, 1);
+    return semop(semid, &semwait, 1);
 }
 
-int release_sem(int s_id)
+int release_sem(int num)
 {
-    ops->sem_num = 1;
-    ops->sem_op = 1;
-    return semop(s_id, ops, 1);
+    return semop(semid, &semsignal, 1);
 }

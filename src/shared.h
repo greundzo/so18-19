@@ -46,11 +46,15 @@ int create_memory(int size);
 void * connect(int id);
 
 /* SEMAFORI */ 
-struct sembuf * ops;
+union semun {
+    int val;
+    struct semid_ds *buf;
+    unsigned short  *array;
+};
 int create_sem();
-void sem_init_val(int semid, int index, int value);
-int take_sem(int s_id, int num);
-int release_sem(int s_id);
+void sem_init_val(int index, union semun value);
+int take_sem(int num);
+int release_sem(int num);
 
 
 

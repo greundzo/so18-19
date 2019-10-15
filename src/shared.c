@@ -31,6 +31,7 @@ int create_sem()
 
 int take_sem(int s_id)
 {
+    //struct sembuf cmd;
     ops->sem_num = 1;
     ops->sem_op = -1;
     return semop(s_id, ops, 1);

@@ -4,6 +4,11 @@ int sim_time, id_memory, sem_id;
 student_data * pStudentData;
 struct sigaction end_handler;
 
+/*
+* End simulation signal handler. Kills and waits for
+* all children processes, frees the IPCs and then
+* terminates the execution.
+*/
 void end_simulation()
 {
     //int average = 0;
@@ -17,18 +22,21 @@ void end_simulation()
     free(pStudentData);
     exit(0);
 }
-
+/*
+* Creates POP_SIZE child processes
+* and make them specialize using the execve syscall
+*/
 void spawn(int size)
 {
-    char * argv = malloc(sizeof(arguments));
+    char * argv = malloc(sizeof(char));
     for(int i = 0; i < size; i++) {
         pid_t process = fork();
-        argv[1] = i;
+        sprintf(argv, "%d", i);
         if(process == -1) {
             strerror(errno);
-        }else if(process==0) {
-            if (execve("./student", NULL, NULL) == -1) {
-                strerror(errno);
+        } else if(process==0) {
+            if (execve("./student", NULL, NULL) == -1) { //here we could pass argument to our child
+                strerror(errno);                        //to set his own shm cell
             }
         }
     }

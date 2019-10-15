@@ -1,12 +1,11 @@
 CC=gcc
 CFLAGS=-Wall
 DEPS=shared.h
-
 ODIR =../bin
 
-#_OBJ = gestore.o shared.o
-#OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+.PHONY: all
 
+all: student gestore clean
 
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
@@ -19,5 +18,4 @@ gestore: $(ODIR)/gestore.o $(ODIR)/shared.o
 
 clean:
 	rm -f $(ODIR)/*.o
-
-.PHONY: clean
+#clear

@@ -26,11 +26,11 @@ void signalhandler(int signum){
                 //kill(pStudentData->stdata[i].student_pid, SIGUSR1);
                 kill(pStudentData->stdata[i].student_pid, SIGKILL);
             }
-
-            break;
-        case SIGKILL:
+            semctl(semid, 2, IPC_RMID);
             shmdt(pStudentData);
-            exit(EXIT_FAILURE);
+            shmctl(memid, IPC_RMID, NULL);
+            exit(EXIT_SUCCESS);
+            break;
         /*
         case SIGUSR1:
             if(msgrcv(msqvote_id, &msg_prof, sizeof(msg_prof)- sizeof(long), getpid(), 0) == -1){
@@ -59,7 +59,7 @@ void signalhandler(int signum){
             for(int i = 0; i < POP_SIZE; i++){
                 kill(pStudentData->stdata[i].student_pid, SIGTERM);
             }
-            semctl(semid, 2,IPC_RMID);
+            semctl(semid, 2, IPC_RMID);
             shmdt(pStudentData);
             shmctl(memid, IPC_RMID, NULL);
             //msq_rm(msq_id);
@@ -74,7 +74,7 @@ int create_memory()
 {
     int sh;
     if ( (sh =shmget(MEM, sizeof(struct shared), 0666|IPC_CREAT)) == -1) {
-        TEST_ERROR;
+        TEST_ERROR
     }
     return sh;
 }
@@ -90,7 +90,7 @@ int create_sem()
 {
     int sm;
 	if (( sm = semget(SEM, 2, 0666|IPC_CREAT)) == -1) {
-        TEST_ERROR;
+        TEST_ERROR
     } 
     return sm;
 }
@@ -98,26 +98,26 @@ int create_sem()
 void sem_init_val(int index, int value)
 {
     if(semctl(semid, index, SETVAL, value) == -1) {
-        TEST_ERROR;
+        TEST_ERROR
     } 	
 }
 
-int take_sem(int num)
+int take_sem(int semid, int num)
 {   
     int took;   
     ops.sem_num = num;
     ops.sem_op = -1;
     if ((took = semop(semid, &ops, (size_t)1) == -1)) {
-        TEST_ERROR;
+        TEST_ERROR
     }
     return took;
 }
 
-int release_sem(int num)
+int release_sem(int semid, int num)
 {   
     int released;
     ops.sem_num = num;
-    ops.sem_op = 1;
+    ops.sem_op = +1;
     if ((released = semop(semid, &ops, (size_t)1) == -1)) {
         TEST_ERROR;
     }

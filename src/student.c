@@ -47,5 +47,6 @@ int main(int argc, char ** argv)
     pStudentData->pc ++;    
     release_sem(sem_id, 0);
 
-    exit(0);
+    //exit(0);
+    pause();
 }

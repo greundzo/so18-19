@@ -26,6 +26,7 @@ void signalhandler(int signum){
                 //kill(pStudentData->stdata[i].student_pid, SIGUSR1);
                 kill(pStudentData->stdata[i].student_pid, SIGKILL);
             }
+            printf("%d\n", pStudentData->pc);
             semctl(semid, 2, IPC_RMID);
             shmdt(pStudentData);
             shmctl(memid, IPC_RMID, NULL);

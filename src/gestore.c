@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
     scanf("%d", &sim_time);
     puts("");
 
-    //sim_time = sim_time * 60; //Conversion in minutes
+    sim_time = sim_time * 60; //Conversion in minutes
 
     memid = create_memory();
 

@@ -95,8 +95,7 @@ int main(int argc, char ** argv)
         TEST_ERROR;
     }
 
-    uni.val = 1;
-    sem_init_val(0, uni);
+    sem_init_val(0);
 
     puts("Creating students...");
 

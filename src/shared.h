@@ -66,12 +66,14 @@ union semun {
     struct semid_ds *buf;
     unsigned short  *array;
 };
+struct sembuf semwait;
+struct sembuf semsignal;
 int create_sem();
-void sem_init_val(int index, union semun value);
+void sem_init_val(int index);
 int take_sem(int num);
 int release_sem(int num);
 
-//// Message Queue functions declaration 
+// Message Queue functions declaration 
 struct msqid_ds buffer;
 int create_queue();
 int remove_queue(int id);

@@ -35,13 +35,13 @@ int main(int argc, char ** argv)
     voto_AdE = generate_random_integer(18, 30, getpid());
 
     // CRITICAL AREA
-    if (take_sem(0) < 0) {
+    if (take_sem(1) < 0) {
         TEST_ERROR;
     }    
     printf("%d", voto_AdE);
     //pStudentData->stdata->student_pid[&st_pos] = getpid();
     
-    if(release_sem(0) < 0) {
+    if(release_sem(1) < 0) {
         TEST_ERROR;
     }
 

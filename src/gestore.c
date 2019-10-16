@@ -13,12 +13,12 @@ void spawn(int size)
     for(int i = 0; i < size; i++) {
         pid_t process = fork();
         //sprintf(args[0], "%d", i);
-        TEST_ERROR;
+        TEST_ERROR
         if(process == -1) {
-            TEST_ERROR;
+            TEST_ERROR
         } else if(process==0) {
             if (execve("./student", args, NULL) == -1) { //here we could pass argument to our child
-                TEST_ERROR;                        //to set his own shm cell
+                TEST_ERROR                     //to set his own shm cell
             }
         }
     }
@@ -35,11 +35,11 @@ int main(int argc, char ** argv)
     handle.sa_flags = 0;
     
     if (sigaction(SIGALRM, &handle, NULL) == -1) {
-        TEST_ERROR;
+        TEST_ERROR
     }
     
     if (sigaction(SIGINT, &handle, NULL) == -1) {
-        TEST_ERROR;
+        TEST_ERROR
     }
 
     #ifdef TEST
@@ -67,7 +67,14 @@ int main(int argc, char ** argv)
     spawn(POP_SIZE);
     puts("**********");
     puts("");
-    //decremento 1
+    ops.sem_num = 1;
+    ops.sem_op = -1;
+    semop(semid, &ops, 1);
     alarm(sim_time);
-    pause();
+    
+    // EINTR is the Interrupted Signal
+    if(pause() == -1){
+        if(errno != EINTR)
+            TEST_ERROR;
+    }
 }

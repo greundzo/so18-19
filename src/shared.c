@@ -16,6 +16,56 @@ int generate_random_integer(int minNum, int maxNum, pid_t pid)
     return minNum + a % span;
 }
 
+void signalhandler(int signum){
+
+    switch(signum){
+        case SIGALRM:
+            printf("Tempo scaduto!\n");
+
+            for(int i = 0; i < POP_SIZE; i++){
+                //kill(pStudentData->stdata[i].student_pid, SIGUSR1);
+                kill(pStudentData->stdata[i].student_pid, SIGTERM);
+            }
+
+            break;
+        /*
+        case SIGUSR1:
+            if(msgrcv(msqvote_id, &msg_prof, sizeof(msg_prof)- sizeof(long), getpid(), 0) == -1){
+                printf("%d: Errore nella ricezione del voto", getpid());
+                TEST_ERROR;
+            }
+            voto_prj = msg_prof.voto;
+            print_info(indice);
+
+            if(sh_stud->stud[indice].leader == 1)
+                free(indexOfMembs);
+
+            if((shmdt(sh_stud)) == -1){
+                printf("Errore nella detaching dalla shmem:\n");
+                TEST_ERROR;
+            }
+            else{
+                //printf("Mi sono staccato con successo\n");
+            }
+
+            if(errno != ENOMSG)
+                TEST_ERROR;
+            exit(EXIT_SUCCESS);
+        */
+        case SIGINT:
+            for(int i = 0; i < POP_SIZE; i++){
+                kill(pStudentData->stdata[i].student_pid, SIGTERM);
+            }
+            semctl(semid, 2,IPC_RMID);
+            shmdt(pStudentData);
+            shmctl(memid, IPC_RMID, NULL);
+            //msq_rm(msq_id);
+            //msq_rm(msqvote_id);
+            system("make rm");
+            exit(EXIT_FAILURE);
+    }
+}
+
 /* GESTIONE DELLA SHM */
 int create_memory()
 {
@@ -36,16 +86,15 @@ void * connect(int id)
 int create_sem()
 {
     int sm;
-	if (( sm = semget(SEM, 5, 0666|IPC_CREAT)) == -1) {
+	if (( sm = semget(SEM, 2, 0666|IPC_CREAT)) == -1) {
         TEST_ERROR;
     } 
     return sm;
 }
 
-void sem_init_val(int index)
+void sem_init_val(int index, int value)
 {
-    union semun arg = {1};
-    if(semctl(semid, index, SETVAL, arg) == -1) {
+    if(semctl(semid, index, SETVAL, value) == -1) {
         TEST_ERROR;
     } 	
 }

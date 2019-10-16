@@ -4,41 +4,6 @@ int sim_time;
 union semun uni;
 
 /*
-* Emergency handler to remove IPCs and terminate execution
-* in case of trouble. Set to handle SIGINT caused by user
-* pressing Ctrl + C
-*/
-void emergency(int signal) 
-{
-    for (int i = 0; i < POP_SIZE; i++) {
-        pid_t child = pStudentData->stdata->student_pid[&i];
-        kill(child, SIGKILL);
-        wait(&child);
-    }
-    semctl(semid, SEM, IPC_RMID);
-    free(pStudentData);
-    shmctl(memid, IPC_RMID, NULL);
-}
-
-/*
-* End simulation signal handler. Kills and waits for
-* all children processes, frees the IPCs and then
-* terminates the execution.
-*/
-void end_simulation(int signal)
-{
-    //int average = 0;
-    for (int i = 0; i < POP_SIZE; i++) {
-        pid_t child = pStudentData->stdata->student_pid[&i];
-        kill(child, SIGKILL);
-        wait(&child);
-    }
-    puts("Exiting main");
-    semctl(semid, SEM, IPC_RMID);
-    free(pStudentData);
-    exit(0);
-}
-/*
 * Creates POP_SIZE child processes
 * and make them specialize using the execve syscall
 */
@@ -64,7 +29,7 @@ void spawn(int size)
 int main(int argc, char ** argv)
 {
     // Program termination handler
-    handle.sa_handler = end_simulation;
+    handle.sa_handler = signalhandler;
     sigemptyset(&mask);
     handle.sa_mask = mask;
     handle.sa_flags = 0;
@@ -86,18 +51,13 @@ int main(int argc, char ** argv)
 
     //sim_time = sim_time * 60; //Conversion in minutes
 
-    if((memid = create_memory()) == -1) {
-        TEST_ERROR;
-    }
+    memid = create_memory();
 
     // Pointer to shm segment allocated at the beginning of the execution
     pStudentData = (shared *)connect(memid);
 
-    if ((semid = create_sem()) == -1) {
-        TEST_ERROR;
-    }
-
-    sem_init_val(0);
+    semid = create_sem();
+    sem_init_val(0, 1);
 
     puts("Creating students...");
 

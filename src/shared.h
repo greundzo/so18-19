@@ -53,9 +53,10 @@ typedef struct shared {
 
 struct sigaction handle;
 sigset_t mask;
+void signalhandler(int signal);
 
 // Shared global variables and functions
-shared * pStudentData;
+struct shared * pStudentData;
 int memid, semid;
 char arguments[2];
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
@@ -73,7 +74,7 @@ union semun {
 struct sembuf semwait;
 struct sembuf semsignal;
 int create_sem();
-void sem_init_val(int index);
+void sem_init_val(int index, int value);
 int take_sem(int num);
 int release_sem(int num);
 

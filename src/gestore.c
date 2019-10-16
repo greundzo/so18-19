@@ -33,6 +33,7 @@ int main(int argc, char ** argv)
     sigemptyset(&mask);
     handle.sa_mask = mask;
     handle.sa_flags = 0;
+    
     if (sigaction(SIGALRM, &handle, NULL) == -1) {
         TEST_ERROR;
     }
@@ -55,6 +56,7 @@ int main(int argc, char ** argv)
 
     // Pointer to shm segment allocated at the beginning of the execution
     pStudentData = (shared *)connect(memid);
+    pStudentData->pc = 0;
 
     semid = create_sem();
     sem_init_val(0, 1);

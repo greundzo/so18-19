@@ -58,7 +58,6 @@ void signalhandler(int signal);
 // Shared global variables and functions
 struct shared * pStudentData;
 int memid, semid;
-char arguments[2];
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
 
 // Shared Memory functions declaration
@@ -71,8 +70,7 @@ union semun {
     struct semid_ds *buf;
     unsigned short  *array;
 };
-struct sembuf semwait;
-struct sembuf semsignal;
+struct sembuf ops;
 int create_sem();
 void sem_init_val(int index, int value);
 int take_sem(int num);

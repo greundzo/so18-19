@@ -24,10 +24,13 @@ void signalhandler(int signum){
 
             for(int i = 0; i < POP_SIZE; i++){
                 //kill(pStudentData->stdata[i].student_pid, SIGUSR1);
-                kill(pStudentData->stdata[i].student_pid, SIGTERM);
+                kill(pStudentData->stdata[i].student_pid, SIGKILL);
             }
 
             break;
+        case SIGKILL:
+            shmdt(pStudentData);
+            exit(EXIT_FAILURE);
         /*
         case SIGUSR1:
             if(msgrcv(msqvote_id, &msg_prof, sizeof(msg_prof)- sizeof(long), getpid(), 0) == -1){
@@ -61,7 +64,7 @@ void signalhandler(int signum){
             shmctl(memid, IPC_RMID, NULL);
             //msq_rm(msq_id);
             //msq_rm(msqvote_id);
-            system("make rm");
+            //system("make rm");
             exit(EXIT_FAILURE);
     }
 }
@@ -102,10 +105,10 @@ void sem_init_val(int index, int value)
 int take_sem(int num)
 {   
     int took;   
-    semwait.sem_num = num;
-    semwait.sem_op = 1;
-    semwait.sem_flg = SEM_UNDO; 
-    if ((took = semop(semid, &semwait, 1) < 0)) {
+    ops.sem_num = num;
+    ops.sem_op = 1;
+    ops.sem_flg = SEM_UNDO; 
+    if ((took = semop(semid, &ops, 1) < 0)) {
         TEST_ERROR;
     }
     return took;
@@ -114,10 +117,10 @@ int take_sem(int num)
 int release_sem(int num)
 {   
     int released;
-    semsignal.sem_num = num;
-    semsignal.sem_op = 1;
-    semsignal.sem_flg = SEM_UNDO;
-    if ((released = semop(semid, &semwait, 1) < 0)) {
+    ops.sem_num = num;
+    ops.sem_op = 1;
+    ops.sem_flg = SEM_UNDO;
+    if ((released = semop(semid, &ops, 1) < 0)) {
         TEST_ERROR;
     }
     return released;

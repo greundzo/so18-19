@@ -20,12 +20,10 @@ shared: shared.o
 	$(CC) shared.o -o shared
 
 test:
-	cd $(ODIR);
-	./shared
+	cd $(ODIR); ./shared
 
 execute:
-	cd $(ODIR);
-	./gestore
+	cd $(ODIR); ./gestore
 
 clean:
 	rm -f $(ODIR)/*.o

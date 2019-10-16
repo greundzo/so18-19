@@ -37,6 +37,7 @@
 #define GROUP 3
 #define MEM 30
 #define SEM 5
+#define MSG 7
 
 typedef struct student_data {
     pid_t student_pid;
@@ -72,5 +73,10 @@ void sem_init_val(int index, union semun value);
 int take_sem(int num);
 int release_sem(int num);
 
+//// Message Queue functions declaration 
+struct msqid_ds buffer;
+int create_queue();
+int remove_queue(int id);
+int modify_queue(int id);
 
 

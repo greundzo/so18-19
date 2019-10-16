@@ -10,7 +10,9 @@ int generate_random_integer(int minNum, int maxNum, pid_t pid)
     int snNum = maxNum - maxNum % span;
     int a;
     srand(pid);
-    do a = rand(); while (a >= snNum);
+    do 
+    a = rand(); 
+    while (a >= snNum);
     return minNum + a % span;
 }
 
@@ -53,3 +55,28 @@ int release_sem(int num)
     semsignal.sem_flg = 0;
     return semop(semid, &semsignal, 1);
 }
+
+/* GESTIONE DEI MESSAGGI */
+int create_queue () //creates queue and returns id
+{
+    return msgget(MSG, IPC_CREAT | 0666);
+}
+
+int remove_queue (int id) 
+{
+    return msgctl(id, IPC_RMID, NULL);
+}
+
+int info_queue (int id)
+{
+    return msgctl(id, IPC_STAT, &buffer);
+}
+
+
+
+
+
+
+
+
+

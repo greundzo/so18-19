@@ -74,9 +74,16 @@ int take_sem(int num);
 int release_sem(int num);
 
 // Message Queue functions declaration 
-struct msqid_ds buffer;
+struct msqid_ds *buffer;
+struct message {
+    long type;
+    char ms [256];
+    //aggiungere
+}mymsg;
 int create_queue();
 int remove_queue(int id);
 int modify_queue(int id);
+int send_msg (int id);
+int receive_msg (int id);
 
 

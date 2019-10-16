@@ -66,15 +66,29 @@ int create_queue () //creates queue and returns id
     return msgget(MSG, IPC_CREAT | 0666);
 }
 
-int remove_queue (int id) 
+int remove_queue (int id) //removes queue and returns id
 {
     return msgctl(id, IPC_RMID, NULL);
 }
 
-int info_queue (int id)
+int info_queue (int id) //get the status of the queue
 {
-    return msgctl(id, IPC_STAT, &buffer);
+    return msgctl(id, IPC_STAT, buffer);
 }
+
+int send_msg (int id) //send a message in the queue
+{
+    return msgsnd(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0);
+}
+
+int receive_msg (int id) //receive a message in the queue
+{
+    return msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, 0);
+}
+
+
+
+
 
 
 

@@ -26,6 +26,9 @@ void * connect(int id)
 }
 
 /* GESTIONE DEI SEMAFORI */
+struct sembuf semwait = {0, -1, 0};
+struct sembuf semsignal = {0, 1, 0};
+
 int create_sem()
 {
 	return semget(SEM, 5, 0666|IPC_CREAT); 
@@ -41,15 +44,12 @@ void sem_init_val(int index , union semun value)
 int take_sem(int num)
 {   
     semwait.sem_num = num;
-    semwait.sem_op  = -1;
-    semwait.sem_flg = 0;
+    TEST_ERROR;
     return semop(semid, &semwait, 1);
 }
 
 int release_sem(int num)
 {   
     semsignal.sem_num = num;
-    semsignal.sem_op  = 1;
-    semsignal.sem_flg = 0;
     return semop(semid, &semsignal, 1);
 }

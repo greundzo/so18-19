@@ -47,7 +47,7 @@ void end_simulation(int signal)
 */
 void spawn(int size)
 {
-    char * args [] = {NULL, NULL, NULL};
+    char * args [] = {NULL, NULL};
     for(int i = 0; i < size; i++) {
         pid_t process = fork();
         //sprintf(args[0], "%d", i);

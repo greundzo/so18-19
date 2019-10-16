@@ -23,7 +23,6 @@ void spawn(int size)
         }
     }
     puts("Students created. Simulation started.");
-    kill(GROUP, SIGBUS);
 }
 
 int main(int argc, char ** argv)
@@ -50,7 +49,7 @@ int main(int argc, char ** argv)
     scanf("%d", &sim_time);
     puts("");
 
-    //sim_time = sim_time * 60; //Conversion in minutes
+    sim_time = sim_time * 60; //Conversion in minutes
 
     memid = create_memory();
 
@@ -67,10 +66,12 @@ int main(int argc, char ** argv)
     spawn(POP_SIZE);
     puts("**********");
     puts("");
+    
+    alarm(sim_time);
+
     ops.sem_num = 1;
     ops.sem_op = -1;
     semop(semid, &ops, 1);
-    alarm(sim_time);
     
     // EINTR is the Interrupted Signal
     if(pause() == -1){

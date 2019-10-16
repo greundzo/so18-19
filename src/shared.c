@@ -16,19 +16,32 @@ int generate_random_integer(int minNum, int maxNum, pid_t pid)
     return minNum + a % span;
 }
 
+int generate_matr(pid_t pid)
+{
+    srand(pid);
+    return (rand() % 900000) + 100000;
+}
+
 void signalhandler(int signum){
 
     switch(signum){
         case SIGALRM:
-            printf("Tempo scaduto!\n");
-
+            printf("End simulation.\n");
+            int * votesAdE = malloc(POP_SIZE * sizeof(int)); 
+            int average_AdE = 0;
             for(int i = 0; i < POP_SIZE; i++){
                 //kill(pStudentData->stdata[i].student_pid, SIGUSR1);
+                votesAdE[i] = pStudentData->stdata[i].vote_AdE;
+                average_AdE += votesAdE[i];
                 kill(pStudentData->stdata[i].student_pid, SIGKILL);
             }
+            printf("%d\n", pStudentData->pc);
+            printf("%s %d \n", "AdE grades average", average_AdE/POP_SIZE);
+
             semctl(semid, 2, IPC_RMID);
             shmdt(pStudentData);
             shmctl(memid, IPC_RMID, NULL);
+            free(votesAdE);
             exit(EXIT_SUCCESS);
             break;
         /*

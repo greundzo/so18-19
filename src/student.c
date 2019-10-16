@@ -4,10 +4,6 @@
 #include "shared.h"
 
 int matricola, voto_AdE, nof_elements, nof_invites, max_reject;
-shared * pStudentData;
-
-struct sigaction start_handler; 
-struct sigaction st_end_handler;
 
 void start_simulation()
 {

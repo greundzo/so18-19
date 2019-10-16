@@ -1,9 +1,6 @@
 #include "shared.h"
 
 int sim_time;
-shared * pStudentData;
-struct sigaction end_handler;
-struct sigaction compulsory;
 union semun uni;
 
 /*
@@ -67,12 +64,17 @@ void spawn(int size)
 int main(int argc, char ** argv)
 {
     // Program termination handler
-    end_handler.sa_handler = end_simulation;
-    sigaction(SIGALRM, &end_handler, NULL);
-
-    // Program troubles handler
-    compulsory.sa_handler = emergency;
-    sigaction(SIGINT, &compulsory, NULL);
+    handle.sa_handler = end_simulation;
+    sigemptyset(&mask);
+    handle.sa_mask = mask;
+    handle.sa_flags = 0;
+    if (sigaction(SIGALRM, &handle, NULL) == -1) {
+        TEST_ERROR;
+    }
+    
+    if (sigaction(SIGINT, &handle, NULL) == -1) {
+        TEST_ERROR;
+    }
 
     #ifdef TEST
         printf("%s", "Insert the students' number: ");

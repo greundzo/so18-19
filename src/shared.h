@@ -51,7 +51,11 @@ typedef struct shared {
     int pc;
 }shared;
 
+struct sigaction handle;
+sigset_t mask;
+
 // Shared global variables and functions
+shared * pStudentData;
 int memid, semid;
 char arguments[2];
 int generate_random_integer(int minNum, int maxNum, pid_t pid);

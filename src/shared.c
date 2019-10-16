@@ -19,7 +19,11 @@ int generate_random_integer(int minNum, int maxNum, pid_t pid)
 /* GESTIONE DELLA SHM */
 int create_memory()
 {
-    return shmget(MEM, sizeof(struct shared), 0666|IPC_CREAT);
+    int sh;
+    if ( (sh =shmget(MEM, sizeof(struct shared), 0666|IPC_CREAT)) == -1) {
+        TEST_ERROR;
+    }
+    return sh;
 }
 
 void * connect(int id)
@@ -31,7 +35,11 @@ void * connect(int id)
 
 int create_sem()
 {
-	return semget(SEM, 5, 0666|IPC_CREAT); 
+    int sm;
+	if (( sm = semget(SEM, 5, 0666|IPC_CREAT)) == -1) {
+        TEST_ERROR;
+    } 
+    return sm;
 }
 
 void sem_init_val(int index)
@@ -43,32 +51,46 @@ void sem_init_val(int index)
 }
 
 int take_sem(int num)
-{      
+{   
+    int took;   
     semwait.sem_num = num;
     semwait.sem_op = 1;
     semwait.sem_flg = SEM_UNDO; 
-    TEST_ERROR;
-    return semop(semid, &semwait, 1);
+    if ((took = semop(semid, &semwait, 1) < 0)) {
+        TEST_ERROR;
+    }
+    return took;
 }
 
 int release_sem(int num)
 {   
+    int released;
     semsignal.sem_num = num;
     semsignal.sem_op = 1;
     semsignal.sem_flg = SEM_UNDO;
-    TEST_ERROR;
-    return semop(semid, &semsignal, 1);
+    if ((released = semop(semid, &semwait, 1) < 0)) {
+        TEST_ERROR;
+    }
+    return released;
 }
 
 /* GESTIONE DEI MESSAGGI */
 int create_queue () //creates queue and returns id
 {
-    return msgget(MSG, IPC_CREAT | 0666);
+    int q;
+    if (( q = msgget(MSG, IPC_CREAT | 0666)) == -1) {
+        TEST_ERROR;
+    }
+    return q;
 }
 
 int remove_queue (int id) //removes queue and returns id
 {
-    return msgctl(id, IPC_RMID, NULL);
+    int rm;
+    if (( rm =msgctl(id, IPC_RMID, NULL)) == -1) {
+        TEST_ERROR
+    }
+    return rm;
 }
 
 int info_queue (int id) //get the status of the queue

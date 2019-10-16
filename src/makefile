@@ -16,7 +16,19 @@ student: $(ODIR)/student.o $(ODIR)/shared.o
 gestore: $(ODIR)/gestore.o $(ODIR)/shared.o
 	$(CC) -std=gnu99 -o $(ODIR)/$@ $^ $(CFLAGS)
 
+shared: shared.o
+	$(CC) shared.o -o shared
+
+test:
+	cd $(ODIR);
+	./shared
+
+execute:
+	cd $(ODIR);
+	./gestore
+
 clean:
 	rm -f $(ODIR)/*.o
+	rm -f shared
 
 #clear

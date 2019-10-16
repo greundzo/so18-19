@@ -145,17 +145,26 @@ int remove_queue (int id) //removes queue and returns id
 
 int info_queue (int id) //get the status of the queue
 {
-    return msgctl(id, IPC_STAT, buffer);
+    int c;
+    if (( c = msgctl(id, IPC_STAT, buffer)) == -1)
+	TEST_ERROR
+    return c;
 }
 
 int send_msg (int id) //send a message in the queue
 {
-    return msgsnd(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0);
+    int s;
+    if (( s = msgsnd(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0)) == - 1)
+	TEST_ERROR
+    return s;
 }
 
 int receive_msg (int id) //receive a message in the queue
 {
-    return msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, 0);
+    int r;
+    if (( r = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, 0)) == - 1)
+	TEST_ERROR
+    return r;
 }
 
 

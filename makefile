@@ -3,6 +3,8 @@
 
 all :
 	cd src; $(MAKE)
+build:
+	cd src; $(MAKE) build
 test:
 	cd src; $(MAKE) test
 execute:

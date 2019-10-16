@@ -43,6 +43,9 @@ typedef struct student_data {
     pid_t student_pid;
     int class;
     int matricule;
+    int group;
+    int leader;
+    int closed;
     int vote_So;
 }student_data;
 

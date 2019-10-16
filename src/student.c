@@ -3,7 +3,7 @@
 //
 #include "shared.h"
 
-int matricola, voto_AdE, nof_elements, nof_invites, max_reject;
+int matricola, class, voto_AdE, nof_elements, nof_invites, max_reject;
 int mem_id, sem_id;
 struct sigaction killed;
 

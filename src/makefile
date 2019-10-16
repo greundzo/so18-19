@@ -1,11 +1,15 @@
 CC=gcc
 CFLAGS=-Wall
 DEPS=shared.h
-ODIR =../bin
+ODIR =../build
+DIR = build
 
 .PHONY: all
 
-all: student gestore clean
+all: build student gestore clean
+
+build:
+	cd ..; ./mkbuild
 
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -std=gnu99 -c -o $@ $< $(CFLAGS)

@@ -73,6 +73,7 @@ union semun {
 struct sembuf ops;
 int create_sem();
 void sem_init_val(int index, int value);
+int wait4zero();
 int take_sem(int num);
 int release_sem(int num);
 

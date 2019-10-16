@@ -106,9 +106,8 @@ int take_sem(int num)
 {   
     int took;   
     ops.sem_num = num;
-    ops.sem_op = 1;
-    ops.sem_flg = SEM_UNDO; 
-    if ((took = semop(semid, &ops, 1) < 0)) {
+    ops.sem_op = -1;
+    if ((took = semop(semid, &ops, (size_t)1) == -1)) {
         TEST_ERROR;
     }
     return took;
@@ -119,8 +118,7 @@ int release_sem(int num)
     int released;
     ops.sem_num = num;
     ops.sem_op = 1;
-    ops.sem_flg = SEM_UNDO;
-    if ((released = semop(semid, &ops, 1) < 0)) {
+    if ((released = semop(semid, &ops, (size_t)1) == -1)) {
         TEST_ERROR;
     }
     return released;

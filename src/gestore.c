@@ -43,8 +43,8 @@ int main(int argc, char ** argv)
     }
 
     #ifdef TEST
-        printf("%s", "Insert the students' number: ");
-        scanf("%d", &nums);
+    printf("%s", "Insert the students' number: ");
+    scanf("%d", &nums);
     #endif    
     printf("%s", "Insert the simulation time (minutes): ");
     scanf("%d", &sim_time);
@@ -60,12 +60,14 @@ int main(int argc, char ** argv)
 
     semid = create_sem();
     sem_init_val(0, 1);
+    sem_init_val(1, 1);
 
     puts("Creating students...");
 
     spawn(POP_SIZE);
     puts("**********");
     puts("");
+    //decremento 1
     alarm(sim_time);
     pause();
 }

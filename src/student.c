@@ -4,31 +4,28 @@
 #include "shared.h"
 
 int reg_num, class, mark_AdE, mark_So, nof_elements, nof_invites, max_reject;
-int mem_id, sem_id;
+int mem_id, sem_id, position;
 struct sigaction killed;
 
 void killhandler (int signal) {
+    //printinfo(position);
     shmdt(pStudentData);
-    exit(EXIT_FAILURE);
+    exit(EXIT_SUCCESS);
 }            
 
 int main(int argc, char ** argv)
 {
     pid_t pid = getpid();
 
-    handle.sa_handler = signalhandler;
-    sigemptyset(&mask);
-    handle.sa_mask = mask;
-    handle.sa_flags = 0;
-
-    killed.sa_handler = signalhandler;
+    killed.sa_handler = killhandler;
     sigemptyset(&mask);
     killed.sa_mask = mask;
     killed.sa_flags = 0;
 
-    if (sigaction(SIGUSR1, &handle, NULL) == -1) {
+    if (sigaction(SIGUSR1, &killed, NULL) == -1) {
         TEST_ERROR
     }
+
 
     mem_id = create_memory();
     pStudentData = (shared *)connect(mem_id);
@@ -44,15 +41,15 @@ int main(int argc, char ** argv)
     }
     
     take_sem(sem_id, 0);    
-    int index = pStudentData->pc;
-    pStudentData->stdata[index].student_pid = pid;
-    pStudentData->stdata[index].registration_number = reg_num;
-    pStudentData->stdata[index].class = class;
-    pStudentData->stdata[index].mark_os = 0;
-    pStudentData->stdata[index].mark_ca = mark_AdE;
-    pStudentData->stdata[index].group = 0;
-    pStudentData->stdata[index].leader = 0;
-    pStudentData->stdata[index].closed = 0;
+    position = pStudentData->pc;
+    pStudentData->stdata[position].student_pid = pid;
+    pStudentData->stdata[position].registration_number = reg_num;
+    pStudentData->stdata[position].class = class;
+    pStudentData->stdata[position].mark_os = 0;
+    pStudentData->stdata[position].mark_ca = mark_AdE;
+    pStudentData->stdata[position].group = 0;
+    pStudentData->stdata[position].leader = 0;
+    pStudentData->stdata[position].closed = 0;
     pStudentData->pc ++;    
     release_sem(sem_id, 0);
 

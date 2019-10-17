@@ -12,6 +12,7 @@
 #define _XOPEN_SOURCE
 #ifndef TEST
 #define POP_SIZE 10
+#define SIM_TIME 5
 #endif //test
 
 #include <stdio.h>
@@ -67,6 +68,7 @@ float average_ca, average_os;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
 int generate_matr(pid_t pid);
 int getturn(int matricule);
+void printinfo(int index);
 
 // Shared Memory functions declaration
 int create_memory();

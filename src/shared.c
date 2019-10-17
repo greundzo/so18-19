@@ -22,27 +22,40 @@ int generate_matr(pid_t pid)
     return (rand() % 900000) + 100000;
 }
 
+int getturn(int matricule)
+{
+    if (matricule % 2 == 0) {
+        return 2;
+    } 
+    return 1;
+}
+
 void signalhandler(int signum){
 
     switch(signum){
         case SIGALRM:
             printf("End simulation.\n");
-            int * votesAdE = malloc(POP_SIZE * sizeof(int)); 
+            int * marks_AdE = malloc(POP_SIZE * sizeof(int));
+            int * marks_So = malloc(POP_SIZE * sizeof(int)); 
             int average_AdE = 0;
+            int average_So = 0;
             for(int i = 0; i < POP_SIZE; i++){
                 //kill(pStudentData->stdata[i].student_pid, SIGUSR1);
-                votesAdE[i] = pStudentData->stdata[i].vote_AdE;
-                average_AdE += votesAdE[i];
+                marks_AdE[i] = pStudentData->stdata[i].mark_AdE;
+                average_AdE += marks_AdE[i];
+                marks_So[i] = pStudentData->stdata[i].mark_So;
+                average_So += marks_So[i];
                 kill(pStudentData->stdata[i].student_pid, SIGKILL);
             }
             printf("%d\n", pStudentData->pc);
             printf("%s %d \n", "AdE grades average", average_AdE/POP_SIZE);
-
+            printf("%s d\n", "So grades average ", average_So);
             semctl(semid, 2, IPC_RMID);
             shmdt(pStudentData);
             shmctl(memid, IPC_RMID, NULL);
-            free(votesAdE);
-            exit(EXIT_SUCCESS);
+            free(marks_AdE);
+            free(marks_So);
+            //exit(EXIT_SUCCESS);
             break;
         /*
         case SIGUSR1:

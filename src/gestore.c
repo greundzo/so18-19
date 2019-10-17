@@ -9,16 +9,15 @@ union semun uni;
 */
 void spawn(int size)
 {
-    char * args [] = {NULL, NULL};
+    char * args [] = {"student", NULL};
     for(int i = 0; i < size; i++) {
         pid_t process = fork();
-        //sprintf(args[0], "%d", i);
         TEST_ERROR
         if(process == -1) {
             TEST_ERROR
         } else if(process==0) {
-            if (execve("./student", args, NULL) == -1) { //here we could pass argument to our child
-                TEST_ERROR                     //to set his own shm cell
+            if (execve("./student", args, NULL) == -1) { 
+                TEST_ERROR                     
             }
         }
     }
@@ -78,4 +77,6 @@ int main(int argc, char ** argv)
         if(errno != EINTR)
             TEST_ERROR;
     }
+
+    exit(EXIT_SUCCESS);
 }

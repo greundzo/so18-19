@@ -44,13 +44,12 @@ int main(int argc, char ** argv)
     }
     
     take_sem(sem_id, 0);    
-    printf("%d\n", mark_AdE);
     int index = pStudentData->pc;
     pStudentData->stdata[index].student_pid = pid;
     pStudentData->stdata[index].registration_number = reg_num;
     pStudentData->stdata[index].class = class;
-    pStudentData->stdata[index].mark_So = 0;
-    pStudentData->stdata[index].mark_AdE = mark_AdE;
+    pStudentData->stdata[index].mark_os = 0;
+    pStudentData->stdata[index].mark_ca = mark_AdE;
     pStudentData->stdata[index].group = 0;
     pStudentData->stdata[index].leader = 0;
     pStudentData->stdata[index].closed = 0;

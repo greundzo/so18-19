@@ -35,27 +35,29 @@ void signalhandler(int signum){
     switch(signum){
         case SIGALRM:
             printf("End simulation.\n");
-            int * marks_AdE = malloc(POP_SIZE * sizeof(int));
-            int * marks_So = malloc(POP_SIZE * sizeof(int)); 
-            int average_AdE = 0;
-            int average_So = 0;
+            marks_ca = calloc(POP_SIZE, sizeof(int));
+            marks_os = calloc(POP_SIZE, sizeof(int)); 
+            ca_count = calloc(13, sizeof(int));
+            os_count = calloc(17, sizeof(int));
+            average_ca = 0;
+            average_os = 0;
             for(int i = 0; i < POP_SIZE; i++){
                 //kill(pStudentData->stdata[i].student_pid, SIGUSR1);
-                marks_AdE[i] = pStudentData->stdata[i].mark_AdE;
-                average_AdE += marks_AdE[i];
-                marks_So[i] = pStudentData->stdata[i].mark_So;
-                average_So += marks_So[i];
+                marks_ca[i] = pStudentData->stdata[i].mark_ca;
+                ca_count[marks_ca[i] - 18] += 1;
+                average_ca += marks_ca[i];
+                marks_os[i] = pStudentData->stdata[i].mark_os;
+                os_count[marks_os[i] - 15] += 1;
+                average_os += marks_os[i];
                 kill(pStudentData->stdata[i].student_pid, SIGKILL);
             }
-            printf("%d\n", pStudentData->pc);
-            printf("%s %d \n", "AdE grades average", average_AdE/POP_SIZE);
-            printf("%s d\n", "So grades average ", average_So);
+            average_ca = average_ca / POP_SIZE;
+            average_os = average_os / POP_SIZE;
+            free(marks_ca);
+            free(marks_os);
             semctl(semid, 2, IPC_RMID);
             shmdt(pStudentData);
             shmctl(memid, IPC_RMID, NULL);
-            free(marks_AdE);
-            free(marks_So);
-            //exit(EXIT_SUCCESS);
             break;
         /*
         case SIGUSR1:

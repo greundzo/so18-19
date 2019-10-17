@@ -46,8 +46,8 @@ typedef struct student_data {
     int group;
     int leader;
     int closed;
-    int mark_So;
-    int mark_AdE;
+    int mark_os;
+    int mark_ca;
 }student_data;
 
 typedef struct shared {
@@ -61,7 +61,9 @@ void signalhandler(int signal);
 
 // Shared global variables and functions
 struct shared * pStudentData;
+int * marks_ca, * marks_os, * ca_count, * os_count;
 int memid, semid;
+float average_ca, average_os;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
 int generate_matr(pid_t pid);
 int getturn(int matricule);

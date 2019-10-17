@@ -47,6 +47,7 @@ typedef struct student_data {
     int leader;
     int closed;
     int vote_So;
+    int vote_AdE;
 }student_data;
 
 typedef struct shared {
@@ -62,6 +63,7 @@ void signalhandler(int signal);
 struct shared * pStudentData;
 int memid, semid;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
+int generate_matr(pid_t pid);
 
 // Shared Memory functions declaration
 int create_memory();

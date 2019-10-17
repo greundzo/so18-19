@@ -55,4 +55,5 @@ int main(int argc, char ** argv)
 
     //exit(0);
     pause();
+    // while (msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, IPC_NOWAIT)) == - 1)
 }

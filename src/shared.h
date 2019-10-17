@@ -77,8 +77,8 @@ void * connect(int id);
 // Semaphore functions declaration 
 union semun {
     int val;
-    struct semid_ds *buf;
-    unsigned short  *array;
+    struct semid_ds * buf;
+    unsigned short  * array;
 };
 struct sembuf ops;
 int create_sem();
@@ -88,7 +88,7 @@ int take_sem(int semid, int num);
 int release_sem(int semid, int num);
 
 // Message Queue functions declaration 
-struct msqid_ds *buffer;
+struct msqid_ds buffer;
 struct message {
     long type;
     int mark_os; //voto

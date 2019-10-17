@@ -84,11 +84,11 @@ void signalhandler(int signum){
 /* GESTIONE DELLA SHM */
 int create_memory()
 {
-    int sh;
-    if ( (sh =shmget(MEM, sizeof(struct shared), 0666|IPC_CREAT)) == -1) {
+    int shm;
+    if ( (shm =shmget(MEM, sizeof(struct shared), 0666|IPC_CREAT)) == -1) {
         TEST_ERROR
     }
-    return sh;
+    return shm;
 }
 
 void * connect(int id)
@@ -100,11 +100,11 @@ void * connect(int id)
 
 int create_sem()
 {
-    int sm;
-	if (( sm = semget(SEM, 2, 0666|IPC_CREAT)) == -1) {
+    int sem;
+	if (( sem = semget(SEM, 2, 0666|IPC_CREAT)) == -1) {
         TEST_ERROR
     } 
-    return sm;
+    return sem;
 }
 
 void sem_init_val(int index, int value)
@@ -139,44 +139,44 @@ int release_sem(int semid, int num)
 /* GESTIONE DEI MESSAGGI */
 int create_queue () //creates queue and returns id
 {
-    int q;
-    if (( q = msgget(MSG, IPC_CREAT | 0666)) == -1) {
+    int queue;
+    if (( queue = msgget(MSG, IPC_CREAT | 0666)) == -1) {
         TEST_ERROR
     }
-    return q;
+    return queue;
 }
 
 int remove_queue (int id) //removes queue and returns id
 {
-    int rm;
-    if (( rm =msgctl(id, IPC_RMID, NULL)) == -1) {
+    int rm_queue;
+    if (( rm_queue =msgctl(id, IPC_RMID, NULL)) == -1) {
         TEST_ERROR
     }
-    return rm;
+    return rm_queue;
 }
 
 int info_queue (int id) //get the status of the queue
 {
-    int c;
-    if (( c = msgctl(id, IPC_STAT, buffer)) == -1)
+    int infos;
+    if (( infos = msgctl(id, IPC_STAT, &buffer)) == -1)
 	TEST_ERROR
-    return c;
+    return infos;
 }
 
 int send_msg (int id, struct message mymsg) //send a message in the queue
 {
-    int s;
-    if (( s = msgsnd(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0)) == - 1)
+    int sent;
+    if (( sent = msgsnd(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0)) == - 1)
 	TEST_ERROR
-    return s;
+    return sent;
 }
 
 int receive_msg (int id, struct message mymsg) //receive a message in the queue
 {
-    int r;
-    if (( r = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, 0)) == - 1)
+    int received;
+    if (( received = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, 0)) == - 1)
 	TEST_ERROR
-    return r;
+    return received;
 }
 
 

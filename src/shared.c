@@ -163,7 +163,7 @@ int info_queue (int id) //get the status of the queue
     return c;
 }
 
-int send_msg (int id) //send a message in the queue
+int send_msg (int id, struct message mymsg) //send a message in the queue
 {
     int s;
     if (( s = msgsnd(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0)) == - 1)
@@ -171,7 +171,7 @@ int send_msg (int id) //send a message in the queue
     return s;
 }
 
-int receive_msg (int id) //receive a message in the queue
+int receive_msg (int id, struct message mymsg) //receive a message in the queue
 {
     int r;
     if (( r = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, 0)) == - 1)

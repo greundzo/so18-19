@@ -91,13 +91,14 @@ int release_sem(int semid, int num);
 struct msqid_ds *buffer;
 struct message {
     long type;
-    char ms [256];
-    //aggiungere
-}mymsg;
+    int mark_os; //voto
+    int class; //turno
+    int register_number; //numero matricola
+};
 int create_queue();
 int remove_queue(int id);
 int modify_queue(int id);
-int send_msg (int id);
-int receive_msg (int id);
+int send_msg (int id, struct message mymsg);
+int receive_msg (int id, struct message mymsg);
 
 

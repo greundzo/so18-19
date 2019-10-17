@@ -42,10 +42,12 @@ int main(int argc, char ** argv)
 
     #ifdef TEST
     printf("%s", "Insert the students' number: ");
-    scanf("%d", &nums);
-    #endif    
+    scanf("%d", &POP_SIZE);
+    #endif
+    #ifdef TEST    
     printf("%s", "Insert the simulation time (minutes): ");
-    scanf("%d", &sim_time);
+    scanf("%d", &SIM_TIME);
+    #endif
     puts("");
 
     //sim_time = sim_time * 60; //Conversion in minutes
@@ -66,16 +68,16 @@ int main(int argc, char ** argv)
     puts("**********");
     puts("");
     
-    alarm(sim_time);
+    alarm(SIM_TIME);
 
     ops.sem_num = 1;
     ops.sem_op = -1;
     semop(semid, &ops, 1);
     
     // EINTR is the Interrupted Signal
-    if(pause() == -1){
+    if (pause() == -1) {
         if(errno != EINTR)
-            TEST_ERROR;
+            TEST_ERROR
     }
 
     printf("\nComputer Architecture marks distribution:\n");

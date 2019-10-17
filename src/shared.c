@@ -30,6 +30,12 @@ int getturn(int matricule)
     return 1;
 }
 
+void printinfo(int index){
+    printf("%3i: matricola = %5i   voto_AdE = %2i   voto_prj = %2i\n",
+            index, pStudentData->stdata[index].registration_number,
+            pStudentData->stdata[index].mark_ca, pStudentData->stdata[index].mark_os);
+}
+
 void signalhandler(int signum){
 
     switch(signum){
@@ -49,7 +55,8 @@ void signalhandler(int signum){
                 marks_os[i] = pStudentData->stdata[i].mark_os;
                 os_count[marks_os[i] - 15] += 1;
                 average_os += marks_os[i];
-                kill(pStudentData->stdata[i].student_pid, SIGKILL);
+                printinfo(i);
+                kill(pStudentData->stdata[i].student_pid, SIGUSR1);
             }
             average_ca = average_ca / POP_SIZE;
             average_os = average_os / POP_SIZE;
@@ -59,30 +66,7 @@ void signalhandler(int signum){
             shmdt(pStudentData);
             shmctl(memid, IPC_RMID, NULL);
             break;
-        /*
-        case SIGUSR1:
-            if(msgrcv(msqvote_id, &msg_prof, sizeof(msg_prof)- sizeof(long), getpid(), 0) == -1){
-                printf("%d: Errore nella ricezione del voto", getpid());
-                TEST_ERROR;
-            }
-            voto_prj = msg_prof.voto;
-            print_info(indice);
 
-            if(sh_stud->stud[indice].leader == 1)
-                free(indexOfMembs);
-
-            if((shmdt(sh_stud)) == -1){
-                printf("Errore nella detaching dalla shmem:\n");
-                TEST_ERROR;
-            }
-            else{
-                //printf("Mi sono staccato con successo\n");
-            }
-
-            if(errno != ENOMSG)
-                TEST_ERROR;
-            exit(EXIT_SUCCESS);
-        */
         case SIGINT:
             for(int i = 0; i < POP_SIZE; i++){
                 kill(pStudentData->stdata[i].student_pid, SIGTERM);
@@ -147,7 +131,7 @@ int release_sem(int semid, int num)
     ops.sem_num = num;
     ops.sem_op = +1;
     if ((released = semop(semid, &ops, (size_t)1) == -1)) {
-        TEST_ERROR;
+        TEST_ERROR
     }
     return released;
 }
@@ -157,7 +141,7 @@ int create_queue () //creates queue and returns id
 {
     int q;
     if (( q = msgget(MSG, IPC_CREAT | 0666)) == -1) {
-        TEST_ERROR;
+        TEST_ERROR
     }
     return q;
 }

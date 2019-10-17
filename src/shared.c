@@ -22,27 +22,42 @@ int generate_matr(pid_t pid)
     return (rand() % 900000) + 100000;
 }
 
+int getturn(int matricule)
+{
+    if (matricule % 2 == 0) {
+        return 2;
+    } 
+    return 1;
+}
+
 void signalhandler(int signum){
 
     switch(signum){
         case SIGALRM:
             printf("End simulation.\n");
-            int * votesAdE = malloc(POP_SIZE * sizeof(int)); 
-            int average_AdE = 0;
+            marks_ca = calloc(POP_SIZE, sizeof(int));
+            marks_os = calloc(POP_SIZE, sizeof(int)); 
+            ca_count = calloc(13, sizeof(int));
+            os_count = calloc(17, sizeof(int));
+            average_ca = 0;
+            average_os = 0;
             for(int i = 0; i < POP_SIZE; i++){
                 //kill(pStudentData->stdata[i].student_pid, SIGUSR1);
-                votesAdE[i] = pStudentData->stdata[i].vote_AdE;
-                average_AdE += votesAdE[i];
+                marks_ca[i] = pStudentData->stdata[i].mark_ca;
+                ca_count[marks_ca[i] - 18] += 1;
+                average_ca += marks_ca[i];
+                marks_os[i] = pStudentData->stdata[i].mark_os;
+                os_count[marks_os[i] - 15] += 1;
+                average_os += marks_os[i];
                 kill(pStudentData->stdata[i].student_pid, SIGKILL);
             }
-            printf("%d\n", pStudentData->pc);
-            printf("%s %d \n", "AdE grades average", average_AdE/POP_SIZE);
-
+            average_ca = average_ca / POP_SIZE;
+            average_os = average_os / POP_SIZE;
+            free(marks_ca);
+            free(marks_os);
             semctl(semid, 2, IPC_RMID);
             shmdt(pStudentData);
             shmctl(memid, IPC_RMID, NULL);
-            free(votesAdE);
-            exit(EXIT_SUCCESS);
             break;
         /*
         case SIGUSR1:

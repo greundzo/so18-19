@@ -42,12 +42,12 @@
 typedef struct student_data {
     pid_t student_pid;
     int class;
-    int matricule;
+    int registration_number;
     int group;
     int leader;
     int closed;
-    int vote_So;
-    int vote_AdE;
+    int mark_os;
+    int mark_ca;
 }student_data;
 
 typedef struct shared {
@@ -61,9 +61,12 @@ void signalhandler(int signal);
 
 // Shared global variables and functions
 struct shared * pStudentData;
+int * marks_ca, * marks_os, * ca_count, * os_count;
 int memid, semid;
+float average_ca, average_os;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
 int generate_matr(pid_t pid);
+int getturn(int matricule);
 
 // Shared Memory functions declaration
 int create_memory();

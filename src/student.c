@@ -3,7 +3,7 @@
 //
 #include "shared.h"
 
-int matricola, class, voto_AdE, nof_elements, nof_invites, max_reject;
+int reg_num, class, mark_AdE, mark_So, nof_elements, nof_invites, max_reject;
 int mem_id, sem_id;
 struct sigaction killed;
 
@@ -32,24 +32,24 @@ int main(int argc, char ** argv)
 
     mem_id = create_memory();
     pStudentData = (shared *)connect(mem_id);
-    voto_AdE = generate_random_integer(18, 30, pid);
-    matricola = generate_matr(pid)
-;    sem_id = create_sem();
+    mark_AdE = generate_random_integer(18, 30, pid);
+    reg_num = generate_matr(pid);
+    class = getturn(reg_num);
+    sem_id = create_sem();
     // CRITICAL AREA
     ops.sem_num = 1;
     ops.sem_op = 0;
     if (semop(sem_id, &ops, 1) == -1) {
         TEST_ERROR
     }
-
     
     take_sem(sem_id, 0);    
-    printf("%d\n", voto_AdE);
     int index = pStudentData->pc;
     pStudentData->stdata[index].student_pid = pid;
-    pStudentData->stdata[index].matricule = matricola;
-    pStudentData->stdata[index].vote_So = 0;
-    pStudentData->stdata[index].vote_AdE = voto_AdE;
+    pStudentData->stdata[index].registration_number = reg_num;
+    pStudentData->stdata[index].class = class;
+    pStudentData->stdata[index].mark_os = 0;
+    pStudentData->stdata[index].mark_ca = mark_AdE;
     pStudentData->stdata[index].group = 0;
     pStudentData->stdata[index].leader = 0;
     pStudentData->stdata[index].closed = 0;

@@ -74,7 +74,7 @@ void signalhandler(int signum){
             semctl(semid, 2, IPC_RMID);
             shmdt(pStudentData);
             shmctl(memid, IPC_RMID, NULL);
-            //msq_rm(msq_id);
+            //remove_queue(create_queue());
             //msq_rm(msqvote_id);
             //system("make rm");
             exit(EXIT_FAILURE);
@@ -177,6 +177,14 @@ int receive_msg (int id, struct message mymsg) //receive a message in the queue
     if (( received = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, 0)) == - 1)
 	TEST_ERROR
     return received;
+}
+
+int receive_msg_nowait (int id, struct message mymsg) //receive a message in the queue, no wait
+{
+    int receivednw;
+    if (( receivednw = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, IPC_NOWAIT)) == - 1)
+	TEST_ERROR
+    return receivednw;
 }
 
 

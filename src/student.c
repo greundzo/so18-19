@@ -55,5 +55,13 @@ int main(int argc, char ** argv)
 
     //exit(0);
     pause();
-    // while (msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, IPC_NOWAIT)) == - 1)
+    int msgid = create_queue();
+    struct message mymsg;
+
+    while (receive_msg_nowait (msgid, mymsg) == - 1){
+	mymsg.class = class;
+        mymsg.mark_os = mark_So;
+	
+	//if (class == 
+    }
 }

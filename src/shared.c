@@ -27,20 +27,21 @@ int read_opt_conf(char *string){
   TEST_ERROR;
   int val;
   char * read_string = malloc(sizeof(char)*20);	
-  	for(char c = getc(opt); c != EOF ; c = getc(opt)){
-  	     	if(strcmp(string, read_string) == 0){
+  //	for(read_string = getc(opt); read_string != EOF ; read_string = getc(opt)){
+  	while(fscanf(opt, "%s %i", read_string, &val)!=EOF){     	
+             if(strcmp(string, read_string) == 0){
 		  fclose(opt);
 		  free(read_string);	
 		  return val;
 		}		
   	 	
 	     }  
+	
 	fclose(opt);
 	free(read_string);
 	printf("String not in file \n");
 	return -1;
 }
-
 
 
 int getturn(int matricule)

@@ -22,6 +22,27 @@ int generate_matr(pid_t pid)
     return (rand() % 900000) + 100000;
 }
 
+int read_opt_conf(char *string){
+  FILE * opt = fopen("opt.conf", "r");
+  TEST_ERROR;
+  int val;
+  char * read_string = malloc(sizeof(char)*20);	
+  	for(char c = getc(opt); c != EOF ; c = getc(opt)){
+  	     	if(strcmp(string, read_string) == 0){
+		  fclose(opt);
+		  free(read_string);	
+		  return val;
+		}		
+  	 	
+	     }  
+	fclose(opt);
+	free(read_string);
+	printf("String not in file \n");
+	return -1;
+}
+
+
+
 int getturn(int matricule)
 {
     if (matricule % 2 == 0) {

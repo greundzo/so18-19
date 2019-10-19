@@ -41,31 +41,33 @@ void signalhandler(int signum){
     switch(signum){
         case SIGALRM:
             printf("End simulation.\n");
-            marks_ca = calloc(POP_SIZE, sizeof(int));
-            marks_os = calloc(POP_SIZE, sizeof(int)); 
+            marks_os = malloc(POP_SIZE * sizeof(int)); 
             ca_count = calloc(13, sizeof(int));
-            os_count = calloc(17, sizeof(int));
+            os_count = calloc(16, sizeof(int));
             average_ca = 0;
             average_os = 0;
-            for(int i = 0; i < POP_SIZE; i++){
-                //kill(pStudentData->stdata[i].student_pid, SIGUSR1);
-                marks_ca[i] = pStudentData->stdata[i].mark_ca;
-                ca_count[marks_ca[i] - 18] += 1;
-                average_ca += marks_ca[i];
-                marks_os[i] = pStudentData->stdata[i].mark_os;
-                os_count[marks_os[i] - 15] += 1;
-                average_os += marks_os[i];
+            int val = 0;
+            for(int i = 0; i < POP_SIZE; i++) {
+                average_ca += pStudentData->stdata[i].mark_ca;
+                val = pStudentData->stdata[i].mark_ca - 18;
+                //printf("%d", val);
+                
+                average_os += pStudentData->stdata[i].mark_os;
+                os_count[marks_os[i] - 15] += 1;     
+
                 printinfo(i);
                 kill(pStudentData->stdata[i].student_pid, SIGUSR1);
             }
             average_ca = average_ca / POP_SIZE;
             average_os = average_os / POP_SIZE;
-            free(marks_ca);
-            free(marks_os);
             semctl(semid, 2, IPC_RMID);
             shmdt(pStudentData);
             shmctl(memid, IPC_RMID, NULL);
             break;
+
+        case SIGUSR1:
+            //shmdt(pStudentData);
+            exit(EXIT_SUCCESS);
 
         case SIGINT:
             for(int i = 0; i < POP_SIZE; i++){
@@ -91,7 +93,7 @@ int create_memory()
     return shm;
 }
 
-void * connect(int id)
+void *connect(int id)
 {
     return shmat(id, 0, 0);
 }
@@ -158,24 +160,27 @@ int remove_queue (int id) //removes queue and returns id
 int info_queue (int id) //get the status of the queue
 {
     int infos;
-    if (( infos = msgctl(id, IPC_STAT, &buffer)) == -1)
-	TEST_ERROR
+    if (( infos = msgctl(id, IPC_STAT, &buffer)) == -1) {
+	    TEST_ERROR
+    }
     return infos;
 }
 
 int send_msg (int id, struct message mymsg) //send a message in the queue
 {
     int sent;
-    if (( sent = msgsnd(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0)) == - 1)
-	TEST_ERROR
+    if (( sent = msgsnd(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0)) == - 1) {
+	    TEST_ERROR
+    }
     return sent;
 }
 
 int receive_msg (int id, struct message mymsg) //receive a message in the queue
 {
     int received;
-    if (( received = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, 0)) == - 1)
-	TEST_ERROR
+    if (( received = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, 0)) == - 1) {
+	    TEST_ERROR
+    }
     return received;
 }
 

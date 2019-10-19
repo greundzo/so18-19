@@ -5,24 +5,17 @@
 
 int reg_num, class, mark_AdE, mark_So, nof_elements, nof_invites, max_reject;
 int mem_id, sem_id, position;
-struct sigaction killed;
-
-void killhandler (int signal) {
-    //printinfo(position);
-    shmdt(pStudentData);
-    exit(EXIT_SUCCESS);
-}            
 
 int main(int argc, char ** argv)
 {
     pid_t pid = getpid();
 
-    killed.sa_handler = killhandler;
+    handle.sa_handler = signalhandler;
     sigemptyset(&mask);
-    killed.sa_mask = mask;
-    killed.sa_flags = 0;
+    handle.sa_mask = mask;
+    handle.sa_flags = 0;
 
-    if (sigaction(SIGUSR1, &killed, NULL) == -1) {
+    if (sigaction(SIGUSR1, &handle, NULL) == -1) {
         TEST_ERROR
     }
 

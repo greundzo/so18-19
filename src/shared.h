@@ -100,5 +100,6 @@ int remove_queue(int id);
 int modify_queue(int id);
 int send_msg (int id, struct message mymsg);
 int receive_msg (int id, struct message mymsg);
+int receive_msg_nowait (int id, struct message mymsg);
 
 

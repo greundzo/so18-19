@@ -91,9 +91,9 @@ int release_sem(int semid, int num);
 struct msqid_ds buffer;
 struct message {
     long type;
-    int mark_os; //voto
     int class; //turno
     int register_number; //numero matricola
+    int posleader;
 };
 int create_queue();
 int remove_queue(int id);

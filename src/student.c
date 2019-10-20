@@ -50,15 +50,32 @@ int main(int argc, char ** argv)
     pause();
     int msgid = create_queue();
     struct message mymsg;
-
+    
     while (receive_msg_nowait (msgid, mymsg) != - 1) {
-	    if (class == mymsg.class) {
- 	        if (pStudentData->stdata[position].closed == 0) {
-                pStudentData->stdata[position].group++;
+        if (pStudentData->stdata[position].group == 0){ //il gruppo è vuoto: divento il leader
+            take_sem(sem_id, 0);
+	    pStudentData->stdata[position].leader = 1;
+	    pStudentData->stdata[position].group = 1;
+	    release_sem(sem_id, 0);
+	}
+	if (class == mymsg.class) { //stesso turno
+            int posl = mymsg.posleader;
+            take_sem(sem_id, 0);
+            pStudentData->stdata[posl].group++;
+            /*if (studentData->stdata[position].group == nof_elements){ //chiudo il gruppo 
+                pStudentData->stdata[posl].closed = 1;
+                release_sem(sem_id, 0);
             }
+	    */
+            if (pStudentData->stdata[position].leader == 0){//se non sono il leader aspetto
+		pause();
+	    }
         }
-	    mymsg.class = class;
-        mymsg.mark_os = mark_So;
-	    //send_msg (int id, struct message mymsg)send_msg (msgid, mymsg);
-    }
+	    if (pStudentData->stdata[position].leader == 1) { //il leader cerca nuovi partecipanti al gruppo
+		mymsg.posleader = position;
+                mymsg.class = class;
+		send_msg (msgid, mymsg);
+	    }
+        }  
+    } 
 }

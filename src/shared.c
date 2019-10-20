@@ -30,12 +30,12 @@ int read_opt_conf(char *string){
     int val;
     char *read_string = malloc(sizeof(char)*20);	
 
-  	while(fscanf(opt, "%s %i", read_string, &val) != EOF) {     	
+    while(fscanf(opt, "%s %i", read_string, &val) != EOF) {     	
         if(strcmp(string, read_string) == 0) {
             fclose(opt);
             free(read_string);	
             return val;
-		}		  	 	
+	}		  	 	
     }  
 	
 	fclose(opt);

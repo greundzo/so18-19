@@ -23,8 +23,8 @@ int main(int argc, char ** argv)
     mem_id = create_memory();
     pStudentData = (shared *)connect(mem_id);
     mark_AdE = generate_random_integer(18, 30, pid);
-    reg_num = generate_matr(pid);
-    class = getturn(reg_num);
+    reg_num = generate_regnum(pid);
+    class = get_turn(reg_num);
     sem_id = create_sem();
     // CRITICAL AREA
     ops.sem_num = 1;
@@ -51,13 +51,14 @@ int main(int argc, char ** argv)
     int msgid = create_queue();
     struct message mymsg;
 
-    while (receive_msg_nowait (msgid, mymsg) == - 1){
-	if (class == mymsg.class){
- 	    if (stdata[position].closed == 0)
-            pStudentData->stdata[position].group = stdata[position].group++;
-	    
-	mymsg.class = class;
+    while (receive_msg_nowait (msgid, mymsg) != - 1) {
+	    if (class == mymsg.class) {
+ 	        if (pStudentData->stdata[position].closed == 0) {
+                pStudentData->stdata[position].group++;
+            }
+        }
+	    mymsg.class = class;
         mymsg.mark_os = mark_So;
-	//send_msg (int id, struct message mymsg)send_msg (msgid, mymsg);
+	    //send_msg (int id, struct message mymsg)send_msg (msgid, mymsg);
     }
 }

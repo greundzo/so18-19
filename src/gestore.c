@@ -57,6 +57,7 @@ int main(int argc, char ** argv)
     pStudentData = (shared *)connect(memid);
     pStudentData->pc = 0;
 
+    // Semaphore creation and initialization
     semid = create_sem();
     sem_init_val(0, 1);
     sem_init_val(1, 1);
@@ -67,7 +68,7 @@ int main(int argc, char ** argv)
     puts("**********");
     puts("");
     
-    alarm(SIM_TIME);
+    alarm(SIM_TIME); 
 
     ops.sem_num = 1;
     ops.sem_op = -1;

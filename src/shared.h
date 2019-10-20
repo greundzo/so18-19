@@ -66,8 +66,8 @@ int *marks_ca, *marks_os, *ca_count, *os_count;
 int memid, semid;
 float average_ca, average_os;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
-int generate_matr(pid_t pid);
-int getturn(int matricule);
+int generate_regnum(pid_t pid);
+int get_turn(int matricule);
 void printinfo(int index);
 
 // Shared Memory functions declaration

@@ -3,7 +3,7 @@
 //
 #include "shared.h"
 
-//genera un intero casuale
+// Generates a casual number between minNum and maxNum 
 int generate_random_integer(int minNum, int maxNum, pid_t pid)
 {
     int span = maxNum - minNum + 1;
@@ -16,26 +16,27 @@ int generate_random_integer(int minNum, int maxNum, pid_t pid)
     return minNum + a % span;
 }
 
-int generate_matr(pid_t pid)
+// Generates the register number
+int generate_regnum(pid_t pid)
 {
     srand(pid);
     return (rand() % 900000) + 100000;
 }
 
+// Opens the configuration file and returns a random value 
 int read_opt_conf(char *string){
-  FILE * opt = fopen("opt.conf", "r");
-  TEST_ERROR;
-  int val;
-  char * read_string = malloc(sizeof(char)*20);	
-  //	for(read_string = getc(opt); read_string != EOF ; read_string = getc(opt)){
-  	while(fscanf(opt, "%s %i", read_string, &val)!=EOF){     	
-             if(strcmp(string, read_string) == 0){
-		  fclose(opt);
-		  free(read_string);	
-		  return val;
-		}		
-  	 	
-	     }  
+    FILE *opt = fopen("opt.conf", "r");
+    TEST_ERROR
+    int val;
+    char *read_string = malloc(sizeof(char)*20);	
+
+  	while(fscanf(opt, "%s %i", read_string, &val) != EOF) {     	
+        if(strcmp(string, read_string) == 0) {
+            fclose(opt);
+            free(read_string);	
+            return val;
+		}		  	 	
+    }  
 	
 	fclose(opt);
 	free(read_string);
@@ -44,7 +45,7 @@ int read_opt_conf(char *string){
 }
 
 
-int getturn(int matricule)
+int get_turn(int matricule)
 {
     if (matricule % 2 == 0) {
         return 2;
@@ -53,7 +54,7 @@ int getturn(int matricule)
 }
 
 void printinfo(int index){
-    printf("%3i: matricola = %5i   voto_AdE = %2i   voto_prj = %2i\n",
+    printf("%3i: Register Number = %5i   CA Mark = %2i   OS Mark = %2i\n",
             index, pStudentData->stdata[index].registration_number,
             pStudentData->stdata[index].mark_ca, pStudentData->stdata[index].mark_os);
 }
@@ -88,7 +89,7 @@ void signalhandler(int signum){
             break;
 
         case SIGUSR1:
-            //shmdt(pStudentData);
+            /* here child processes send data to parent*/
             exit(EXIT_SUCCESS);
 
         case SIGINT:
@@ -173,7 +174,7 @@ int create_queue () //creates queue and returns id
 int remove_queue (int id) //removes queue and returns id
 {
     int rm_queue;
-    if (( rm_queue =msgctl(id, IPC_RMID, NULL)) == -1) {
+    if (( rm_queue = msgctl(id, IPC_RMID, NULL)) == -1) {
         TEST_ERROR
     }
     return rm_queue;
@@ -191,7 +192,7 @@ int info_queue (int id) //get the status of the queue
 int send_msg (int id, struct message mymsg) //send a message in the queue
 {
     int sent;
-    if (( sent = msgsnd(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0)) == - 1) {
+    if (( sent = msgsnd(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0)) == -1) {
 	    TEST_ERROR
     }
     return sent;
@@ -200,7 +201,7 @@ int send_msg (int id, struct message mymsg) //send a message in the queue
 int receive_msg (int id, struct message mymsg) //receive a message in the queue
 {
     int received;
-    if (( received = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, 0)) == - 1) {
+    if (( received = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, 0)) == -1) {
 	    TEST_ERROR
     }
     return received;
@@ -209,8 +210,9 @@ int receive_msg (int id, struct message mymsg) //receive a message in the queue
 int receive_msg_nowait (int id, struct message mymsg) //receive a message in the queue, no wait
 {
     int receivednw;
-    if (( receivednw = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, IPC_NOWAIT)) == - 1)
-	TEST_ERROR
+    if (( receivednw = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, IPC_NOWAIT)) == -1) {
+	    TEST_ERROR
+    }
     return receivednw;
 }
 

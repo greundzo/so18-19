@@ -44,7 +44,8 @@ typedef struct student_data {
     pid_t student_pid;
     int class;
     int registration_number;
-    int group;
+    int nof_elems;
+    int team;
     int leader;
     int closed;
     int mark_os;
@@ -89,12 +90,17 @@ int release_sem(int semid, int num);
 
 // Message Queue functions declaration 
 struct msqid_ds buffer;
+
 struct message {
     long type;
+    pid_t sender_pid;
     int class; //turno
     int register_number; //numero matricola
     int posleader;
 };
+
+struct message my_msg;
+int msgid;
 int create_queue();
 int remove_queue(int id);
 int modify_queue(int id);

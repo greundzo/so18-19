@@ -40,42 +40,59 @@ int main(int argc, char ** argv)
     pStudentData->stdata[position].class = class;
     pStudentData->stdata[position].mark_os = 0;
     pStudentData->stdata[position].mark_ca = mark_AdE;
-    pStudentData->stdata[position].group = 0;
+    pStudentData->stdata[position].team = 0;
     pStudentData->stdata[position].leader = 0;
     pStudentData->stdata[position].closed = 0;
     pStudentData->pc ++;    
     release_sem(sem_id, 0);
 
     //exit(0);
-    pause();
-    int msgid = create_queue();
-    struct message mymsg;
+    //pause();
+    msgid = create_queue();
+
+    // General condition to access invitation code
+    // 1) I'm not in a team
+    // 2) I'm the leader but I've not yet closed the team
+    while (pStudentData->stdata[position].team == 0 
+        || (pStudentData->stdata[position].leader == 1 
+        && pStudentData->stdata[position].closed == 0)) 
+    {
+        take_sem(sem_id, 0);
+        while (receive_msg_nowait(msgid, my_msg) != -1)
+        {
+            if (pStudentData->stdata[position].team == 0) {
+                if (max_reject > 0) {
+                    if (pStudentData->stdata[position].mark_ca > 26) {
+                        if (pStudentData->stdata[position].nof_elems == pStudentData->stdata[my_msg.sender_pid].nof_elems) {
+                            accept(position, my_msg);
+                        }
+                    }
+                }
+            }
+        }
+        release_sem(sem_id, 0);
+    }
     
-    while (receive_msg_nowait (msgid, mymsg) != - 1) {
-        if (pStudentData->stdata[position].group == 0){ //il gruppo è vuoto: divento il leader
+    /* PEZZO DA SISTEMARE
+    
+	if (class == my_msg.class) { //stesso turno
+            int posl = my_msg.posleader;
             take_sem(sem_id, 0);
-	    pStudentData->stdata[position].leader = 1;
-	    pStudentData->stdata[position].group = 1;
-	    release_sem(sem_id, 0);
-	}
-	if (class == mymsg.class) { //stesso turno
-            int posl = mymsg.posleader;
-            take_sem(sem_id, 0);
-            pStudentData->stdata[posl].group++;
+            pStudentData->stdata[posl].team++;
             /*if (studentData->stdata[position].group == nof_elements){ //chiudo il gruppo 
                 pStudentData->stdata[posl].closed = 1;
                 release_sem(sem_id, 0);
             }
-	    */
+	    
             if (pStudentData->stdata[position].leader == 0){//se non sono il leader aspetto
 		pause();
 	    }
         }
 	    if (pStudentData->stdata[position].leader == 1 && pStudentData->stdata[position].closed == 0) { //il leader cerca nuovi partecipanti al gruppo
-		mymsg.posleader = position;
-                mymsg.class = class;
-		send_msg (msgid, mymsg);
+		my_msg.posleader = position;
+                my_msg.class = class;
+		send_msg (msgid, my_msg);
 	    }
-        }  
-    } 
+          
+    } */
 }

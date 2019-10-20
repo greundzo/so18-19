@@ -62,6 +62,8 @@ int main(int argc, char ** argv)
     sem_init_val(0, 1);
     sem_init_val(1, 1);
 
+    msgid = create_queue();
+
     puts("Creating students...");
 
     spawn(POP_SIZE);

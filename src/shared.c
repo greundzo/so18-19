@@ -154,7 +154,7 @@ int release_sem(int semid, int num)
 {   
     int released;
     ops.sem_num = num;
-    ops.sem_op = +1;
+    ops.sem_op = 1;
     if ((released = semop(semid, &ops, (size_t)1) == -1)) {
         TEST_ERROR
     }

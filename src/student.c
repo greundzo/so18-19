@@ -59,9 +59,12 @@ int main(int argc, char ** argv)
     struct message mymsg;
 
     while (receive_msg_nowait (msgid, mymsg) == - 1){
+	if (class == mymsg.class){
+ 	    if (stdata[position].closed == 0)
+            pStudentData->stdata[position].group = stdata[position].group++;
+	    
 	mymsg.class = class;
         mymsg.mark_os = mark_So;
-	
-	//if (class == 
+	//send_msg (int id, struct message mymsg)send_msg (msgid, mymsg);
     }
 }

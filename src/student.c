@@ -71,7 +71,7 @@ int main(int argc, char ** argv)
 		pause();
 	    }
         }
-	    if (pStudentData->stdata[position].leader == 1) { //il leader cerca nuovi partecipanti al gruppo
+	    if (pStudentData->stdata[position].leader == 1 && pStudentData->stdata[position].closed == 0) { //il leader cerca nuovi partecipanti al gruppo
 		mymsg.posleader = position;
                 mymsg.class = class;
 		send_msg (msgid, mymsg);

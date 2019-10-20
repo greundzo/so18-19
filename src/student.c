@@ -3,7 +3,7 @@
 //
 #include "shared.h"
 
-int reg_num, class, mark_AdE, mark_So, nof_elements, nof_invites, max_reject;
+int mark_os, max_reject;
 int mem_id, sem_id, position;
 
 int main(int argc, char ** argv)
@@ -22,9 +22,7 @@ int main(int argc, char ** argv)
 
     mem_id = create_memory();
     pStudentData = (shared *)connect(mem_id);
-    mark_AdE = generate_random_integer(18, 30, pid);
-    reg_num = generate_regnum(pid);
-    class = get_turn(reg_num);
+    max_reject = read_conf("max_reject");
     sem_id = create_sem();
     // CRITICAL AREA
     ops.sem_num = 1;
@@ -36,13 +34,17 @@ int main(int argc, char ** argv)
     take_sem(sem_id, 0);    
     position = pStudentData->pc;
     pStudentData->stdata[position].student_pid = pid;
-    pStudentData->stdata[position].registration_number = reg_num;
-    pStudentData->stdata[position].class = class;
+    pStudentData->stdata[position].registration_number = generate_regnum(pid);
+    pStudentData->stdata[position].class = get_turn(pStudentData->stdata[position].registration_number);
     pStudentData->stdata[position].mark_os = 0;
-    pStudentData->stdata[position].mark_ca = mark_AdE;
+    pStudentData->stdata[position].mark_ca = generate_random_integer(18, 30, pid);
+    pStudentData->stdata[position].max_mark_ca = 0;
     pStudentData->stdata[position].team = 0;
     pStudentData->stdata[position].leader = 0;
     pStudentData->stdata[position].closed = 0;
+    pStudentData->stdata[position].nof_elems = get_pref();
+    pStudentData->stdata[position].nof_invites = read_conf("nof_invites");
+    pStudentData->stdata[position].nof_members = 0;
     pStudentData->pc ++;    
     release_sem(sem_id, 0);
 

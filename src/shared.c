@@ -4,7 +4,7 @@
 #include "shared.h"
 
 // Generates a casual number between minNum and maxNum 
-int generate_random_integer(int minNum, int maxNum, pid_t pid)
+int generate_random_integer(int minNum, int maxNum, pid_t pid) 
 {
     int span = maxNum - minNum + 1;
     int snNum = maxNum - maxNum % span;
@@ -17,25 +17,26 @@ int generate_random_integer(int minNum, int maxNum, pid_t pid)
 }
 
 // Generates the register number
-int generate_regnum(pid_t pid)
+int generate_regnum(pid_t pid) 
 {
     srand(pid);
     return (rand() % 900000) + 100000;
 }
 
 // Opens the configuration file and returns a random value 
-int read_opt_conf(char *string){
+int read_conf(char *str) 
+{
     FILE *opt = fopen("opt.conf", "r");
     TEST_ERROR
     int val;
     char *read_string = malloc(sizeof(char)*20);	
 
     while(fscanf(opt, "%s %i", read_string, &val) != EOF) {     	
-        if(strcmp(string, read_string) == 0) {
+        if(strcmp(str, read_string) == 0) {
             fclose(opt);
             free(read_string);	
             return val;
-	}		  	 	
+	    }		  	 	
     }  
 	
 	fclose(opt);
@@ -44,6 +45,22 @@ int read_opt_conf(char *string){
 	return -1;
 }
 
+int get_pref() 
+{
+    int num = generate_random_integer(1, 100, getpid());
+    
+    if (num <= read_config("pref_2")) {
+        return 2;
+    }
+
+    if (num <= (read_config("pref_2") + read_config("pref_3")) && num > read_config("pref_2")) {
+        return 3;
+    }
+
+    if(num > read_config("pref_2") + read_config("pref_3")){
+        return 4;
+    }
+}
 
 int get_turn(int matricule)
 {
@@ -59,7 +76,8 @@ void printinfo(int index){
             pStudentData->stdata[index].mark_ca, pStudentData->stdata[index].mark_os);
 }
 
-void signalhandler(int signum){
+void signalhandler(int signum)
+{
 
     switch(signum){
         case SIGALRM:

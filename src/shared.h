@@ -61,8 +61,8 @@ sigset_t mask;
 void signalhandler(int signal);
 
 // Shared global variables and functions
-struct shared * pStudentData;
-int * marks_ca, * marks_os, * ca_count, * os_count;
+struct shared *pStudentData;
+int *marks_ca, *marks_os, *ca_count, *os_count;
 int memid, semid;
 float average_ca, average_os;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
@@ -72,13 +72,13 @@ void printinfo(int index);
 
 // Shared Memory functions declaration
 int create_memory();
-void * connect(int id);
+void *connect(int id);
 
 // Semaphore functions declaration 
 union semun {
     int val;
-    struct semid_ds * buf;
-    unsigned short  * array;
+    struct semid_ds *buf;
+    unsigned short  *array;
 };
 struct sembuf ops;
 int create_sem();

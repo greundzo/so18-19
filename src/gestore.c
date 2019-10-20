@@ -1,7 +1,6 @@
 #include "shared.h"
 
 int sim_time;
-union semun uni;
 
 /*
 * Creates POP_SIZE child processes
@@ -15,7 +14,7 @@ void spawn(int size)
         TEST_ERROR
         if(process == -1) {
             TEST_ERROR
-        } else if(process==0) {
+        } else if(process == 0) {
             if (execve("./student", args, NULL) == -1) { 
                 TEST_ERROR                     
             }
@@ -82,15 +81,15 @@ int main(int argc, char ** argv)
 
     printf("\nComputer Architecture marks distribution:\n");
     printf("   18   19   20   21   22   23   24   25   26   27   28   29   30\n");
-    for(int i = 0; i < 13; i++){
+    for(int i = 0; i < 13; i++) {
         printf("  %3d", ca_count[i]);
     }
     printf("\n\n");
 
     printf("Operating Systems marks distribution:\n");
     printf("   15   16   17   18   19   20   21   22   23   24   25   26   27  "
-           " 28   29   30    0\n");
-    for(int i = 0; i < 17; i++){
+           " 28   29   30    \n");
+    for(int i = 0; i < 16; i++){
         printf("  %3d", os_count[i]);
     }
     printf("\n\n");

@@ -81,5 +81,5 @@ int main(int argc, char ** argv)
         }
         release_sem(sem_id, 0);
     }
-    
+    pause();
 }

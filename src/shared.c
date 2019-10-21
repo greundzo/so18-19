@@ -92,7 +92,7 @@ void signalhandler(int signum)
             int val = 0;
             for(int i = 0; i < POP_SIZE; i++) {
                 average_ca += pStudentData->stdata[i].mark_ca;
-                val = pStudentData->stdata[i].mark_ca - 18;
+                //val = pStudentData->stdata[i].mark_ca - 18;
                 //printf("%d", val);
                 
                 average_os += pStudentData->stdata[i].mark_os;

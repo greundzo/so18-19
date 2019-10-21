@@ -12,7 +12,7 @@
 #define _XOPEN_SOURCE
 #ifndef TEST
 #define POP_SIZE 10
-#define SIM_TIME 10
+#define SIM_TIME 1
 #endif //test
 
 #include <stdio.h>

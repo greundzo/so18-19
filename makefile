@@ -6,4 +6,6 @@ all :
 execute:
 	cd src; $(MAKE) execute	
 clean:
-	ipcrm -S 5 -M 30
+	ipcrm -S 5 
+	ipcrm -M 30
+	ipcrm -Q 7

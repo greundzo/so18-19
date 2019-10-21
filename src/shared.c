@@ -207,42 +207,36 @@ int info_queue (int id) //get the status of the queue
     return infos;
 }
 
-int send_msg (int id, struct message mymsg) //send a message in the queue
-{
-    int sent;
-    if (( sent = msgsnd(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0)) == -1) {
-	    TEST_ERROR
-    }
-    return sent;
-}
-
-int receive_msg (int id, struct message mymsg) //receive a message in the queue
-{
-    int received;
-    if (( received = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, 0)) == -1) {
-	    TEST_ERROR
-    }
-    return received;
-}
-
-int receive_msg_nowait (int id, struct message mymsg) //receive a message in the queue, no wait
+int receive_msg_nowait (int id, struct message invitation) //receive a message in the queue, no wait
 {
     int receivednw;
-    if (( receivednw = msgrcv(id, &mymsg, (sizeof(mymsg)-sizeof(long)), 0, IPC_NOWAIT)) == -1) {
+    if (( receivednw = msgrcv(id, &invitation, (sizeof(invitation)-sizeof(long)), 0, IPC_NOWAIT)) == -1) {
 	    TEST_ERROR
     }
     return receivednw;
 }
 
+void invite(int position, struct message msg)
+{}
 
+void accept(int position, struct message msg)
+{
+    msg.type = msg.sender_pid; 
+    msg.invited = 0;
+    msg.accept = 1;
+    msg.sender_pid = getpid();
+    msg.sender_index = position;
+    
+    if (pStudentData->stdata[position].mark_ca > msg.max_mark) {
+        msg.max_mark = pStudentData->stdata[position].mark_ca;
+    }    
 
+    if ( msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), 0) == -1) {
+        TEST_ERROR
+    } else {
+        pStudentData->stdata[position].team = 1;
+    }
+}
 
-
-
-
-
-
-
-
-
-
+void decline(int position, struct message msg)
+{}

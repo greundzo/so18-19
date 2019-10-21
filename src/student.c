@@ -60,16 +60,27 @@ int main(int argc, char ** argv)
         && pStudentData->stdata[position].closed == 0)) 
     {
         take_sem(sem_id, 0);
-        while (receive_msg_nowait(msgid, my_msg) != -1)
+        while (receive_msg_nowait(msgid, invitation) != -1)
         {
             if (pStudentData->stdata[position].team == 0) {
                 if (max_reject > 0) {
                     if (pStudentData->stdata[position].mark_ca > 26) {
-                        if (pStudentData->stdata[position].nof_elems == pStudentData->stdata[my_msg.sender_pid].nof_elems) {
+                        if (pStudentData->stdata[position].nof_elems == pStudentData->stdata[invitation.sender_pid].nof_elems) {
+                            accept(position, invitation);
+                        } /*else if (find_team_mate() != -1) {
                             accept(position, my_msg);
-                        }
+                        } else {
+                            decline(position, my_msg);
+                            max_reject--;
+                        }*/
+                    } else {
+
                     }
+                } else {
+                    accept(position, invitation); // max_reject = 0
                 }
+            } else {
+                decline(position, invitation);
             }
         }
         release_sem(sem_id, 0);

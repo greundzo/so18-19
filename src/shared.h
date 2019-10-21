@@ -99,18 +99,18 @@ struct msqid_ds buffer;
 struct message {
     long type;
     pid_t sender_pid;
-    int class; //turno
-    int register_number; //numero matricola
-    int posleader;
+    int sender_index;
+    int invited;
+    int accept;
+    int max_mark;    
 };
 
-struct message my_msg;
+struct message invitation;
 int msgid;
 int create_queue();
 int remove_queue(int id);
 int modify_queue(int id);
-int send_msg (int id, struct message mymsg);
-int receive_msg (int id, struct message mymsg);
-int receive_msg_nowait (int id, struct message mymsg);
-
-
+int receive_msg_nowait (int id, struct message invitation);
+void invite (int id, struct message invitation);
+void accept (int id, struct message invitation);
+void decline(int id, struct message invitation);

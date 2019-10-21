@@ -82,6 +82,25 @@ int main(int argc, char ** argv)
             TEST_ERROR
     }
 
+    ca_count = calloc(13, sizeof(int));
+    os_count = calloc(16, sizeof(int));
+    average_ca = 0;
+    average_os = 0;
+    for(int i = 0; i < POP_SIZE; i++) {
+        printinfo(i);
+        average_ca += pStudentData->stdata[i].mark_ca;
+        ca_count[(pStudentData->stdata[i].mark_ca) - 18] += 1;
+
+        average_os += pStudentData->stdata[i].mark_os;
+        os_count[pStudentData->stdata[i].mark_os - 15] += 1;         
+    }
+    average_ca = average_ca / POP_SIZE;
+    average_os = average_os / POP_SIZE;
+    semctl(semid, 2, IPC_RMID);
+    shmdt(pStudentData);
+    shmctl(memid, IPC_RMID, NULL);
+    remove_queue(msgid);
+
     printf("\nComputer Architecture marks distribution:\n");
     printf("   18   19   20   21   22   23   24   25   26   27   28   29   30\n");
     for(int i = 0; i < 13; i++) {

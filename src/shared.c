@@ -83,31 +83,13 @@ void signalhandler(int signum)
 
     switch(signum){
         case SIGALRM:
-            printf("End simulation.\n");
             take_sem(semid, 0);
+            printf("End simulation.\n");            
             for (int i = 0; i < POP_SIZE; i++) {
                 pids[i] = pStudentData->stdata[i].student_pid;
                 kill(pids[i], SIGUSR1);
             }
-            release_sem(semid, 0);
-            ca_count = calloc(13, sizeof(int));
-            os_count = calloc(16, sizeof(int));
-            average_ca = 0;
-            average_os = 0;
-            for(int i = 0; i < POP_SIZE; i++) {
-                printinfo(i);
-                average_ca += pStudentData->stdata[i].mark_ca;
-                ca_count[pStudentData->stdata[i].mark_ca - 18] += 1;
-
-                average_os += pStudentData->stdata[i].mark_os;
-                os_count[pStudentData->stdata[i].mark_os - 15] += 1;         
-            }
-            average_ca = average_ca / POP_SIZE;
-            average_os = average_os / POP_SIZE;
-            semctl(semid, 2, IPC_RMID);
-            shmdt(pStudentData);
-            shmctl(memid, IPC_RMID, NULL);
-            remove_queue(msgid);
+            release_sem(semid, 0);            
             break;
 
         case SIGUSR1:

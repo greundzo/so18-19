@@ -25,12 +25,7 @@ int main(int argc, char ** argv)
     max_reject = read_conf("max_reject");
     sem_id = create_sem();
     // CRITICAL AREA
-    ops.sem_num = 1;
-    ops.sem_op = 0;
-    if (semop(sem_id, &ops, 1) == -1) {
-        TEST_ERROR
-    }
-    
+        
     take_sem(sem_id, 0);    
     position = pStudentData->pc;
     pStudentData->stdata[position].student_pid = pid;
@@ -52,6 +47,7 @@ int main(int argc, char ** argv)
     //pause();
     msgid = create_queue();
 
+    ready(sem_id);
     // General condition to access invitation code
     // 1) I'm not in a team
     // 2) I'm the leader but I've not yet closed the team

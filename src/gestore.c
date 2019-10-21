@@ -70,11 +70,11 @@ int main(int argc, char ** argv)
     puts("**********");
     puts("");
     
-    alarm(SIM_TIME); 
-
     ops.sem_num = 1;
     ops.sem_op = -1;
     semop(semid, &ops, 1);
+
+    alarm(SIM_TIME); 
     
     // EINTR is the Interrupted Signal
     if (pause() == -1) {

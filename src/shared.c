@@ -157,26 +157,30 @@ void sem_init_val(int index, int value)
     } 	
 }
 
-int take_sem(int semid, int num)
-{   
-    int took;   
-    ops.sem_num = num;
-    ops.sem_op = -1;
-    if ((took = semop(semid, &ops, (size_t)1) == -1)) {
+void ready(int semid) {
+    ops.sem_num = 1;
+    ops.sem_op = 0;
+    if (semop(semid, &ops, 1) == -1) {
         TEST_ERROR
     }
-    return took;
 }
 
-int release_sem(int semid, int num)
-{   
-    int released;
+void take_sem(int semid, int num)
+{      
     ops.sem_num = num;
-    ops.sem_op = 1;
-    if ((released = semop(semid, &ops, (size_t)1) == -1)) {
+    ops.sem_op = -1;
+    if ( (semop(semid, &ops, (size_t)1)) == -1) {
         TEST_ERROR
     }
-    return released;
+}
+
+void release_sem(int semid, int num)
+{   
+    ops.sem_num = num;
+    ops.sem_op = 1;
+    if (semop(semid, &ops, (size_t)1) == -1) {
+        TEST_ERROR
+    }
 }
 
 /* GESTIONE DEI MESSAGGI */

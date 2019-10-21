@@ -12,7 +12,7 @@
 #define _XOPEN_SOURCE
 #ifndef TEST
 #define POP_SIZE 10
-#define SIM_TIME 5
+#define SIM_TIME 10
 #endif //test
 
 #include <stdio.h>
@@ -111,6 +111,6 @@ int create_queue();
 int remove_queue(int id);
 int modify_queue(int id);
 int receive_msg_nowait (int id, struct message invitation);
-void invite (int id, struct message invitation, int mark);
+int invite (int id, struct message invitation, int mark);
 void accept (int id, struct message invitation);
 void decline(int id, struct message invitation);

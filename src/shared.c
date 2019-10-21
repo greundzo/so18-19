@@ -26,7 +26,7 @@ int generate_regnum(pid_t pid)
 // Opens the configuration file and returns a random value 
 int read_conf(char *str) 
 {
-    FILE *opt = fopen("opt.conf", "r");
+    FILE *opt = fopen("../opt.conf", "r");
     TEST_ERROR
     int val;
     char *read_string = malloc(sizeof(char)*20);	
@@ -49,17 +49,19 @@ int get_pref()
 {
     int num = generate_random_integer(1, 100, getpid());
     
-    if (num <= read_config("pref_2")) {
+    if (num <= read_conf("pref_2")) {
         return 2;
     }
 
-    if (num <= (read_config("pref_2") + read_config("pref_3")) && num > read_config("pref_2")) {
+    if (num <= (read_conf("pref_2") + read_conf("pref_3")) && num > read_conf("pref_2")) {
         return 3;
     }
 
-    if(num > read_config("pref_2") + read_config("pref_3")){
+    if(num > read_conf("pref_2") + read_conf("pref_3")) {
         return 4;
     }
+
+    return 0;
 }
 
 int get_turn(int matricule)
@@ -104,6 +106,7 @@ void signalhandler(int signum)
             semctl(semid, 2, IPC_RMID);
             shmdt(pStudentData);
             shmctl(memid, IPC_RMID, NULL);
+            remove_queue(msgid);
             break;
 
         case SIGUSR1:
@@ -117,7 +120,7 @@ void signalhandler(int signum)
             semctl(semid, 2, IPC_RMID);
             shmdt(pStudentData);
             shmctl(memid, IPC_RMID, NULL);
-            //remove_queue(create_queue());
+            remove_queue(create_queue());
             //msq_rm(msqvote_id);
             //system("make rm");
             exit(EXIT_FAILURE);
@@ -220,7 +223,7 @@ int receive_msg_nowait (int id, struct message invitation) //receive a message i
     return receivednw;
 }
 
-void invite(int position, struct message msg, int mark)
+int invite(int position, struct message msg, int mark)
 {
     msg.type = msg.sender_pid; 
     msg.invited = 1;

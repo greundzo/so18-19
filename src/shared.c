@@ -90,7 +90,6 @@ void signalhandler(int signum)
                 kill(pids[i], SIGUSR1);
             }
             release_sem(semid, 0);
-            marks_os = malloc(POP_SIZE * sizeof(int)); 
             ca_count = calloc(13, sizeof(int));
             os_count = calloc(16, sizeof(int));
             average_ca = 0;
@@ -101,7 +100,7 @@ void signalhandler(int signum)
                 ca_count[pStudentData->stdata[i].mark_ca - 18] += 1;
 
                 average_os += pStudentData->stdata[i].mark_os;
-                os_count[marks_os[i] - 15] += 1;         
+                os_count[pStudentData->stdata[i].mark_os - 15] += 1;         
             }
             average_ca = average_ca / POP_SIZE;
             average_os = average_os / POP_SIZE;
@@ -124,7 +123,6 @@ void signalhandler(int signum)
             shmctl(memid, IPC_RMID, NULL);
             remove_queue(create_queue());
             //msq_rm(msqvote_id);
-            //system("make rm");
             exit(EXIT_FAILURE);
     }
 }
@@ -218,11 +216,7 @@ int info_queue (int id) //get the status of the queue
 
 int receive_msg_nowait (int id) //receive a message in the queue, no wait
 {
-    int receivednw;
-    if (( receivednw = msgrcv(id, &invitation, (sizeof(invitation)-sizeof(long)), 0, IPC_NOWAIT)) == -1) {
-	    TEST_ERROR
-    }
-    return receivednw;
+    return msgrcv(id, &invitation, (sizeof(invitation)-sizeof(long)), 0, IPC_NOWAIT);
 }
 
 int invite(int position, int mark)

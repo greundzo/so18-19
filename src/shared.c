@@ -216,7 +216,7 @@ int info_queue (int id) //get the status of the queue
     return infos;
 }
 
-int receive_msg_nowait (int id, struct message invitation) //receive a message in the queue, no wait
+int receive_msg_nowait (int id) //receive a message in the queue, no wait
 {
     int receivednw;
     if (( receivednw = msgrcv(id, &invitation, (sizeof(invitation)-sizeof(long)), 0, IPC_NOWAIT)) == -1) {
@@ -225,7 +225,7 @@ int receive_msg_nowait (int id, struct message invitation) //receive a message i
     return receivednw;
 }
 
-int invite(int position, struct message msg, int mark)
+int invite(int position, int mark)
 {
     msg.type = msg.sender_pid; 
     msg.invited = 1;
@@ -245,7 +245,7 @@ int invite(int position, struct message msg, int mark)
     }
 }
 
-void accept(int position, struct message msg)
+void accept(int position)
 {
     msg.type = msg.sender_pid; 
     msg.invited = 0;
@@ -264,7 +264,7 @@ void accept(int position, struct message msg)
     }
 }
 
-void decline(int position, struct message msg)
+void decline(int position)
 {
     msg.type = msg.sender_pid; 
     msg.invited = 0;

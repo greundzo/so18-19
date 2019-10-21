@@ -66,7 +66,7 @@ void signalhandler(int signal);
 
 // Shared global variables and functions
 struct shared *pStudentData;
-int *pids, *marks_ca, *marks_os, *ca_count, *os_count;
+int *pids, *ca_count, *os_count;
 int memid, semid;
 float average_ca, average_os;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);

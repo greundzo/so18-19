@@ -84,22 +84,21 @@ void signalhandler(int signum)
     switch(signum){
         case SIGALRM:
             printf("End simulation.\n");
+            for (int i = 0; i < POP_SIZE; i++) {
+                kill(pStudentData->stdata[i].student_pid, SIGUSR1);
+            }
             marks_os = malloc(POP_SIZE * sizeof(int)); 
             ca_count = calloc(13, sizeof(int));
             os_count = calloc(16, sizeof(int));
             average_ca = 0;
             average_os = 0;
-            int val = 0;
             for(int i = 0; i < POP_SIZE; i++) {
-                average_ca += pStudentData->stdata[i].mark_ca;
-                //val = pStudentData->stdata[i].mark_ca - 18;
-                //printf("%d", val);
-                
-                average_os += pStudentData->stdata[i].mark_os;
-                os_count[marks_os[i] - 15] += 1;     
-
                 printinfo(i);
-                kill(pStudentData->stdata[i].student_pid, SIGUSR1);
+                average_ca += pStudentData->stdata[i].mark_ca;
+                ca_count[pStudentData->stdata[i].mark_ca - 18] += 1;
+
+                average_os += pStudentData->stdata[i].mark_os;
+                os_count[marks_os[i] - 15] += 1;         
             }
             average_ca = average_ca / POP_SIZE;
             average_os = average_os / POP_SIZE;

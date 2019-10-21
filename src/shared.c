@@ -84,9 +84,12 @@ void signalhandler(int signum)
     switch(signum){
         case SIGALRM:
             printf("End simulation.\n");
+            take_sem(semid, 0);
             for (int i = 0; i < POP_SIZE; i++) {
-                kill(pStudentData->stdata[i].student_pid, SIGUSR1);
+                pids[i] = pStudentData->stdata[i].student_pid;
+                kill(pids[i], SIGUSR1);
             }
+            release_sem(semid, 0);
             marks_os = malloc(POP_SIZE * sizeof(int)); 
             ca_count = calloc(13, sizeof(int));
             os_count = calloc(16, sizeof(int));

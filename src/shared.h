@@ -12,7 +12,7 @@
 #define _XOPEN_SOURCE
 #ifndef TEST
 #define POP_SIZE 10
-#define SIM_TIME 5
+#define SIM_TIME 1
 #endif //test
 
 #include <stdio.h>
@@ -66,7 +66,7 @@ void signalhandler(int signal);
 
 // Shared global variables and functions
 struct shared *pStudentData;
-int *marks_ca, *marks_os, *ca_count, *os_count;
+int *pids, *marks_ca, *marks_os, *ca_count, *os_count;
 int memid, semid;
 float average_ca, average_os;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);

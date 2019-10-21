@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
     #endif
     puts("");
 
-    //sim_time = sim_time * 60; //Conversion in minutes
+    pids = calloc(POP_SIZE, sizeof(pid_t));
 
     memid = create_memory();
 

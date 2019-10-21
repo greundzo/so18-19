@@ -56,7 +56,7 @@ int main(int argc, char ** argv)
         && pStudentData->stdata[position].closed == 0)) 
     {
         take_sem(sem_id, 0);
-        while (receive_msg_nowait(msgid, invitation) != -1)
+        while (receive_msg_nowait(msgid) != -1)
         {
             if (pStudentData->stdata[position].team == 0) {
                 if (max_reject > 0) {

@@ -83,31 +83,13 @@ void signalhandler(int signum)
 
     switch(signum){
         case SIGALRM:
-            printf("End simulation.\n");
             take_sem(semid, 0);
+            printf("End simulation.\n");            
             for (int i = 0; i < POP_SIZE; i++) {
                 pids[i] = pStudentData->stdata[i].student_pid;
                 kill(pids[i], SIGUSR1);
             }
-            release_sem(semid, 0);
-            ca_count = calloc(13, sizeof(int));
-            os_count = calloc(16, sizeof(int));
-            average_ca = 0;
-            average_os = 0;
-            for(int i = 0; i < POP_SIZE; i++) {
-                printinfo(i);
-                average_ca += pStudentData->stdata[i].mark_ca;
-                ca_count[pStudentData->stdata[i].mark_ca - 18] += 1;
-
-                average_os += pStudentData->stdata[i].mark_os;
-                os_count[pStudentData->stdata[i].mark_os - 15] += 1;         
-            }
-            average_ca = average_ca / POP_SIZE;
-            average_os = average_os / POP_SIZE;
-            semctl(semid, 2, IPC_RMID);
-            shmdt(pStudentData);
-            shmctl(memid, IPC_RMID, NULL);
-            remove_queue(msgid);
+            release_sem(semid, 0);            
             break;
 
         case SIGUSR1:
@@ -219,9 +201,8 @@ int receive_msg_nowait (int id) //receive a message in the queue, no wait
     return msgrcv(id, &invitation, (sizeof(invitation)-sizeof(long)), 0, IPC_NOWAIT);
 }
 
-int invite(int position, int mark)
-{
-    struct message msg;
+int invite(int position, struct message msg, int mark)
+{    
     msg.type = msg.sender_pid; 
     msg.invited = 1;
     msg.accept = 0;
@@ -240,9 +221,8 @@ int invite(int position, int mark)
     }
 }
 
-void accept(int position)
+void accept(int position, struct message msg)
 {
-    struct message msg;
     msg.type = msg.sender_pid; 
     msg.invited = 0;
     msg.accept = 1;
@@ -260,9 +240,8 @@ void accept(int position)
     }
 }
 
-void decline(int position)
+void decline(int position, struct message msg)
 {
-    struct message msg;
     msg.type = msg.sender_pid; 
     msg.invited = 0;
     msg.accept = 0;

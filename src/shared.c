@@ -221,6 +221,7 @@ int receive_msg_nowait (int id) //receive a message in the queue, no wait
 
 int invite(int position, int mark)
 {
+    struct message msg;
     msg.type = msg.sender_pid; 
     msg.invited = 1;
     msg.accept = 0;
@@ -241,6 +242,7 @@ int invite(int position, int mark)
 
 void accept(int position)
 {
+    struct message msg;
     msg.type = msg.sender_pid; 
     msg.invited = 0;
     msg.accept = 1;
@@ -260,6 +262,7 @@ void accept(int position)
 
 void decline(int position)
 {
+    struct message msg;
     msg.type = msg.sender_pid; 
     msg.invited = 0;
     msg.accept = 0;

@@ -67,12 +67,12 @@ int main(int argc, char ** argv)
                     if (pStudentData->stdata[position].mark_ca > 26) {
                         if (pStudentData->stdata[position].nof_elems == pStudentData->stdata[invitation.sender_pid].nof_elems) {
                             accept(position, invitation);
-                        } /*else if (find_team_mate() != -1) {
-                            accept(position, my_msg);
+                        /*} else if (find_team_mate() != -1) {
+                            accept(position, my_msg);*/
                         } else {
-                            decline(position, my_msg);
+                            decline(position, invitation);
                             max_reject--;
-                        }*/
+                        }
                     } else {
 
                     }
@@ -86,26 +86,4 @@ int main(int argc, char ** argv)
         release_sem(sem_id, 0);
     }
     
-    /* PEZZO DA SISTEMARE
-    
-	if (class == my_msg.class) { //stesso turno
-            int posl = my_msg.posleader;
-            take_sem(sem_id, 0);
-            pStudentData->stdata[posl].team++;
-            /*if (studentData->stdata[position].group == nof_elements){ //chiudo il gruppo 
-                pStudentData->stdata[posl].closed = 1;
-                release_sem(sem_id, 0);
-            }
-	    
-            if (pStudentData->stdata[position].leader == 0){//se non sono il leader aspetto
-		pause();
-	    }
-        }
-	    if (pStudentData->stdata[position].leader == 1 && pStudentData->stdata[position].closed == 0) { //il leader cerca nuovi partecipanti al gruppo
-		my_msg.posleader = position;
-                my_msg.class = class;
-		send_msg (msgid, my_msg);
-	    }
-          
-    } */
 }

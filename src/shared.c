@@ -216,8 +216,25 @@ int receive_msg_nowait (int id, struct message invitation) //receive a message i
     return receivednw;
 }
 
-void invite(int position, struct message msg)
-{}
+void invite(int position, struct message msg, int mark)
+{
+    msg.type = msg.sender_pid; 
+    msg.invited = 1;
+    msg.accept = 0;
+    msg.sender_pid = getpid();
+    msg.sender_index = position;
+    msg.max_mark = mark;
+
+    if (msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), IPC_NOWAIT) == -1) {
+        if (errno != EAGAIN) {
+            TEST_ERROR
+        }
+        return 0;
+    } else {
+        pStudentData->stdata[position].nof_invites--;
+        return 1;
+    }
+}
 
 void accept(int position, struct message msg)
 {
@@ -239,4 +256,14 @@ void accept(int position, struct message msg)
 }
 
 void decline(int position, struct message msg)
-{}
+{
+    msg.type = msg.sender_pid; 
+    msg.invited = 0;
+    msg.accept = 0;
+    msg.sender_pid = getpid();
+    msg.sender_index = position;
+
+    if (msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), 0) == -1) {
+        TEST_ERROR
+    }
+}

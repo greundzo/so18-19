@@ -61,43 +61,39 @@ int main(int argc, char ** argv)
             if (pStudentData->stdata[position].team == 0) {
                 if (max_reject > 0) {
                     if (pStudentData->stdata[position].mark_ca > 26) {
-                        if (pStudentData->stdata[position].nof_elems == pStudentData->stdata[invitation.sender_pid].nof_elems) {
+                        if (pStudentData->stdata[position].nof_elems == pStudentData->stdata[invitation.sender_index].nof_elems) {
                             accept(position, invitation);
 
                         } else if (find_team_mate(position) == -1) {
                             accept(position, invitation);
-
                         } else {
                             decline(position, invitation);
                             max_reject--;
                         }
                     } else {
-		          if(pStudentData->stdata[position].nof_elems == pStudentData->stdata[invitation.sender_pid].nof_elems){
-                              if(invitation.max_mark > pStudentData->stdata[position].mark_ca || pStudentData->stdata[position].nof_invites == 0){
-                                accept(position, invitation);
-                              } else {
-                                decline(position, invitation);
-                                max_reject --;
-                              }
-
-                          } else {
-                                if((invitation.max_mark - 3) > pStudentData->stdata[position].mark_ca || pStudentData->stdata[position].nof_invites == 0){
+		          		if (pStudentData->stdata[position].nof_elems == pStudentData->stdata[invitation.sender_index].nof_elems) {
+							if (invitation.max_mark > pStudentData->stdata[position].mark_ca || pStudentData->stdata[position].nof_invites == 0) {
+								accept(position, invitation);
+							} else {
+								decline(position, invitation);
+								max_reject --;
+							}
+						} else {
+							if ((invitation.max_mark - 3) > pStudentData->stdata[position].mark_ca || pStudentData->stdata[position].nof_invites == 0) {
                                 accept(position, invitation);
                 	        } else {
-                                      decline(position, invitation);
-				      max_reject--;
-           		        }
-			  }    
-		     }
-		}
-		else {
-		    accept(position, invitation);
+								decline(position, invitation);
+				      			max_reject--;
+           		        	}
+			  			}	    
+		     		}
+				} else {
+		    		accept(position, invitation);
                 }
-            }//primo if
-	    else{
-                decline(position, invitation);
-	    }
-	}//while
+            } else {
+				decline(position, invitation);
+	    	}
+		}//while
         release_sem(sem_id, 0);
 	
       /*  if(errno){//il processo potrebbe non trovare messaggi nella coda

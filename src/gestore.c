@@ -89,13 +89,14 @@ int main(int argc, char ** argv)
     for(int i = 0; i < POP_SIZE; i++) {
         printinfo(i);
         average_ca += pStudentData->stdata[i].mark_ca;
-        ca_count[(pStudentData->stdata[i].mark_ca) - 18] += 1;
+        ca_count[pStudentData->stdata[i].mark_ca - 18] += 1;
 
         average_os += pStudentData->stdata[i].mark_os;
         os_count[pStudentData->stdata[i].mark_os - 15] += 1;         
     }
-    average_ca = average_ca / POP_SIZE;
-    average_os = average_os / POP_SIZE;
+    ca_count[1] -= POP_SIZE;
+    average_ca /= POP_SIZE;
+    average_os /= POP_SIZE;
     semctl(semid, 2, IPC_RMID);
     shmdt(pStudentData);
     shmctl(memid, IPC_RMID, NULL);

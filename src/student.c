@@ -63,23 +63,50 @@ int main(int argc, char ** argv)
                     if (pStudentData->stdata[position].mark_ca > 26) {
                         if (pStudentData->stdata[position].nof_elems == pStudentData->stdata[invitation.sender_pid].nof_elems) {
                             accept(position, invitation);
-                        /*} else if (find_team_mate() != -1) {
-                            accept(position, my_msg);*/
+
+                        } else if (find_team_mate(position) == -1) {
+                            accept(position, invitation);
+
                         } else {
                             decline(position, invitation);
                             max_reject--;
                         }
                     } else {
+		          if(pStudentData->stdata[position].nof_elems == pStudentData->stdata[invitation.sender_pid].nof_elems){
+                              if(invitation.max_mark > pStudentData->stdata[position].mark_ca || pStudentData->stdata[position].nof_invites == 0){
+                                accept(position, invitation);
+                              } else {
+                                decline(position, invitation);
+                                max_reject --;
+                              }
 
-                    }
-                } else {
-                    accept(position, invitation); // max_reject = 0
+                          } else {
+                                if((invitation.max_mark - 3) > pStudentData->stdata[position].mark_ca || pStudentData->stdata[position].nof_invites == 0){
+                                accept(position, invitation);
+                	        } else {
+                                      decline(position, invitation);
+				      max_reject--;
+           		        }
+			  }    
+		     }
+		}
+		else {
+		    accept(position, invitation);
                 }
-            } else {
+            }//primo if
+	    else{
                 decline(position, invitation);
-            }
-        }
+	    }
+	}//while
         release_sem(sem_id, 0);
-    }
+	
+      /*  if(errno){//il processo potrebbe non trovare messaggi nella coda
+            if(errno != ENOMSG){
+                printf("Errore anomalo nella lettura della coda di messaggi:\n");
+                TEST_ERROR;
+            }
+          }*/
+	
+    }//while
     pause();
 }

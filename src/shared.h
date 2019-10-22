@@ -114,3 +114,4 @@ int receive_msg_nowait (int id);
 int invite (int id, struct message msg, int mark);
 void accept (int id, struct message msg);
 void decline(int id, struct message msg);
+pid_t find_team_mate(int position);

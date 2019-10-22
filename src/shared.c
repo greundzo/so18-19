@@ -252,3 +252,20 @@ void decline(int position, struct message msg)
         TEST_ERROR
     }
 }
+
+pid_t find_team_mate(int position)
+{
+    pid_t pid = -1;
+    for(int i = 0; (i < POP_SIZE && pid == -1); i++){
+        if(i != position){
+            if(pStudentData->stdata[position].team == 0 &&
+               pStudentData->stdata[position].registration_number == pStudentData->stdata[position].class &&
+               pStudentData->stdata[position].nof_elems == pStudentData->stdata[i].nof_elems){
+                pid = pStudentData->stdata[i].student_pid;
+            }
+        }
+    }
+    return pid;
+}
+
+

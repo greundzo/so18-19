@@ -70,7 +70,7 @@ sigset_t mask;
 void signalhandler(int signal);
 
 // Shared global variables and functions
-struct shared *pStudentData;
+struct shared *pst;
 int *pids, *ca_count, *os_count;
 int memid, semid;
 float average_ca, average_os;
@@ -120,4 +120,4 @@ int invite (int id, struct message msg, int mark);
 void accept (int id, struct message msg);
 void decline(int id, struct message msg);
 pid_t find_team_mate(int position);
-void lock_group(int *group_members, int nelem_group, int max_mark);
+void lock_group(int *team_members, int nelem_team, int max_mark);

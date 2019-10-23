@@ -54,8 +54,8 @@ int main(int argc, char ** argv)
     memid = create_memory();
 
     // Pointer to shm segment allocated at the beginning of the execution
-    pStudentData = (shared *)connect(memid);
-    pStudentData->pc = 0;
+    pst = (shared *)connect(memid);
+    pst->pc = 0;
 
     // Semaphore creation and initialization
     semid = create_sem();
@@ -88,17 +88,17 @@ int main(int argc, char ** argv)
     average_os = 0;
     for(int i = 0; i < POP_SIZE; i++) {
         printinfo(i);
-        average_ca += pStudentData->stdata[i].mark_ca;
-        ca_count[pStudentData->stdata[i].mark_ca - 18] += 1;
+        average_ca += pst->stdata[i].mark_ca;
+        ca_count[pst->stdata[i].mark_ca - 18] += 1;
 
-        average_os += pStudentData->stdata[i].mark_os;
-        os_count[pStudentData->stdata[i].mark_os - 15] += 1;         
+        average_os += pst->stdata[i].mark_os;
+        os_count[pst->stdata[i].mark_os - 15] += 1;         
     }
     ca_count[1] -= POP_SIZE;
     average_ca /= POP_SIZE;
     average_os /= POP_SIZE;
     semctl(semid, 2, IPC_RMID);
-    shmdt(pStudentData);
+    shmdt(pst);
     shmctl(memid, IPC_RMID, NULL);
     remove_queue(msgid);
 

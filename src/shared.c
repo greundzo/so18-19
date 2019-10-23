@@ -74,8 +74,8 @@ int get_turn(int matricule)
 
 void printinfo(int index){
     printf("%3i: Register Number = %5i   CA Mark = %2i   OS Mark = %2i\n",
-            index, pStudentData->stdata[index].registration_number,
-            pStudentData->stdata[index].mark_ca, pStudentData->stdata[index].mark_os);
+            index, pst->stdata[index].registration_number,
+            pst->stdata[index].mark_ca, pst->stdata[index].mark_os);
 }
 
 void signalhandler(int signum)
@@ -86,7 +86,7 @@ void signalhandler(int signum)
             take_sem(semid, 0);
             printf("End simulation.\n");            
             for (int i = 0; i < POP_SIZE; i++) {
-                pids[i] = pStudentData->stdata[i].student_pid;
+                pids[i] = pst->stdata[i].student_pid;
                 kill(pids[i], SIGUSR1);
             }
             release_sem(semid, 0);            
@@ -98,10 +98,10 @@ void signalhandler(int signum)
 
         case SIGINT:
             for(int i = 0; i < POP_SIZE; i++){
-                kill(pStudentData->stdata[i].student_pid, SIGTERM);
+                kill(pst->stdata[i].student_pid, SIGTERM);
             }
             semctl(semid, 2, IPC_RMID);
-            shmdt(pStudentData);
+            shmdt(pst);
             shmctl(memid, IPC_RMID, NULL);
             remove_queue(create_queue());
             //msq_rm(msqvote_id);
@@ -216,7 +216,7 @@ int invite(int position, struct message msg, int mark)
         }
         return 0;
     } else {
-        pStudentData->stdata[position].nof_invites--;
+        pst->stdata[position].nof_invites--;
         return 1;
     }
 }
@@ -229,14 +229,14 @@ void accept(int position, struct message msg)
     msg.sender_pid = getpid();
     msg.sender_index = position;
     
-    if (pStudentData->stdata[position].mark_ca > msg.max_mark) {
-        msg.max_mark = pStudentData->stdata[position].mark_ca;
+    if (pst->stdata[position].mark_ca > msg.max_mark) {
+        msg.max_mark = pst->stdata[position].mark_ca;
     }    
 
     if ( msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), 0) == -1) {
         TEST_ERROR
     } else {
-        pStudentData->stdata[position].team = 1;
+        pst->stdata[position].team = 1;
     }
 }
 
@@ -258,39 +258,39 @@ pid_t find_team_mate(int position)
     pid_t pid = -1;
     for(int i = 0; (i < POP_SIZE && pid == -1); i++){
         if(i != position){
-            if(pStudentData->stdata[position].team == 0 &&
-               pStudentData->stdata[position].registration_number == pStudentData->stdata[position].class &&
-               pStudentData->stdata[position].nof_elems == pStudentData->stdata[i].nof_elems){
-                pid = pStudentData->stdata[i].student_pid;
+            if(pst->stdata[position].team == 0 &&
+               pst->stdata[position].registration_number == pst->stdata[position].class &&
+               pst->stdata[position].nof_elems == pst->stdata[i].nof_elems){
+                pid = pst->stdata[i].student_pid;
             }
         }
     }
     return pid;
 }
 //chiude il gruppo
-void lock_group(int *group_members, int nelem_group, int max_mark ){
-   for(int i = 0; i < nelem_group; i++){
-     pStudentData->stdata[group_members[i]].closed = 1;
-     pStudentData->stdata[group_members[i]].nelem_group = nelem_group;
-     pStudentData->stdata[group_members[i]].max_mark_ca = max_mark;
+void lock_group(int *team_members, int nelem_team, int max_mark ){
+   for(int i = 0; i < nelem_team; i++){
+     pst->stdata[team_members[i]].closed = 1;
+     pst->stdata[team_members[i]].nelem_group = nelem_team;
+     pst->stdata[team_members[i]].max_mark_ca = max_mark;
    
    }
 }
 pid_t search_4_mate(int position){
   int i = 0;
   pid_t pid = -1;
-  int mark1 = pStudentData->stdata[position].mark_ca;
-  int group1 = pStudentData->stdata[position].team;
-  int tlab1 = pStudentData->stdata[position].turn;	
-  int nof_1 =pStudentData->stdata[position].nof_elems;
-  int mark2 = pStudentData->stdata[i].mark_ca;
-  int group2 = pStudentData->stdata[i].team;
-  int tlab2 = pStudentData->stdata[i].turn;
-  int nof2 = pStudentData->stdata[i].nof_elems;
+  int mark1 = pst->stdata[position].mark_ca;
+  int group1 = pst->stdata[position].team;
+  int tlab1 = pst->stdata[position].turn;	
+  int nof_1 =pst->stdata[position].nof_elems;
+  int mark2 = pst->stdata[i].mark_ca;
+  int group2 = pst->stdata[i].team;
+  int tlab2 = pst->stdata[i].turn;
+  int nof2 = pst->stdata[i].nof_elems;
   while(i < POP_SIZE && i != position){
     if(group2 == 0 && mark2 > mark1 && tlab1 == tlab2 && nof1 == nof2){
       mark1 = mark2;
-      pid = pStudentData->stdata[i].matricule;
+      pid = pst->stdata[i].registration_number;
     }
     else if(group2 == 0 && mark2 > mark1 && mark1 > mark2 + 3 && )	
   

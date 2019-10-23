@@ -201,13 +201,13 @@ int receive_msg_nowait (int id) //receive a message in the queue, no wait
     return msgrcv(id, &invitation, (sizeof(invitation)-sizeof(long)), 0, IPC_NOWAIT);
 }
 
-int invite(int position, struct message msg, int mark)
+int invite(int ind, struct message msg, int mark)
 {    
     msg.type = msg.sender_pid; 
     msg.invited = 1;
     msg.accept = 0;
     msg.sender_pid = getpid();
-    msg.sender_index = position;
+    msg.sender_index = ind;
     msg.max_mark = mark;
 
     if (msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), IPC_NOWAIT) == -1) {
@@ -216,51 +216,51 @@ int invite(int position, struct message msg, int mark)
         }
         return 0;
     } else {
-        pst->stdata[position].nof_invites--;
+        pst->stdata[ind].nof_invites--;
         return 1;
     }
 }
 
-void accept(int position, struct message msg)
+void accept(int ind, struct message msg)
 {
     msg.type = msg.sender_pid; 
     msg.invited = 0;
     msg.accept = 1;
     msg.sender_pid = getpid();
-    msg.sender_index = position;
+    msg.sender_index = ind;
     
-    if (pst->stdata[position].mark_ca > msg.max_mark) {
-        msg.max_mark = pst->stdata[position].mark_ca;
+    if (pst->stdata[ind].mark_ca > msg.max_mark) {
+        msg.max_mark = pst->stdata[ind].mark_ca;
     }    
 
     if ( msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), 0) == -1) {
         TEST_ERROR
     } else {
-        pst->stdata[position].team = 1;
+        pst->stdata[ind].team = 1;
     }
 }
 
-void decline(int position, struct message msg)
+void decline(int ind, struct message msg)
 {
     msg.type = msg.sender_pid; 
     msg.invited = 0;
     msg.accept = 0;
     msg.sender_pid = getpid();
-    msg.sender_index = position;
+    msg.sender_index = ind;
 
     if (msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), 0) == -1) {
         TEST_ERROR
     }
 }
 /* TEAM FUNCTIONS */
-pid_t find_team_mate(int position)
+pid_t find_team_mate(int ind)
 {
     pid_t pid = -1;
     for(int i = 0; (i < POP_SIZE && pid == -1); i++){
-        if(i != position){
-            if(pst->stdata[position].team == 0 &&
-               pst->stdata[position].registration_number == pst->stdata[position].class &&
-               pst->stdata[position].nof_elems == pst->stdata[i].nof_elems){
+        if(i != ind){
+            if(pst->stdata[ind].team == 0 &&
+               pst->stdata[ind].registration_number == pst->stdata[ind].class &&
+               pst->stdata[ind].nof_elems == pst->stdata[i].nof_elems){
                 pid = pst->stdata[i].student_pid;
             }
         }
@@ -275,7 +275,7 @@ void lock_group(int *team_members, int nelem_team, int max_mark ) {
         pst->stdata[team_members[i]].max_mark_ca = max_mark;   
     }
 }
-
+/*
 pid_t search_4_mate(int position){
   int i = 0;
   pid_t pid = -1;
@@ -302,4 +302,4 @@ pid_t search_4_mate(int position){
   
   }
 
-}
+}*/

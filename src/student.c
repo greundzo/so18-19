@@ -4,7 +4,7 @@
 #include "shared.h"
 
 int mark_os, max_reject;
-int mem_id, sem_id, position;
+int mem_id, sem_id, ind;
 
 int main(int argc, char ** argv)
 {
@@ -27,19 +27,19 @@ int main(int argc, char ** argv)
     // CRITICAL AREA
         
     take_sem(sem_id, 0);    
-    position = pst->pc;
-    pst->stdata[position].student_pid = pid;
-    pst->stdata[position].registration_number = generate_regnum(pid);
-    pst->stdata[position].class = get_turn(pst->stdata[position].registration_number);
-    pst->stdata[position].mark_os = 0;
-    pst->stdata[position].mark_ca = generate_random_integer(18, 30, pid);
-    pst->stdata[position].max_mark_ca = 0;
-    pst->stdata[position].team = 0;
-    pst->stdata[position].leader = 0;
-    pst->stdata[position].closed = 0;
-    pst->stdata[position].nof_elems = get_pref();
-    pst->stdata[position].nof_invites = read_conf("nof_invites");
-    pst->stdata[position].nof_members = 0;
+    ind = pst->pc;
+    pst->stdata[ind].student_pid = pid;
+    pst->stdata[ind].registration_number = generate_regnum(pid);
+    pst->stdata[ind].class = get_turn(pst->stdata[ind].registration_number);
+    pst->stdata[ind].mark_os = 0;
+    pst->stdata[ind].mark_ca = generate_random_integer(18, 30, pid);
+    pst->stdata[ind].max_mark_ca = 0;
+    pst->stdata[ind].team = 0;
+    pst->stdata[ind].leader = 0;
+    pst->stdata[ind].closed = 0;
+    pst->stdata[ind].nof_elems = get_pref();
+    pst->stdata[ind].nof_invites = read_conf("nof_invites");
+    pst->stdata[ind].nof_members = 0;
     pst->pc ++;    
     release_sem(sem_id, 0);
 
@@ -51,58 +51,63 @@ int main(int argc, char ** argv)
     // General condition to access invitation code
     // 1) I'm not in a team
     // 2) I'm the leader but I've not yet closed the team
-    while (pst->stdata[position].team == 0 
-        || (pst->stdata[position].leader == 1 
-        && pst->stdata[position].closed == 0)) 
+    while (pst->stdata[ind].team == 0 
+        || (pst->stdata[ind].leader == 1 
+        && pst->stdata[ind].closed == 0)) 
     {
         take_sem(sem_id, 0);
         while (receive_msg_nowait(msgid) != -1)
         {
-            if (pst->stdata[position].team == 0) {
+            if (pst->stdata[ind].team == 0) {
                 if (max_reject > 0) {
-                    if (pst->stdata[position].mark_ca > 26) {
-                        if (pst->stdata[position].nof_elems == pst->stdata[invitation.sender_index].nof_elems) {
-                            accept(position, invitation);
+                    if (pst->stdata[ind].mark_ca > 26) {
+                        if (pst->stdata[ind].nof_elems == pst->stdata[invitation.sender_index].nof_elems) {
+                            accept(ind, invitation);
 
-                        } else if (find_team_mate(position) == -1) {
-                            accept(position, invitation);
+                        } else if (find_team_mate(ind) == -1) {
+                            accept(ind, invitation);
                         } else {
-                            decline(position, invitation);
+                            decline(ind, invitation);
                             max_reject--;
                         }
                     } else {
-		          		if (pst->stdata[position].nof_elems == pst->stdata[invitation.sender_index].nof_elems) {
-							if (invitation.max_mark > pst->stdata[position].mark_ca || pst->stdata[position].nof_invites == 0) {
-								accept(position, invitation);
+		          		if (pst->stdata[ind].nof_elems == pst->stdata[invitation.sender_index].nof_elems) {
+							if (invitation.max_mark > pst->stdata[ind].mark_ca || pst->stdata[ind].nof_invites == 0) {
+								accept(ind, invitation);
 							} else {
-								decline(position, invitation);
+								decline(ind, invitation);
 								max_reject --;
 							}
 						} else {
-							if ((invitation.max_mark - 3) > pst->stdata[position].mark_ca || pst->stdata[position].nof_invites == 0) {
-                                accept(position, invitation);
+							if ((invitation.max_mark - 3) > pst->stdata[ind].mark_ca || pst->stdata[ind].nof_invites == 0) {
+                                accept(ind, invitation);
                 	        } else {
-								decline(position, invitation);
+								decline(ind, invitation);
 				      			max_reject--;
            		        	}
 			  			}	    
 		     		}
 				} else {
-		    		accept(position, invitation);
+		    		accept(ind, invitation);
                 }
             } else {
-				decline(position, invitation);
+				decline(ind, invitation);
 	    	}
 		}//while
-        release_sem(sem_id, 0);
+        
 	
-      /*  if(errno){//il processo potrebbe non trovare messaggi nella coda
+        if(errno){//il processo potrebbe non trovare messaggi nella coda
             if(errno != ENOMSG){
                 printf("Errore anomalo nella lettura della coda di messaggi:\n");
                 TEST_ERROR;
             }
-          }*/
-	
+        }
+
+        if (pst->stdata[ind].leader == 1 && pst->stdata[ind])
+
+	    release_sem(sem_id, 0);
     }//while
+
+
     pause();
 }

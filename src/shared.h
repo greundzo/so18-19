@@ -40,7 +40,7 @@
 #define SEM 5
 #define MSG 7
 
-int * group_members;
+int * team_members;
 
 
 typedef struct student_data {
@@ -119,5 +119,5 @@ int receive_msg_nowait (int id);
 int invite (int id, struct message msg, int mark);
 void accept (int id, struct message msg);
 void decline(int id, struct message msg);
-pid_t find_team_mate(int position);
+pid_t find_team_mate(int ind);
 void lock_group(int *team_members, int nelem_team, int max_mark);

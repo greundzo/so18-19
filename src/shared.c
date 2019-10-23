@@ -201,16 +201,16 @@ int receive_msg_nowait (int id) //receive a message in the queue, no wait
     return msgrcv(id, &invitation, (sizeof(invitation)-sizeof(long)), 0, IPC_NOWAIT);
 }
 
-int invite(int ind, struct message msg, int mark)
+int invite(int ind, int pid, int mark)
 {    
-    msg.type = msg.sender_pid; 
-    msg.invited = 1;
-    msg.accept = 0;
-    msg.sender_pid = getpid();
-    msg.sender_index = ind;
-    msg.max_mark = mark;
+    invitation.type = pid; 
+    invitation.invited = 1;
+    invitation.accept = 0;
+    invitation.sender_pid = getpid();
+    invitation.sender_index = ind;
+    invitation.max_mark = mark;
 
-    if (msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), IPC_NOWAIT) == -1) {
+    if (msgsnd(msgid, &invitation, sizeof(invitation) - sizeof(long), IPC_NOWAIT) == -1) {
         if (errno != EAGAIN) {
             TEST_ERROR
         }
@@ -221,34 +221,34 @@ int invite(int ind, struct message msg, int mark)
     }
 }
 
-void accept(int ind, struct message msg)
+void accept(int ind)
 {
-    msg.type = msg.sender_pid; 
-    msg.invited = 0;
-    msg.accept = 1;
-    msg.sender_pid = getpid();
-    msg.sender_index = ind;
+    invitation.type = invitation.sender_pid; 
+    invitation.invited = 0;
+    invitation.accept = 1;
+    invitation.sender_pid = getpid();
+    invitation.sender_index = ind;
     
-    if (pst->stdata[ind].mark_ca > msg.max_mark) {
-        msg.max_mark = pst->stdata[ind].mark_ca;
+    if (pst->stdata[ind].mark_ca > invitation.max_mark) {
+        invitation.max_mark = pst->stdata[ind].mark_ca;
     }    
 
-    if ( msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), 0) == -1) {
+    if ( msgsnd(msgid, &invitation, sizeof(invitation) - sizeof(long), 0) == -1) {
         TEST_ERROR
     } else {
         pst->stdata[ind].team = 1;
     }
 }
 
-void decline(int ind, struct message msg)
+void decline(int ind)
 {
-    msg.type = msg.sender_pid; 
-    msg.invited = 0;
-    msg.accept = 0;
-    msg.sender_pid = getpid();
-    msg.sender_index = ind;
+    invitation.type = invitation.sender_pid; 
+    invitation.invited = 0;
+    invitation.accept = 0;
+    invitation.sender_pid = getpid();
+    invitation.sender_index = ind;
 
-    if (msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), 0) == -1) {
+    if (msgsnd(msgid, &invitation, sizeof(invitation) - sizeof(long), 0) == -1) {
         TEST_ERROR
     }
 }

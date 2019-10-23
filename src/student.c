@@ -63,36 +63,36 @@ int main(int argc, char ** argv)
                 if (max_reject > 0) {
                     if (pst->stdata[ind].mark_ca > 26) {
                         if (pst->stdata[ind].nof_elems == pst->stdata[invitation.sender_index].nof_elems) {
-                            accept(ind, invitation);
+                            accept(ind);
 
                         } else if (find_team_mate(ind) == -1) {
-                            accept(ind, invitation);
+                            accept(ind);
                         } else {
-                            decline(ind, invitation);
+                            decline(ind);
                             max_reject--;
                         }
                     } else {
 		          		if (pst->stdata[ind].nof_elems == pst->stdata[invitation.sender_index].nof_elems) {
 							if (invitation.max_mark > pst->stdata[ind].mark_ca || pst->stdata[ind].nof_invites == 0) {
-								accept(ind, invitation);
+								accept(ind);
 							} else {
-								decline(ind, invitation);
+								decline(ind);
 								max_reject --;
 							}
 						} else {
 							if ((invitation.max_mark - 3) > pst->stdata[ind].mark_ca || pst->stdata[ind].nof_invites == 0) {
-                                accept(ind, invitation);
+                                accept(ind);
                 	        } else {
-								decline(ind, invitation);
+								decline(ind);
 				      			max_reject--;
            		        	}
 			  			}	    
 		     		}
 				} else {
-		    		accept(ind, invitation);
+		    		accept(ind);
                 }
             } else {
-				decline(ind, invitation);
+				decline(ind);
 	    	}
 		}//while
         
@@ -106,9 +106,8 @@ int main(int argc, char ** argv)
         if (((pst->stdata[ind].leader == 1 && pst->stdata[ind].nof_elems != nelem_team) || 
             pst->stdata[ind].team == 0) && pst->stdata[ind].nof_invites > 0) 
         {
-            if ((pod = find_team_mate(ind)) != -1) {
-
-            }
+            pod = find_team_mate(ind);
+            invite(ind, pod, pst->stdata[ind].max_mark_ca);
         }
 
 	    release_sem(sem_id, 0);

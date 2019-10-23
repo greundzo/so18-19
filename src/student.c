@@ -105,7 +105,6 @@ int main(int argc, char ** argv)
         if (((pst->stdata[ind].leader == 1 && pst->stdata[ind].nof_elems != nelem_team) || 
             pst->stdata[ind].team == 0) && pst->stdata[ind].nof_invites > 0) 
         {
-            puts("I'm in");
             pod = find_team_mate(ind);
             invite(ind, pod, pst->stdata[ind].max_mark_ca);
         }

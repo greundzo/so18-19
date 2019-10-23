@@ -217,13 +217,13 @@ int invite(int ind, int pid, int mark)
         return 0;
     } else {
         pst->stdata[ind].nof_invites--;
-		pst->stdata[ind].leader = 1;
         return 1;
     }
 }
 
 void accept(int ind)
 {
+    int sent = invitation.sender_index;
     invitation.type = invitation.sender_pid; 
     invitation.invited = 0;
     invitation.accept = 1;
@@ -238,6 +238,8 @@ void accept(int ind)
         TEST_ERROR
     } else {
         pst->stdata[ind].team = 1;
+        pst->stdata[sent].team = 1;
+        pst->stdata[sent].leader = 1;
     }
 }
 

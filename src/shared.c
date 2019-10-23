@@ -275,8 +275,9 @@ void lock_group(int *team_members, int nelem_team, int max_mark ) {
         pst->stdata[team_members[i]].max_mark_ca = max_mark;   
     }
 }
-/*
+
 pid_t search_4_mate(int position){
+  int check = 0; //per distinguere i casi
   int i = 0;
   pid_t pid = -1;
   int mark1 = pst->stdata[position].mark_ca;
@@ -286,20 +287,44 @@ pid_t search_4_mate(int position){
   int mark2 = pst->stdata[i].mark_ca;
   int group2 = pst->stdata[i].team;
   int tlab2 = pst->stdata[i].turn;
-  int nof2 = pst->stdata[i].nof_elems;
+  int nof_2 = pst->stdata[i].nof_elems;
   while(i < POP_SIZE && i != position){
-    if(group2 == 0 && mark2 > mark1 && tlab1 == tlab2 && nof1 == nof2){
+    if(group2 == 0 && mark2 > mark1 && tlab1 == tlab2 && nof_1 == nof_2){ //compagno migliore
       mark1 = mark2;
       pid = pst->stdata[i].registration_number;
+      check = 1;	
     }
-    else if(group2 == 0 && mark2 > mark1 && mark1 > mark2 + 3 && )	
-  
+    else if(group2 == 0 && mark2 < mark1 && tlab1 == tlab2 &&nof_1 == nof_2){ //compagno peggiore 
+      mark1 = mark2;	
+      pid = pst->stdata[i].registration_number;
+      check = 2;   
+    }else if(group2 == 0 && tlab1 == tlab2 && nof_1 == nof_2){ //compgano qualsiasi(non si tiene conto del voto)
+      mark1 = mark2;
+      pid = pst->stdata[i].registration_number;
+      check = 3;
+    }else{	
+      if(pid == -1 && check != 2 && check != 3){
+        if(group2 == 0 && mark2 > mark1 + 3 && tlab1 == tlab2 && nof_1 == nof_2){
+          mark1 = mark2; 
+          pid = pst->stdata[i].registration_number;
+        }
+      }else if(pid == -1 && check != 1 && check != 3){
+          if(group2 == 0 && mark2 < mark1 && tlab1 == tlab2 && nof_1 == nof_2){
+	  mark2 = mark1;
+	  pid = pst->stdata[i].registration_number;
+          } 
+      
+      }else if(pid == -1 && check != 1 && check != 2){
+         if(group2 == 0 && tlab1 == tlab2){
+	   pid = pst->stdata[i].registration_number;
+         }
+         
+      }
+    
+    
+     	
+   }	
 	
-	
-	
-	
-	
-  
   }
 
-}*/
+}

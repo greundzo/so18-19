@@ -267,7 +267,7 @@ pid_t find_team_mate(int position)
     }
     return pid;
 }
-
+//chiude il gruppo
 void lock_group(int *group_members, int nelem_group, int max_mark ){
    for(int i = 0; i < group_members; i++){
      pStudentData->stdata[group_members[i]].closed = 1;

@@ -3,8 +3,9 @@
 //
 #include "shared.h"
 
-int mark_os, max_reject;
-int mem_id, sem_id, ind;
+int mark_os, max_reject, max_mark;
+int mem_id, sem_id, ind, nelem_team;
+pid_t pod;
 
 int main(int argc, char ** argv)
 {
@@ -33,7 +34,7 @@ int main(int argc, char ** argv)
     pst->stdata[ind].class = get_turn(pst->stdata[ind].registration_number);
     pst->stdata[ind].mark_os = 0;
     pst->stdata[ind].mark_ca = generate_random_integer(18, 30, pid);
-    pst->stdata[ind].max_mark_ca = 0;
+    pst->stdata[ind].max_mark_ca = pst->stdata[ind].mark_ca;
     pst->stdata[ind].team = 0;
     pst->stdata[ind].leader = 0;
     pst->stdata[ind].closed = 0;
@@ -103,7 +104,13 @@ int main(int argc, char ** argv)
             }
         }
 
-        if (pst->stdata[ind].leader == 1 && pst->stdata[ind])
+        if ((pst->stdata[ind].leader == 1 && pst->stdata[ind].nof_elems != nelem_team || 
+            pst->stdata[ind].team == 0) && pst->stdata[ind].nof_invites > 0) 
+        {
+            if ((pod = find_team_mate(ind)) != -1) {
+
+            }
+        }
 
 	    release_sem(sem_id, 0);
     }//while

@@ -40,6 +40,9 @@
 #define SEM 5
 #define MSG 7
 
+int * group_members;
+
+
 typedef struct student_data {
     pid_t student_pid;
     int class;
@@ -53,6 +56,7 @@ typedef struct student_data {
     int mark_os;
     int mark_ca;
     int max_mark_ca;
+    int nelem_group;	
 }student_data;
 
 typedef struct shared {
@@ -115,3 +119,4 @@ int invite (int id, struct message msg, int mark);
 void accept (int id, struct message msg);
 void decline(int id, struct message msg);
 pid_t find_team_mate(int position);
+void lock_group(int *group_members, int nelem_group, int max_mark);

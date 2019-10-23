@@ -252,7 +252,7 @@ void decline(int position, struct message msg)
         TEST_ERROR
     }
 }
-
+	/* TEAM FUNCTIONS */
 pid_t find_team_mate(int position)
 {
     pid_t pid = -1;
@@ -268,4 +268,11 @@ pid_t find_team_mate(int position)
     return pid;
 }
 
-
+void lock_group(int *group_members, int nelem_group, int max_mark ){
+   for(int i = 0; i < group_members; i++){
+     pStudentData->stdata[group_members[i]].closed = 1;
+     pStudentData->stdata[group_members[i]].nelem_group = nelem_group;
+     pStudentData->stdata[group_members[i]].max_mark_ca = max_mark;
+   
+   }
+}

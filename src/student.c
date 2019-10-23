@@ -96,15 +96,14 @@ int main(int argc, char ** argv)
 	    	}
 		}//while
         
-	
-        if(errno){//il processo potrebbe non trovare messaggi nella coda
-            if(errno != ENOMSG){
-                printf("Errore anomalo nella lettura della coda di messaggi:\n");
-                TEST_ERROR;
+        // Student may not find messages in the queue so we check if a particular error occurred
+        if (errno) {
+            if (errno != ENOMSG) {
+                TEST_ERROR
             }
         }
 
-        if ((pst->stdata[ind].leader == 1 && pst->stdata[ind].nof_elems != nelem_team || 
+        if (((pst->stdata[ind].leader == 1 && pst->stdata[ind].nof_elems != nelem_team) || 
             pst->stdata[ind].team == 0) && pst->stdata[ind].nof_invites > 0) 
         {
             if ((pod = find_team_mate(ind)) != -1) {

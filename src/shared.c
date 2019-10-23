@@ -276,3 +276,30 @@ void lock_group(int *group_members, int nelem_group, int max_mark ){
    
    }
 }
+pid_t search_4_mate(int position){
+  int i = 0;
+  pid_t pid = -1;
+  int mark1 = pStudentData->stdata[position].mark_ca;
+  int group1 = pStudentData->stdata[position].team;
+  int tlab1 = pStudentData->stdata[position].turn;	
+  int nof_1 =pStudentData->stdata[position].nof_elems;
+  int mark2 = pStudentData->stdata[i].mark_ca;
+  int group2 = pStudentData->stdata[i].team;
+  int tlab2 = pStudentData->stdata[i].turn;
+  int nof2 = pStudentData->stdata[i].nof_elems;
+  while(i < POP_SIZE && i != position){
+    if(group2 == 0 && mark2 > mark1 && tlab1 == tlab2 && nof1 == nof2){
+      mark1 = mark2;
+      pid = pStudentData->stdata[i].matricule;
+    }
+    else if(group2 == 0 && mark2 > mark1 && mark1 > mark2 + 3 && )	
+  
+	
+	
+	
+	
+	
+  
+  }
+
+}

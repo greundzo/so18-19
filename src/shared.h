@@ -57,6 +57,7 @@ typedef struct student_data {
     int mark_ca;
     int max_mark_ca;
     int nelem_group;	
+    int turn;
 }student_data;
 
 typedef struct shared {

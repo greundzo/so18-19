@@ -11,7 +11,7 @@
 
 #define _XOPEN_SOURCE
 #ifndef TEST
-#define POP_SIZE 10
+#define POP_SIZE 100
 #define SIM_TIME 1
 #endif //test
 

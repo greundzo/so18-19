@@ -217,6 +217,7 @@ int invite(int ind, int pid, int mark)
         return 0;
     } else {
         pst->stdata[ind].nof_invites--;
+		pst->stdata[ind].leader = 1;
         return 1;
     }
 }
@@ -233,7 +234,7 @@ void accept(int ind)
         invitation.max_mark = pst->stdata[ind].mark_ca;
     }    
 
-    if ( msgsnd(msgid, &invitation, sizeof(invitation) - sizeof(long), 0) == -1) {
+    if (msgsnd(msgid, &invitation, sizeof(invitation) - sizeof(long), 0) == -1) {
         TEST_ERROR
     } else {
         pst->stdata[ind].team = 1;

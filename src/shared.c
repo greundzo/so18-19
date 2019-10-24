@@ -90,11 +90,9 @@ void signalhandler(int signum)
 
     switch(signum){
         case SIGALRM:
-            take_sem(semid, 0);
-            printf("End simulation.\n");            
+            take_sem(semid, 0);         
             for (int i = 0; i < POP_SIZE; i++) {
-                pids[i] = pst->stdata[i].student_pid;
-                kill(pids[i], SIGUSR1);
+                kill(pst->stdata[i].student_pid, SIGUSR1);
             }
             release_sem(semid, 0);            
             break;
@@ -278,7 +276,7 @@ pid_t find_team_mate(int ind)
 void lock_group(int *team_members, int nelem_team, int max_mark ) {
     for(int i = 0; i < nelem_team; i++) {
         pst->stdata[team_members[i]].closed = 1;
-        pst->stdata[team_members[i]].nelem_group = nelem_team;
+        pst->stdata[team_members[i]].nelem_team = nelem_team;
         pst->stdata[team_members[i]].max_mark_ca = max_mark;   
     }
 }

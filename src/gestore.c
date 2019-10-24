@@ -49,8 +49,6 @@ int main(int argc, char ** argv)
     #endif
     puts("");
 
-    pids = calloc(POP_SIZE, sizeof(pid_t));
-
     memid = create_memory();
 
     // Pointer to shm segment allocated at the beginning of the execution
@@ -74,6 +72,8 @@ int main(int argc, char ** argv)
     ops.sem_op = -1;
     semop(semid, &ops, 1);
 
+    masksig();
+
     alarm(SIM_TIME); 
     
     // EINTR is the Interrupted Signal
@@ -82,6 +82,35 @@ int main(int argc, char ** argv)
             TEST_ERROR
     }
 
+    printf("End simulation.\n");   
+    
+    for(int i = 0; i < POP_SIZE; i++) {
+
+        lastmsg.mtype = pst->stdata[i].student_pid;
+
+        if (pst->stdata[i].closed == 0) {
+            lastmsg.mark = 0;
+            if (msgsnd(msgmid, &lastmsg, sizeof(lastmsg) - sizeof(long), IPC_NOWAIT) == -1) {
+                TEST_ERROR
+            }
+        } else {
+            if (pst->stdata[i].nelem_team == pst->stdata[i].nof_elems) {
+                lastmsg.mark = pst->stdata[i].max_mark_ca;
+            }
+            else{
+                lastmsg.mark = (pst->stdata[i].max_mark_ca - 3);
+            }
+
+            if(msgsnd(msgmid, &lastmsg, sizeof(lastmsg) - sizeof(long), IPC_NOWAIT) == -1) {
+                TEST_ERROR
+            }
+        }
+
+        if(waitpid(pst->stdata[i].student_pid, &stat, 0) == -1) {
+            TEST_ERROR
+        }
+    }
+    
     ca_count = (int *)calloc(13, sizeof(int));
     os_count = (int *)calloc(16, sizeof(int));
     average_ca = 0;

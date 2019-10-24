@@ -40,9 +40,6 @@
 #define SEM 5
 #define MSG 7
 
-int * team_members;
-
-
 typedef struct student_data {
     pid_t student_pid;
     int class;
@@ -56,7 +53,7 @@ typedef struct student_data {
     int mark_os;
     int mark_ca;
     int max_mark_ca;
-    int nelem_group;	
+    int nelem_team;	
     int turn;
 }student_data;
 
@@ -71,7 +68,7 @@ void signalhandler(int signal);
 
 // Shared global variables and functions
 struct shared *pst;
-int *pids, *ca_count, *os_count;
+int *ca_count, *os_count;
 int memid, semid;
 float average_ca, average_os;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
@@ -92,6 +89,7 @@ union semun {
     struct semid_ds *buf;
     unsigned short  *array;
 };
+
 struct sembuf ops;
 int create_sem();
 void sem_init_val(int index, int value);
@@ -111,8 +109,14 @@ struct message {
     int max_mark;    
 };
 
+struct markmsg {
+    long mtype;
+    int mark;
+};
+
 struct message invitation;
-int msgid;
+struct markmsg lastmsg;
+int msgid, msgmid;
 int create_queue();
 int remove_queue(int id);
 int modify_queue(int id);

@@ -19,7 +19,6 @@ int main(int argc, char ** argv)
         TEST_ERROR
     }
 
-
     mem_id = create_memory();
     pst = (shared *)connect(mem_id);
     max_reject = read_conf("max_reject");
@@ -137,15 +136,28 @@ int main(int argc, char ** argv)
                         member_indexes[nelem_team - 1] = invitation.sender_index;
                         max_mark = invitation.max_mark;
                     }
+                    pst->stdata[ind].max_mark_ca = max_mark;
                     wait_answer = 0;
                 }                
             }
         }	    
     }//while
-    pause();
+    
     masksig();
 
     // Waiting for os mark..
+    if (msgrcv(msgmid, &lastmsg, sizeof(lastmsg) - sizeof(long), getpid(), 0) == -1) {
+        TEST_ERROR
+    } else {
+        take_sem(sem_id, 0);
+        pst->stdata[ind].mark_os = lastmsg.mark;
+        release_sem(sem_id, 0);
+    }
 
+    if (pst->stdata[ind].leader == 1) {
+        free(member_indexes);
+    }
+
+    shmdt(pst);
     exit(EXIT_SUCCESS);
 }

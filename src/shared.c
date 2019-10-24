@@ -75,7 +75,7 @@ int get_turn(int matricule)
 void printinfo(int index){
     printf("%3i: Register Number = %5i   CA Mark = %2i   OS Mark = %2i\n",
             index, pst->stdata[index].registration_number,
-            pst->stdata[index].mark_ca, pst->stdata[index].mark_os);
+            pst->stdata[index].mark_ca, max_mark);
 }
 
 void masksig()
@@ -99,6 +99,18 @@ void signalhandler(int signum)
 
         case SIGUSR1:
             /* here child processes send data to parent*/
+            if (msgrcv(msgmid, &lastmsg, sizeof(lastmsg)-sizeof(long), getpid(), 0) == -1) {
+                TEST_ERROR
+            } else {
+                max_mark = lastmsg.mark;
+                printinfo(ind);
+            }
+
+            if (pst->stdata[ind].leader == 1) {
+                free(member_indexes);
+            }
+
+            shmdt(pst);
             exit(EXIT_SUCCESS);
 
         case SIGINT:
@@ -109,7 +121,7 @@ void signalhandler(int signum)
             shmdt(pst);
             shmctl(memid, IPC_RMID, NULL);
             remove_queue(create_queue());
-            //msq_rm(msqvote_id);
+            remove_queue(msgmid);
             exit(EXIT_FAILURE);
     }
 }

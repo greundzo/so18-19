@@ -3,7 +3,7 @@
 //
 #include "shared.h"
 
-int mark_os, max_reject, max_mark, mem_id, sem_id, ind, nelem_team, *member_indexes, wait_answer;
+int mark_os, max_reject, nelem_team, wait_answer;
 pid_t pod;
 
 int main(int argc, char ** argv)
@@ -19,13 +19,13 @@ int main(int argc, char ** argv)
         TEST_ERROR
     }
 
-    mem_id = create_memory();
-    pst = (shared *)connect(mem_id);
+    memid = create_memory();
+    pst = (shared *)connect(memid);
     max_reject = read_conf("max_reject");
-    sem_id = create_sem();
+    semid = create_sem();
     // CRITICAL AREA
         
-    take_sem(sem_id, 0);    
+    take_sem(semid, 0);    
     ind = pst->pc;
     pst->stdata[ind].student_pid = pid;
     pst->stdata[ind].registration_number = generate_regnum(pid);
@@ -40,13 +40,12 @@ int main(int argc, char ** argv)
     pst->stdata[ind].nof_invites = read_conf("nof_invites");
     pst->stdata[ind].nof_members = 0;
     pst->pc ++;    
-    release_sem(sem_id, 0);
+    release_sem(semid, 0);
 
-    //exit(0);
-    //pause();
     msgid = create_queue();
+    msgmid = msgget(777, IPC_CREAT);
 
-    ready(sem_id);
+    ready(semid);
     // General condition to access invitation code
     // 1) I'm not in a team
     // 2) I'm the leader but I've not yet closed the team
@@ -54,7 +53,7 @@ int main(int argc, char ** argv)
         || (pst->stdata[ind].leader == 1 
         && pst->stdata[ind].closed == 0)) 
     {
-        take_sem(sem_id, 0);
+        take_sem(semid, 0);
         while (receive_msg_nowait(msgid) != -1)
         {
             if (pst->stdata[ind].team == 0) {
@@ -107,12 +106,16 @@ int main(int argc, char ** argv)
             wait_answer = invite(ind, pod, pst->stdata[ind].max_mark_ca);
         }
 
+        if (pst->stdata[ind].leader == 1 && pst->stdata[ind].nof_elems == nelem_team) {
+            lock_group(member_indexes, nelem_team, max_mark);
+        }
+
         // No more to invite, I'm leader, I close the team
         if (pst->stdata[ind].leader == 1 && pst->stdata[ind].nof_invites == 0 && wait_answer == 0) {
             lock_group(member_indexes, nelem_team, pst->stdata[ind].max_mark_ca);
         }
 
-        release_sem(sem_id, 0);
+        release_sem(semid, 0);
 
         // If the process invited someone it executes this part of code
         while(wait_answer) {
@@ -149,9 +152,8 @@ int main(int argc, char ** argv)
     if (msgrcv(msgmid, &lastmsg, sizeof(lastmsg) - sizeof(long), getpid(), 0) == -1) {
         TEST_ERROR
     } else {
-        take_sem(sem_id, 0);
-        pst->stdata[ind].mark_os = lastmsg.mark;
-        release_sem(sem_id, 0);
+        max_mark = lastmsg.mark;
+        printinfo(ind);
     }
 
     if (pst->stdata[ind].leader == 1) {

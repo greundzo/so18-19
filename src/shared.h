@@ -68,8 +68,8 @@ void signalhandler(int signal);
 
 // Shared global variables and functions
 struct shared *pst;
-int *ca_count, *os_count;
-int memid, semid;
+int *ca_count, *os_count, *member_indexes;
+int memid, semid, ind, max_mark;
 float average_ca, average_os;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
 int generate_regnum(pid_t pid);
@@ -116,7 +116,7 @@ struct markmsg {
 
 struct message invitation;
 struct markmsg lastmsg;
-int msgid, msgmid;
+int msgid, msgmid, msg_id, msg_mid;
 int create_queue();
 int remove_queue(int id);
 int modify_queue(int id);

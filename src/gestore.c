@@ -1,6 +1,6 @@
 #include "shared.h"
 
-int sim_time;
+int sim_time, status;
 
 /*
 * Creates POP_SIZE child processes
@@ -61,6 +61,7 @@ int main(int argc, char ** argv)
     sem_init_val(1, 1);
 
     msgid = create_queue();
+    msgmid = msgget(777, IPC_CREAT | 0666);
 
     puts("Creating students...");
 
@@ -90,7 +91,7 @@ int main(int argc, char ** argv)
 
         if (pst->stdata[i].closed == 0) {
             lastmsg.mark = 0;
-            if (msgsnd(msgmid, &lastmsg, sizeof(lastmsg) - sizeof(long), IPC_NOWAIT) == -1) {
+            if (msgsnd(msgmid, &lastmsg, sizeof(lastmsg)-sizeof(long), IPC_NOWAIT) == -1) {
                 TEST_ERROR
             }
         } else {
@@ -101,12 +102,12 @@ int main(int argc, char ** argv)
                 lastmsg.mark = (pst->stdata[i].max_mark_ca - 3);
             }
 
-            if(msgsnd(msgmid, &lastmsg, sizeof(lastmsg) - sizeof(long), IPC_NOWAIT) == -1) {
+            if (msgsnd(msgmid, &lastmsg, sizeof(lastmsg) - sizeof(long), IPC_NOWAIT) == -1) {
                 TEST_ERROR
             }
         }
 
-        if(waitpid(pst->stdata[i].student_pid, &stat, 0) == -1) {
+        if (waitpid(pst->stdata[i].student_pid, &status, 0) == -1) {
             TEST_ERROR
         }
     }
@@ -116,7 +117,6 @@ int main(int argc, char ** argv)
     average_ca = 0;
     average_os = 0;
     for(int i = 0; i < POP_SIZE; i++) {
-        printinfo(i);
         average_ca += pst->stdata[i].mark_ca;
         ca_count[pst->stdata[i].mark_ca - 18] += 1;
 
@@ -130,6 +130,7 @@ int main(int argc, char ** argv)
     shmdt(pst);
     shmctl(memid, IPC_RMID, NULL);
     remove_queue(msgid);
+    remove_queue(msgmid);
 
     printf("\nComputer Architecture marks distribution:\n");
     printf("   18   19   20   21   22   23   24   25   26   27   28   29   30\n");

@@ -3,8 +3,7 @@
 //
 #include "shared.h"
 
-int mark_os, max_reject, max_mark;
-int mem_id, sem_id, ind, nelem_team;
+int mark_os, max_reject, max_mark, mem_id, sem_id, ind, nelem_team, *member_indexes, wait_answer;
 pid_t pod;
 
 int main(int argc, char ** argv)
@@ -106,12 +105,47 @@ int main(int argc, char ** argv)
             pst->stdata[ind].team == 0) && pst->stdata[ind].nof_invites > 0) 
         {
             pod = find_team_mate(ind);
-            invite(ind, pod, pst->stdata[ind].max_mark_ca);
+            wait_answer = invite(ind, pod, pst->stdata[ind].max_mark_ca);
         }
 
-	    release_sem(sem_id, 0);
+        // No more to invite, I'm leader, I close the team
+        if (pst->stdata[ind].leader == 1 && pst->stdata[ind].nof_invites == 0 && wait_answer == 0) {
+            lock_group(member_indexes, nelem_team, pst->stdata[ind].max_mark_ca);
+        }
+
+        release_sem(sem_id, 0);
+
+        // If the process invited someone it executes this part of code
+        while(wait_answer) {
+            if (msgrcv(msgid, &invitation, sizeof(invitation)-sizeof(long), getpid(), 0) != -1) {
+                if (invitation.invited) {
+                    decline(ind);
+                } else {
+                    if (invitation.accept) {
+                        if (pst->stdata[ind].leader == 0) {
+                            pst->stdata[ind].leader = 1;
+                            pst->stdata[ind].team = 1;
+                            nelem_team = 2;
+                            member_indexes = (int *)calloc(nelem_team, sizeof(int));
+                            member_indexes[0] = ind;
+                            member_indexes[nelem_team - 1] = invitation.sender_index;
+                            max_mark = invitation.max_mark;
+                        }
+                    } else {
+                        nelem_team++;
+                        member_indexes = (int *)realloc(member_indexes, nelem_team * sizeof(int));
+                        member_indexes[nelem_team - 1] = invitation.sender_index;
+                        max_mark = invitation.max_mark;
+                    }
+                    wait_answer = 0;
+                }                
+            }
+        }	    
     }//while
 
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGUSR1);
+    sigprocmask(SIG_BLOCK, &mask, NULL);
 
     pause();
 }

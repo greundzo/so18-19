@@ -238,8 +238,6 @@ void accept(int ind)
         TEST_ERROR
     } else {
         pst->stdata[ind].team = 1;
-        pst->stdata[sent].team = 1;
-        pst->stdata[sent].leader = 1;
     }
 }
 

@@ -106,7 +106,8 @@ struct message {
     int sender_index;
     int invited;
     int accept;
-    int max_mark;    
+    int max_mark; 
+    int final_mark;   
 };
 
 struct markmsg {
@@ -116,7 +117,7 @@ struct markmsg {
 
 struct message invitation;
 struct markmsg lastmsg;
-int msgid, msgmid, msg_id, msg_mid;
+int msgid;
 int create_queue();
 int remove_queue(int id);
 int modify_queue(int id);

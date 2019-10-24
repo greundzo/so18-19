@@ -90,19 +90,19 @@ void signalhandler(int signum)
 
     switch(signum){
         case SIGALRM:
-            take_sem(semid, 0);         
+            //take_sem(semid, 0);         
             for (int i = 0; i < POP_SIZE; i++) {
                 kill(pst->stdata[i].student_pid, SIGUSR1);
             }
-            release_sem(semid, 0);            
+            //release_sem(semid, 0);            
             break;
 
         case SIGUSR1:
             /* here child processes send data to parent*/
-            if (msgrcv(msgmid, &lastmsg, sizeof(lastmsg)-sizeof(long), getpid(), 0) == -1) {
+            if (msgrcv(msgid, &invitation, sizeof(invitation)-sizeof(long), invitation.sender_pid, 0) == -1) {
                 TEST_ERROR
             } else {
-                max_mark = lastmsg.mark;
+                max_mark = invitation.final_mark;
                 printinfo(ind);
             }
 
@@ -121,7 +121,7 @@ void signalhandler(int signum)
             shmdt(pst);
             shmctl(memid, IPC_RMID, NULL);
             remove_queue(create_queue());
-            remove_queue(msgmid);
+            remove_queue(msgid);
             exit(EXIT_FAILURE);
     }
 }

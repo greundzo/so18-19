@@ -142,10 +142,10 @@ int main(int argc, char ** argv)
             }
         }	    
     }//while
-
-    sigemptyset(&mask);
-    sigaddset(&mask, SIGUSR1);
-    sigprocmask(SIG_BLOCK, &mask, NULL);
-
     pause();
+    masksig();
+
+    // Waiting for os mark..
+
+    exit(EXIT_SUCCESS);
 }

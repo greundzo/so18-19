@@ -80,6 +80,7 @@ int read_conf(char *str);
 int get_pref();
 int get_turn(int matricule);
 void printinfo(int index);
+void masksig();
 
 // Shared Memory functions declaration
 int create_memory();

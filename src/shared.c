@@ -78,6 +78,13 @@ void printinfo(int index){
             pst->stdata[index].mark_ca, pst->stdata[index].mark_os);
 }
 
+void masksig()
+{
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGUSR1);
+    sigprocmask(SIG_BLOCK, &mask, NULL);
+}
+
 void signalhandler(int signum)
 {
 
@@ -223,7 +230,6 @@ int invite(int ind, int pid, int mark)
 
 void accept(int ind)
 {
-    int sent = invitation.sender_index;
     invitation.type = invitation.sender_pid; 
     invitation.invited = 0;
     invitation.accept = 1;

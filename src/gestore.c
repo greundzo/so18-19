@@ -82,8 +82,8 @@ int main(int argc, char ** argv)
             TEST_ERROR
     }
 
-    ca_count = calloc(13, sizeof(int));
-    os_count = calloc(16, sizeof(int));
+    ca_count = (int *)calloc(13, sizeof(int));
+    os_count = (int *)calloc(16, sizeof(int));
     average_ca = 0;
     average_os = 0;
     for(int i = 0; i < POP_SIZE; i++) {

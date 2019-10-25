@@ -99,9 +99,7 @@ void signalhandler(int signum)
 
         case SIGUSR1:
             /* here child processes send data to parent*/
-            printf("%d", lmsgid);
-            printf("%ld", lastmsg.mtype);
-            if (msgrcv(lmsgid, &lastmsg, sizeof(lastmsg)-sizeof(long), lastmsg.mtype, 0) == -1) {
+            if (msgrcv(lmsgid, &lst, sizeof(lastmsg)-sizeof(long), getpid(), 0) == -1) {
                 TEST_ERROR
             } else {
                 max_mark = lastmsg.mark;
@@ -122,6 +120,8 @@ void signalhandler(int signum)
             semctl(semid, 2, IPC_RMID);
             shmdt(pst);
             shmctl(memid, IPC_RMID, NULL);
+            free(buf);
+            free(lst);
             remove_queue(msgid);
             remove_queue(lmsgid);
             exit(EXIT_FAILURE);
@@ -191,7 +191,7 @@ void release_sem(int semid, int num)
 int create_queue (key_t key) //creates queue and returns id
 {
     int queue;
-    if (( queue = msgget(key, IPC_CREAT | 0666)) == -1) {
+    if (( queue = msgget(key, IPC_CREAT|0666)) == -1) {
         TEST_ERROR
     }
     return queue;
@@ -229,7 +229,7 @@ int invite(int ind, int pid, int mark)
     invitation.sender_index = ind;
     invitation.max_mark = mark;
 
-    if (msgsnd(msgid, &invitation, sizeof(invitation) - sizeof(long), IPC_NOWAIT) == -1) {
+    if (msgsnd(msgid, &invitation, sizeof(invitation)-sizeof(long), IPC_NOWAIT) == -1) {
         if (errno != EAGAIN) {
             TEST_ERROR
         }

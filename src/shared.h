@@ -97,9 +97,7 @@ void take_sem(int semid, int num);
 void release_sem(int semid, int num);
 
 // Message Queue functions declaration 
-struct msqid_ds buffer;
-
-struct message {
+struct msgbuf {
     long mtype;
     pid_t sender_pid;
     int sender_index;
@@ -113,8 +111,9 @@ struct markmsg {
     int mark;
 };
 
-struct message invitation;
-struct markmsg lastmsg;
+struct msqid_ds buffer;
+struct msgbuf invitation, *buf;
+struct markmsg lastmsg, *lst;
 int msgid, lmsgid;
 int create_queue(key_t key);
 int remove_queue(int id);

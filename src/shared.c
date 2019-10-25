@@ -99,7 +99,7 @@ void signalhandler(int signum)
 
         case SIGUSR1:
             /* here child processes send data to parent*/
-            if (msgrcv(lmsgid, &lst, sizeof(lastmsg)-sizeof(long), getpid(), 0) == -1) {
+            if (msgrcv(lmsgid, &lastmsg, sizeof(lastmsg), getpid(), 0) == -1) {
                 TEST_ERROR
             } else {
                 max_mark = lastmsg.mark;
@@ -120,8 +120,6 @@ void signalhandler(int signum)
             semctl(semid, 2, IPC_RMID);
             shmdt(pst);
             shmctl(memid, IPC_RMID, NULL);
-            free(buf);
-            free(lst);
             remove_queue(msgid);
             remove_queue(lmsgid);
             exit(EXIT_FAILURE);
@@ -217,7 +215,7 @@ int info_queue (int id) //get the status of the queue
 
 int receive_msg_nowait (int id) //receive a message in the queue, no wait
 {
-    return msgrcv(id, &invitation, (sizeof(invitation)-sizeof(long)), 0, IPC_NOWAIT);
+    return msgrcv(id, &invitation, (sizeof(invitation)-sizeof(long)), getpid(), IPC_NOWAIT);
 }
 
 int invite(int ind, int pid, int mark)

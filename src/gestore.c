@@ -61,9 +61,9 @@ int main(int argc, char ** argv)
     sem_init_val(1, 1);
 
     msgid = create_queue(MSG);
-    //buf = malloc(POP_SIZE*sizeof(lastmsg));
+    //buf = malloc(POP_SIZE*sizeof(invitation));
     lmsgid = create_queue(LMS);
-    lst = malloc(POP_SIZE*sizeof(lastmsg));
+    //lst = malloc(POP_SIZE*sizeof(lastmsg));
     
 
     puts("Creating students...");
@@ -94,7 +94,7 @@ int main(int argc, char ** argv)
 
         if (pst->stdata[i].closed == 0) {
             lastmsg.mark = 0;
-            if (msgsnd(lmsgid, &lst, sizeof(lastmsg)-sizeof(long), IPC_NOWAIT) == -1) {
+            if (msgsnd(lmsgid, &lastmsg, sizeof(lastmsg), IPC_NOWAIT) == -1) {
                 TEST_ERROR
             }
         } else {
@@ -105,7 +105,7 @@ int main(int argc, char ** argv)
                 lastmsg.mark = (pst->stdata[i].max_mark_ca - 3);
             }
 
-            if (msgsnd(lmsgid, &lst, sizeof(lastmsg)-sizeof(long), IPC_NOWAIT) == -1) {
+            if (msgsnd(lmsgid, &lastmsg, sizeof(lastmsg), IPC_NOWAIT) == -1) {
                 TEST_ERROR
             }
         }
@@ -132,8 +132,8 @@ int main(int argc, char ** argv)
     semctl(semid, 2, IPC_RMID);
     shmdt(pst);
     shmctl(memid, IPC_RMID, NULL);
-    free(buf);
-    free(lst);
+    //free(buf);
+    //free(lst);
     remove_queue(msgid);
     remove_queue(lmsgid);
 

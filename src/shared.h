@@ -34,10 +34,10 @@
 #include <errno.h>
 #include <fcntl.h>
 
-#define MEM 30
-#define SEM 5
-#define MSG 7
-#define LMS 8
+#define MEM 300
+#define SEM 555
+#define MSG 777
+#define LMS 888
 
 typedef struct student_data {
     pid_t student_pid;
@@ -112,8 +112,8 @@ struct markmsg {
 };
 
 struct msqid_ds buffer;
-struct msgbuf invitation, *buf;
-struct markmsg lastmsg, *lst;
+struct msgbuf invitation;
+struct markmsg lastmsg;
 int msgid, lmsgid;
 int create_queue(key_t key);
 int remove_queue(int id);

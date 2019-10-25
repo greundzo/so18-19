@@ -42,8 +42,9 @@ int main(int argc, char ** argv)
     pst->pc ++;    
     release_sem(semid, 0);
 
-    //msgid = create_queue();
-
+    //msgid = create_queue(MSG);
+    //lmsgid = create_queue(LMS);
+    //printf("%d\n", msgid);
     ready(semid);
     // General condition to access invitation code
     // 1) I'm not in a team
@@ -148,10 +149,10 @@ int main(int argc, char ** argv)
     masksig();
 
     // Waiting for os mark..
-    if (msgrcv(msgid, &invitation, sizeof(invitation)-sizeof(long), getpid(), 0) == -1) {
+    if (msgrcv(msgid, &lastmsg, sizeof(lastmsg)-sizeof(long), getpid(), 0) == -1) {
         TEST_ERROR
     } else {
-        max_mark = invitation.final_mark;
+        max_mark = lastmsg.mark;
         printinfo(ind);
     }
 

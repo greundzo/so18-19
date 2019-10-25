@@ -99,10 +99,12 @@ void signalhandler(int signum)
 
         case SIGUSR1:
             /* here child processes send data to parent*/
-            if (msgrcv(msgid, &invitation, sizeof(invitation)-sizeof(long), invitation.sender_pid, 0) == -1) {
+            printf("%d", lmsgid);
+            printf("%ld", lastmsg.mtype);
+            if (msgrcv(lmsgid, &lastmsg, sizeof(lastmsg)-sizeof(long), lastmsg.mtype, 0) == -1) {
                 TEST_ERROR
             } else {
-                max_mark = invitation.final_mark;
+                max_mark = lastmsg.mark;
                 printinfo(ind);
             }
 
@@ -120,8 +122,8 @@ void signalhandler(int signum)
             semctl(semid, 2, IPC_RMID);
             shmdt(pst);
             shmctl(memid, IPC_RMID, NULL);
-            remove_queue(create_queue());
             remove_queue(msgid);
+            remove_queue(lmsgid);
             exit(EXIT_FAILURE);
     }
 }
@@ -186,10 +188,10 @@ void release_sem(int semid, int num)
 }
 
 /* GESTIONE DEI MESSAGGI */
-int create_queue () //creates queue and returns id
+int create_queue (key_t key) //creates queue and returns id
 {
     int queue;
-    if (( queue = msgget(MSG, IPC_CREAT | 0666)) == -1) {
+    if (( queue = msgget(key, IPC_CREAT | 0666)) == -1) {
         TEST_ERROR
     }
     return queue;
@@ -220,7 +222,7 @@ int receive_msg_nowait (int id) //receive a message in the queue, no wait
 
 int invite(int ind, int pid, int mark)
 {    
-    invitation.type = pid; 
+    invitation.mtype = pid; 
     invitation.invited = 1;
     invitation.accept = 0;
     invitation.sender_pid = getpid();
@@ -240,7 +242,7 @@ int invite(int ind, int pid, int mark)
 
 void accept(int ind)
 {
-    invitation.type = invitation.sender_pid; 
+    invitation.mtype = invitation.sender_pid; 
     invitation.invited = 0;
     invitation.accept = 1;
     invitation.sender_pid = getpid();
@@ -259,7 +261,7 @@ void accept(int ind)
 
 void decline(int ind)
 {
-    invitation.type = invitation.sender_pid; 
+    invitation.mtype = invitation.sender_pid; 
     invitation.invited = 0;
     invitation.accept = 0;
     invitation.sender_pid = getpid();

@@ -60,7 +60,11 @@ int main(int argc, char ** argv)
     sem_init_val(0, 1);
     sem_init_val(1, 1);
 
-    msgid = create_queue();
+    msgid = create_queue(MSG);
+    lmsgid = create_queue(LMS);
+
+    printf("%d\n", msgid);
+    printf("%d\n", lmsgid);
 
     puts("Creating students...");
 
@@ -86,22 +90,22 @@ int main(int argc, char ** argv)
     
     for(int i = 0; i < POP_SIZE; i++) {
 
-        invitation.sender_pid = pst->stdata[i].student_pid;
+        lastmsg.mtype = pst->stdata[i].student_pid;
 
         if (pst->stdata[i].closed == 0) {
-            invitation.final_mark = 0;
-            if (msgsnd(msgid, &invitation, sizeof(invitation)-sizeof(long), IPC_NOWAIT) == -1) {
+            lastmsg.mark = 0;
+            if (msgsnd(msgid, &lastmsg, sizeof(lastmsg)-sizeof(long), IPC_NOWAIT) == -1) {
                 TEST_ERROR
             }
         } else {
             if (pst->stdata[i].nelem_team == pst->stdata[i].nof_elems) {
-                invitation.final_mark = pst->stdata[i].max_mark_ca;
+                lastmsg.mark = pst->stdata[i].max_mark_ca;
             }
             else{
-                invitation.final_mark = (pst->stdata[i].max_mark_ca - 3);
+                lastmsg.mark = (pst->stdata[i].max_mark_ca - 3);
             }
 
-            if (msgsnd(msgid, &invitation, sizeof(invitation)-sizeof(long), IPC_NOWAIT) == -1) {
+            if (msgsnd(msgid, &lastmsg, sizeof(lastmsg)-sizeof(long), IPC_NOWAIT) == -1) {
                 TEST_ERROR
             }
         }
@@ -129,6 +133,7 @@ int main(int argc, char ** argv)
     shmdt(pst);
     shmctl(memid, IPC_RMID, NULL);
     remove_queue(msgid);
+    remove_queue(lmsgid);
 
     printf("\nComputer Architecture marks distribution:\n");
     printf("   18   19   20   21   22   23   24   25   26   27   28   29   30\n");

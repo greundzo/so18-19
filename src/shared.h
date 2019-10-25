@@ -29,16 +29,15 @@
 #include <sys/sem.h>
 #include <sys/msg.h>
 
-#include <semaphore.h>
 #include <signal.h>
 #include <time.h>
 #include <errno.h>
 #include <fcntl.h>
 
-#define GROUP 3
 #define MEM 30
 #define SEM 5
 #define MSG 7
+#define LMS 8
 
 typedef struct student_data {
     pid_t student_pid;
@@ -101,13 +100,12 @@ void release_sem(int semid, int num);
 struct msqid_ds buffer;
 
 struct message {
-    long type;
+    long mtype;
     pid_t sender_pid;
     int sender_index;
     int invited;
     int accept;
-    int max_mark; 
-    int final_mark;   
+    int max_mark;  
 };
 
 struct markmsg {
@@ -117,8 +115,8 @@ struct markmsg {
 
 struct message invitation;
 struct markmsg lastmsg;
-int msgid;
-int create_queue();
+int msgid, lmsgid;
+int create_queue(key_t key);
 int remove_queue(int id);
 int modify_queue(int id);
 int receive_msg_nowait (int id);

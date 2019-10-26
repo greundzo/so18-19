@@ -42,8 +42,7 @@ int main(int argc, char ** argv)
     pst->pc ++;    
     release_sem(semid, 0);
 
-    //msgid = msgget(MSG, 0666);
-    //lmsgid = msgget(LMS, 0666);
+    //msgid = create_queue();
 
     ready(semid);
     // General condition to access invitation code
@@ -149,7 +148,7 @@ int main(int argc, char ** argv)
     masksig();
 
     // Waiting for os mark..
-    if (msgrcv(lmsgid, &lastmsg, sizeof(lastmsg)-sizeof(long), getpid(), 0) == -1) {
+    if (msgrcv(msgid, &lastmsg, sizeof(lastmsg)-sizeof(long), getpid(), 0) == -1) {
         TEST_ERROR
     } else {
         max_mark = lastmsg.mark;
@@ -160,6 +159,6 @@ int main(int argc, char ** argv)
         free(member_indexes);
     }
 
-    shmdt(pst);
+    //shmdt(pst);
     exit(EXIT_SUCCESS);
 }

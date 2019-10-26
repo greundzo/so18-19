@@ -99,7 +99,7 @@ void signalhandler(int signum)
 
         case SIGUSR1:
             /* here child processes send data to parent*/
-            if (msgrcv(lmsgid, &lastmsg, sizeof(lastmsg), getpid(), 0) == -1) {
+            if (msgrcv(msgid, &lastmsg, sizeof(lastmsg), getpid(), 0) == -1) {
                 TEST_ERROR
             } else {
                 max_mark = lastmsg.mark;
@@ -110,7 +110,7 @@ void signalhandler(int signum)
                 free(member_indexes);
             }
 
-            shmdt(pst);
+            //shmdt(pst);
             exit(EXIT_SUCCESS);
 
         case SIGINT:
@@ -121,7 +121,6 @@ void signalhandler(int signum)
             shmdt(pst);
             shmctl(memid, IPC_RMID, NULL);
             remove_queue(msgid);
-            remove_queue(lmsgid);
             exit(EXIT_FAILURE);
     }
 }
@@ -186,10 +185,10 @@ void release_sem(int semid, int num)
 }
 
 /* GESTIONE DEI MESSAGGI */
-int create_queue (key_t key) //creates queue and returns id
+int create_queue() //creates queue and returns id
 {
     int queue;
-    if (( queue = msgget(key, IPC_CREAT|0666)) == -1) {
+    if (( queue = msgget(MSG, 0666|IPC_CREAT)) == -1) {
         TEST_ERROR
     }
     return queue;
@@ -204,7 +203,7 @@ int remove_queue (int id) //removes queue and returns id
     return rm_queue;
 }
 
-int info_queue (int id) //get the status of the queue
+int info_queue(int id) //get the status of the queue
 {
     int infos;
     if (( infos = msgctl(id, IPC_STAT, &buffer)) == -1) {
@@ -213,9 +212,13 @@ int info_queue (int id) //get the status of the queue
     return infos;
 }
 
-int receive_msg_nowait (int id) //receive a message in the queue, no wait
+int receive_msg_nowait(int id) //receive a message in the queue, no wait
 {
-    return msgrcv(id, &invitation, (sizeof(invitation)-sizeof(long)), getpid(), IPC_NOWAIT);
+    int rc;
+    if ( (rc = msgrcv(id, &invitation, (sizeof(invitation)-sizeof(long)), getpid(), IPC_NOWAIT)) == -1) {
+        TEST_ERROR
+    }
+    return rc;
 }
 
 int invite(int ind, int pid, int mark)

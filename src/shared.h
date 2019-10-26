@@ -114,8 +114,8 @@ struct markmsg {
 struct msqid_ds buffer;
 struct msgbuf invitation;
 struct markmsg lastmsg;
-int msgid, lmsgid;
-int create_queue(key_t key);
+int msgid;
+int create_queue();
 int remove_queue(int id);
 int modify_queue(int id);
 int receive_msg_nowait (int id);

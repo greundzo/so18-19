@@ -89,16 +89,15 @@ void signalhandler(int signum)
 {
 
     switch(signum){
-        case SIGALRM:
-            //take_sem(semid, 0);         
+        case SIGALRM:      
             for (int i = 0; i < POP_SIZE; i++) {
                 kill(pst->stdata[i].student_pid, SIGUSR1);
             }
-            //release_sem(semid, 0);            
             break;
 
         case SIGUSR1:
             /* here child processes send data to parent*/
+            msgid = create_queue();
             if (msgrcv(msgid, &lastmsg, sizeof(lastmsg), getpid(), 0) == -1) {
                 TEST_ERROR
             } else {
@@ -121,6 +120,7 @@ void signalhandler(int signum)
             shmdt(pst);
             shmctl(memid, IPC_RMID, NULL);
             remove_queue(msgid);
+            //remove_queue(lastid);
             exit(EXIT_FAILURE);
     }
 }
@@ -170,7 +170,7 @@ void take_sem(int semid, int num)
 {      
     ops.sem_num = num;
     ops.sem_op = -1;
-    if ( (semop(semid, &ops, (size_t)1)) == -1) {
+    if ( (semop(semid, &ops, 1)) == -1) {
         TEST_ERROR
     }
 }
@@ -179,7 +179,7 @@ void release_sem(int semid, int num)
 {   
     ops.sem_num = num;
     ops.sem_op = 1;
-    if (semop(semid, &ops, (size_t)1) == -1) {
+    if (semop(semid, &ops, 1) == -1) {
         TEST_ERROR
     }
 }
@@ -215,7 +215,7 @@ int info_queue(int id) //get the status of the queue
 int receive_msg_nowait(int id) //receive a message in the queue, no wait
 {
     int rc;
-    if ( (rc = msgrcv(id, &invitation, (sizeof(invitation)-sizeof(long)), getpid(), IPC_NOWAIT)) == -1) {
+    if (( rc = msgrcv(id, &invitation, sizeof(invitation), getpid(), IPC_NOWAIT)) == -1) {
         TEST_ERROR
     }
     return rc;
@@ -230,7 +230,7 @@ int invite(int ind, int pid, int mark)
     invitation.sender_index = ind;
     invitation.max_mark = mark;
 
-    if (msgsnd(msgid, &invitation, sizeof(invitation)-sizeof(long), IPC_NOWAIT) == -1) {
+    if (msgsnd(msgid, &invitation, sizeof(invitation), IPC_NOWAIT) == -1) {
         if (errno != EAGAIN) {
             TEST_ERROR
         }
@@ -253,7 +253,7 @@ void accept(int ind)
         invitation.max_mark = pst->stdata[ind].mark_ca;
     }    
 
-    if (msgsnd(msgid, &invitation, sizeof(invitation) - sizeof(long), 0) == -1) {
+    if (msgsnd(msgid, &invitation, sizeof(invitation), 0) == -1) {
         TEST_ERROR
     } else {
         pst->stdata[ind].team = 1;
@@ -268,7 +268,7 @@ void decline(int ind)
     invitation.sender_pid = getpid();
     invitation.sender_index = ind;
 
-    if (msgsnd(msgid, &invitation, sizeof(invitation) - sizeof(long), 0) == -1) {
+    if (msgsnd(msgid, &invitation, sizeof(invitation), 0) == -1) {
         TEST_ERROR
     }
 }

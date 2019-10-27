@@ -42,7 +42,8 @@ int main(int argc, char ** argv)
     pst->pc ++;    
     release_sem(semid, 0);
 
-    //msgid = create_queue();
+    msgid = create_queue();
+    //lastid = msgget(LMS, 0666 | IPC_CREAT);
 
     ready(semid);
     // General condition to access invitation code

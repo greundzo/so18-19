@@ -61,6 +61,7 @@ int main(int argc, char ** argv)
     sem_init_val(1, 1);
 
     msgid = create_queue();
+    //lastid = msgget(LMS, 0666|IPC_CREAT);
 
     puts("Creating students...");
 
@@ -129,6 +130,7 @@ int main(int argc, char ** argv)
     shmdt(pst);
     shmctl(memid, IPC_RMID, NULL);
     remove_queue(msgid);
+    remove_queue(lastid);
 
     printf("\nComputer Architecture marks distribution:\n");
     printf("   18   19   20   21   22   23   24   25   26   27   28   29   30\n");

@@ -95,23 +95,6 @@ void signalhandler(int signum)
             }
             break;
 
-        case SIGUSR1:
-            /* here child processes send data to parent*/
-            msgid = create_queue();
-            if (msgrcv(msgid, &lastmsg, sizeof(lastmsg), getpid(), 0) == -1) {
-                TEST_ERROR
-            } else {
-                max_mark = lastmsg.mark;
-                printinfo(ind);
-            }
-
-            if (pst->stdata[ind].leader == 1) {
-                free(member_indexes);
-            }
-
-            //shmdt(pst);
-            exit(EXIT_SUCCESS);
-
         case SIGINT:
             for(int i = 0; i < POP_SIZE; i++){
                 kill(pst->stdata[i].student_pid, SIGTERM);
@@ -120,7 +103,7 @@ void signalhandler(int signum)
             shmdt(pst);
             shmctl(memid, IPC_RMID, NULL);
             remove_queue(msgid);
-            //remove_queue(lastid);
+            remove_queue(lastid);
             exit(EXIT_FAILURE);
     }
 }
@@ -145,7 +128,7 @@ void *connect(int id)
 int create_sem()
 {
     int sem;
-	if (( sem = semget(SEM, 2, 0666|IPC_CREAT)) == -1) {
+	if (( sem = semget(SEM, 3, 0666|IPC_CREAT)) == -1) {
         TEST_ERROR
     } 
     return sem;

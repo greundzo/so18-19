@@ -61,14 +61,15 @@ typedef struct shared {
     int pc;
 }shared;
 
-struct sigaction handle;
+struct sigaction handle, sthandle;
 sigset_t mask;
 void signalhandler(int signal);
+void sthandler(int signal);
 
 // Shared global variables and functions
 struct shared *pst;
 int *ca_count, *os_count, *member_indexes;
-int memid, semid, ind, max_mark;
+int memid, semid, max_mark;
 float average_ca, average_os;
 int generate_random_integer(int minNum, int maxNum, pid_t pid);
 int generate_regnum(pid_t pid);

@@ -59,19 +59,20 @@ int main(int argc, char ** argv)
     semid = create_sem();
     sem_init_val(0, 1);
     sem_init_val(1, 1);
+    sem_init_val(2, 0);
 
     msgid = create_queue();
-    //lastid = msgget(LMS, 0666|IPC_CREAT);
+    lastid = msgget(LMS, 0666|IPC_CREAT);
 
     puts("Creating students...");
 
     spawn(POP_SIZE);
     puts("**********");
     puts("");
+
+    take_sem(semid, 2);
     
-    ops.sem_num = 1;
-    ops.sem_op = -1;
-    semop(semid, &ops, 1);
+    take_sem(semid, 0);
 
     masksig();
 
@@ -91,7 +92,7 @@ int main(int argc, char ** argv)
 
         if (pst->stdata[i].closed == 0) {
             lastmsg.mark = 0;
-            if (msgsnd(msgid, &lastmsg, sizeof(lastmsg), IPC_NOWAIT) == -1) {
+            if (msgsnd(lastid, &lastmsg, sizeof(lastmsg), IPC_NOWAIT) == -1) {
                 TEST_ERROR
             }
         } else {
@@ -102,7 +103,7 @@ int main(int argc, char ** argv)
                 lastmsg.mark = (pst->stdata[i].max_mark_ca - 3);
             }
 
-            if (msgsnd(msgid, &lastmsg, sizeof(lastmsg), IPC_NOWAIT) == -1) {
+            if (msgsnd(lastid, &lastmsg, sizeof(lastmsg), IPC_NOWAIT) == -1) {
                 TEST_ERROR
             }
         }

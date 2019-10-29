@@ -59,7 +59,7 @@ int main(int argc, char ** argv)
     semid = create_sem();
     sem_init_val(0, 1);
     sem_init_val(1, 1);
-    sem_init_val(2, 0);
+    sem_init_val(2, POP_SIZE);
 
     msgid = create_queue();
     lastid = msgget(LMS, 0666|IPC_CREAT);
@@ -70,7 +70,7 @@ int main(int argc, char ** argv)
     puts("**********");
     puts("");
 
-    take_sem(semid, 2);
+    ready(semid, 2);
     
     take_sem(semid, 0);
 

@@ -141,8 +141,8 @@ void sem_init_val(int index, int value)
     } 	
 }
 
-void ready(int semid) {
-    ops.sem_num = 1;
+void ready(int semid, int num) {
+    ops.sem_num = num;
     ops.sem_op = 0;
     if (semop(semid, &ops, 1) == -1) {
         TEST_ERROR

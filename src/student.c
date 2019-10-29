@@ -63,17 +63,16 @@ int main(int argc, char ** argv)
     pst->stdata[st_ind].nof_elems = st_nof_el;
     pst->stdata[st_ind].nof_invites = st_inv;
     pst->stdata[st_ind].nof_members = 0;
-    pst->pc ++;    
+    pst->pc ++; 
+    take_sem(semid, 2);   
     release_sem(semid, 0);
 
     msgid = create_queue();
     lastid = msgget(LMS, 0666 | IPC_CREAT);
 
-    if (st_ind == POP_SIZE) {
-        release_sem(semid, 2);
-    }
+    
 
-    ready(semid);
+    ready(semid, 1);
     // General condition to access invitation code
     // 1) I'm not in a team
     // 2) I'm the leader but I've not yet closed the team
@@ -86,8 +85,8 @@ int main(int argc, char ** argv)
         {
             if (pst->stdata[st_ind].team == 0) {
                 if (max_reject > 0) {
-                    if (pst->stdata[st_ind].mark_ca > 26) {
-                        if (pst->stdata[st_ind].nof_elems == pst->stdata[invitation.sender_index].nof_elems) {
+                    if (st_mark_ca > 26) {
+                        if (st_nof_el == pst->stdata[invitation.sender_index].nof_elems) {
                             accept(st_ind);
                         } else if (find_team_mate(st_ind) == -1) {
                             accept(st_ind);
@@ -96,15 +95,15 @@ int main(int argc, char ** argv)
                             max_reject--;
                         }
                     } else {
-		          		if (pst->stdata[st_ind].nof_elems == pst->stdata[invitation.sender_index].nof_elems) {
-							if (invitation.max_mark > pst->stdata[st_ind].mark_ca || pst->stdata[st_ind].nof_invites == 0) {
+		          		if (st_nof_el == pst->stdata[invitation.sender_index].nof_elems) {
+							if (invitation.max_mark > st_mark_ca || st_nof_el == 0) {
 								accept(st_ind);
 							} else {
 								decline(st_ind);
 								max_reject --;
 							}
 						} else {
-							if ((invitation.max_mark - 3) > pst->stdata[st_ind].mark_ca || pst->stdata[st_ind].nof_invites == 0) {
+							if ((invitation.max_mark - 3) > st_mark_ca || st_nof_el == 0) {
                                 accept(st_ind);
                 	        } else {
 								decline(st_ind);
@@ -127,19 +126,19 @@ int main(int argc, char ** argv)
             }
         }
 
-        if (((pst->stdata[st_ind].leader == 1 && pst->stdata[st_ind].nof_elems != nelem_team) || 
-            pst->stdata[st_ind].team == 0) && pst->stdata[st_ind].nof_invites > 0) 
+        if (((pst->stdata[st_ind].leader == 1 && st_nof_el != nelem_team) || 
+            pst->stdata[st_ind].team == 0) && st_inv > 0) 
         {
             pod = find_team_mate(st_ind);
             wait_answer = invite(st_ind, pod, pst->stdata[st_ind].max_mark_ca);
         }
 
-        if (pst->stdata[st_ind].leader == 1 && pst->stdata[st_ind].nof_elems == nelem_team) {
+        if (pst->stdata[st_ind].leader == 1 && st_nof_el == nelem_team) {
             lock_group(member_indexes, nelem_team, max_mark);
         }
 
         // No more to invite, I'm leader, I close the team
-        if (pst->stdata[st_ind].leader == 1 && pst->stdata[st_ind].nof_invites == 0 && wait_answer == 0) {
+        if (pst->stdata[st_ind].leader == 1 && st_inv == 0 && wait_answer == 0) {
             lock_group(member_indexes, nelem_team, pst->stdata[st_ind].max_mark_ca);
         }
 

@@ -93,7 +93,7 @@ union semun {
 struct sembuf ops;
 int create_sem();
 void sem_init_val(int index, int value);
-void ready(int semid);
+void ready(int semid, int num);
 void take_sem(int semid, int num);
 void release_sem(int semid, int num);
 

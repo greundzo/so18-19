@@ -14,7 +14,10 @@ void sthandler(int signal)
         TEST_ERROR
     } else {
         max_mark = lastmsg.mark;
-        printinfo(st_ind);
+        take_sem(semid, 3);
+        pst->stdata[st_ind].mark_os = max_mark;
+        release_sem(semid, 3);
+        printinfo(st_ind, reg_num, st_mark_ca);
     }
 
     if (pst->stdata[st_ind].leader == 1) {
@@ -30,7 +33,7 @@ int main(int argc, char ** argv)
     pid_t pid = getpid();
     reg_num = generate_regnum(pid);
     st_class = get_turn(reg_num);
-    st_mark_ca = generate_random_integer(18, 30, pid);
+    st_mark_ca = generate_random_integer(pid);
     st_nof_el = get_pref();
     st_inv = read_conf("nof_invites");
 
@@ -52,7 +55,7 @@ int main(int argc, char ** argv)
     take_sem(semid, 0);    
     st_ind = pst->pc;
     pst->stdata[st_ind].student_pid = pid;
-    pst->stdata[st_ind].registration_number = reg_num;
+    //pst->stdata[st_ind].registration_number = reg_num;
     pst->stdata[st_ind].class = st_class;
     pst->stdata[st_ind].mark_os = 0;
     pst->stdata[st_ind].mark_ca = st_mark_ca;
@@ -62,7 +65,7 @@ int main(int argc, char ** argv)
     pst->stdata[st_ind].closed = 0;
     pst->stdata[st_ind].nof_elems = st_nof_el;
     pst->stdata[st_ind].nof_invites = st_inv;
-    pst->stdata[st_ind].nof_members = 0;
+    //pst->stdata[st_ind].nof_members = 0;
     pst->pc ++; 
     take_sem(semid, 2);   
     release_sem(semid, 0);
@@ -70,12 +73,11 @@ int main(int argc, char ** argv)
     msgid = create_queue();
     lastid = msgget(LMS, 0666 | IPC_CREAT);
 
-    
-
     ready(semid, 1);
     // General condition to access invitation code
     // 1) I'm not in a team
     // 2) I'm the leader but I've not yet closed the team
+    
     while (pst->stdata[st_ind].team == 0 
         || (pst->stdata[st_ind].leader == 1 
         && pst->stdata[st_ind].closed == 0)) 
@@ -126,11 +128,12 @@ int main(int argc, char ** argv)
             }
         }
 
-        if (((pst->stdata[st_ind].leader == 1 && st_nof_el != nelem_team) || 
-            pst->stdata[st_ind].team == 0) && st_inv > 0) 
+        if ((pst->stdata[st_ind].leader == 1 && st_nof_el != nelem_team) || 
+            (pst->stdata[st_ind].team == 0 && st_inv > 0)) 
         {
-            pod = find_team_mate(st_ind);
-            wait_answer = invite(st_ind, pod, pst->stdata[st_ind].max_mark_ca);
+            if ((pod = find_team_mate(st_ind)) != -1) { //find_team_mate(st_ind);
+                wait_answer = invite(st_ind, pod, st_mark_ca);
+            }
         }
 
         if (pst->stdata[st_ind].leader == 1 && st_nof_el == nelem_team) {
@@ -139,14 +142,14 @@ int main(int argc, char ** argv)
 
         // No more to invite, I'm leader, I close the team
         if (pst->stdata[st_ind].leader == 1 && st_inv == 0 && wait_answer == 0) {
-            lock_group(member_indexes, nelem_team, pst->stdata[st_ind].max_mark_ca);
+            lock_group(member_indexes, nelem_team, max_mark);
         }
 
         release_sem(semid, 0);
 
         // If the process invited someone it executes this part of code
         while(wait_answer) {
-            if (msgrcv(msgid, &invitation, sizeof(invitation)-sizeof(long), getpid(), 0) != -1) {
+            if (msgrcv(msgid, &invitation, sizeof(invitation), getpid(), 0) != -1) {
                 if (invitation.invited) {
                     decline(st_ind);
                 } else {
@@ -176,11 +179,14 @@ int main(int argc, char ** argv)
     masksig();
 
     // Waiting for os mark..
-    if (msgrcv(msgid, &lastmsg, sizeof(lastmsg)-sizeof(long), getpid(), 0) == -1) {
+    if (msgrcv(lastid, &lastmsg, sizeof(lastmsg), getpid(), 0) == -1) {
         TEST_ERROR
     } else {
         max_mark = lastmsg.mark;
-        printinfo(st_ind);
+        take_sem(semid, 3);
+        pst->stdata[st_ind].mark_os = max_mark;
+        release_sem(semid, 3);
+        printinfo(st_ind, reg_num, st_mark_ca);
     }
 
     if (pst->stdata[st_ind].leader == 1) {

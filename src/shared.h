@@ -71,12 +71,12 @@ struct shared *pst;
 int *ca_count, *os_count, *member_indexes;
 int memid, semid, max_mark;
 float average_ca, average_os;
-int generate_random_integer(int minNum, int maxNum, pid_t pid);
+int generate_random_integer(pid_t pid);
 int generate_regnum(pid_t pid);
 int read_conf(char *str);
 int get_pref();
 int get_turn(int matricule);
-void printinfo(int index);
+void printinfo(int index, int reg, int mark);
 void masksig();
 
 // Shared Memory functions declaration
@@ -121,6 +121,7 @@ int remove_queue(int id);
 int modify_queue(int id);
 int receive_msg_nowait (int id);
 int invite (int id, int pid, int mark);
+pid_t search_4_mate(int ind);
 void accept (int id);
 void decline(int id);
 pid_t find_team_mate(int ind);

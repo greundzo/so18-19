@@ -4,16 +4,10 @@
 #include "shared.h"
 
 // Generates a casual number between minNum and maxNum 
-int generate_random_integer(int minNum, int maxNum, pid_t pid) 
+int generate_random_integer(pid_t pid) 
 {
-    int span = maxNum - minNum + 1;
-    int snNum = maxNum - maxNum % span;
-    int a;
     srand(pid);
-    do 
-    a = rand(); 
-    while (a >= snNum);
-    return minNum + a % span;
+    return rand()%13+18;
 }
 
 // Generates the register number
@@ -47,17 +41,18 @@ int read_conf(char *str)
 
 int get_pref() 
 {
-    int num = generate_random_integer(1, 100, getpid());
+    srand(getpid());
+    int num = rand()%100+1;
     
-    if (num <= read_conf("pref_2")) {
+    if (num <= 35) {
         return 2;
     }
 
-    if (num <= (read_conf("pref_2") + read_conf("pref_3")) && num > read_conf("pref_2")) {
+    if (num <= 75 && num > 35) {
         return 3;
     }
 
-    if(num > read_conf("pref_2") + read_conf("pref_3")) {
+    if(num > 75) {
         return 4;
     }
 
@@ -72,10 +67,11 @@ int get_turn(int matricule)
     return 1;
 }
 
-void printinfo(int index){
+void printinfo(int index, int reg, int mark) 
+{
     printf("%3i: Register Number = %5i   CA Mark = %2i   OS Mark = %2i\n",
-            index, pst->stdata[index].registration_number,
-            pst->stdata[index].mark_ca, max_mark);
+            index, reg,
+            mark, max_mark);
 }
 
 void masksig()
@@ -128,7 +124,7 @@ void *connect(int id)
 int create_sem()
 {
     int sem;
-	if (( sem = semget(SEM, 3, 0666|IPC_CREAT)) == -1) {
+	if (( sem = semget(SEM, 4, 0666|IPC_CREAT)) == -1) {
         TEST_ERROR
     } 
     return sem;
@@ -197,11 +193,7 @@ int info_queue(int id) //get the status of the queue
 
 int receive_msg_nowait(int id) //receive a message in the queue, no wait
 {
-    int rc;
-    if (( rc = msgrcv(id, &invitation, sizeof(invitation), getpid(), IPC_NOWAIT)) == -1) {
-        TEST_ERROR
-    }
-    return rc;
+    return msgrcv(id, &invitation, sizeof(invitation), getpid(), IPC_NOWAIT);
 }
 
 int invite(int ind, int pid, int mark)

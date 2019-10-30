@@ -60,6 +60,8 @@ int main(int argc, char ** argv)
     sem_init_val(0, 1);
     sem_init_val(1, 1);
     sem_init_val(2, POP_SIZE);
+    sem_init_val(3, POP_SIZE);
+
 
     msgid = create_queue();
     lastid = msgget(LMS, 0666|IPC_CREAT);
@@ -71,10 +73,9 @@ int main(int argc, char ** argv)
     puts("");
 
     ready(semid, 2);
+    puts("Start");
     
-    take_sem(semid, 0);
-
-    masksig();
+    take_sem(semid, 1);
 
     alarm(SIM_TIME); 
     
@@ -150,7 +151,7 @@ int main(int argc, char ** argv)
     printf("Average CA = %2.2f   Average OS = %2.2f   Difference = %2.2f\n\n",
             average_ca, average_os, average_os-average_ca);
 
-    free(ca_count);
+    free(ca_count);    
     free(os_count);
 
     exit(EXIT_SUCCESS);

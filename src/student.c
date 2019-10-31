@@ -95,29 +95,29 @@ int main(int argc, char ** argv)
                             max_reject--;
                         }
                     } else {
-		          		if (st_nof_el == pst->stdata[invitation.sender_index].nof_elems) {
-							if (invitation.max_mark > st_mark_ca || st_nof_el == 0) {
-								accept(st_ind);
-							} else {
-								decline(st_ind);
-								max_reject --;
-							}
-						} else {
-							if ((invitation.max_mark - 3) > st_mark_ca || st_nof_el == 0) {
-                                accept(st_ind);
+		          if (st_nof_el == pst->stdata[invitation.sender_index].nof_elems) {
+			      if (invitation.max_mark > st_mark_ca || st_nof_el == 0) {
+			          accept(st_ind);
+			      } else {
+				    decline(st_ind);
+				    max_reject --;
+			      }
+			  } else {
+				if ((invitation.max_mark - 3) > st_mark_ca || st_nof_el == 0) {
+                                    accept(st_ind);
                 	        } else {
-								decline(st_ind);
-				      			max_reject--;
-           		        	}
-			  			}	    
-		     		}
-				} else {
-		    		accept(st_ind);
+				      decline(st_ind);
+				      max_reject--;
+           		        }
+			  }	    
+		      }
+	        } else {
+	          accept(st_ind);
                 }
             } else {
-				decline(st_ind);
-	    	}
-		}//while
+	          decline(st_ind);
+	    }
+        }//while
         
         // Student may not find messages in the queue so we check if a particular error occurred
         if (errno) {

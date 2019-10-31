@@ -124,7 +124,7 @@ int main(int argc, char ** argv)
         average_os += pst->stdata[i].mark_os;
         os_count[pst->stdata[i].mark_os - 15] += 1;         
     }
-    ca_count[1] -= POP_SIZE;
+    //ca_count[1] -= POP_SIZE;
     average_ca /= POP_SIZE;
     average_os /= POP_SIZE;
     semctl(semid, 2, IPC_RMID);
@@ -143,7 +143,7 @@ int main(int argc, char ** argv)
     printf("Operating Systems marks distribution:\n");
     printf("   15   16   17   18   19   20   21   22   23   24   25   26   27  "
            " 28   29   30    \n");
-    for(int i = 0; i < 16; i++){
+    for(int i = 0; i < 16; i++) {
         printf("  %3d", os_count[i]);
     }
     printf("\n\n");

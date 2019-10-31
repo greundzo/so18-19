@@ -253,11 +253,12 @@ pid_t find_team_mate(int ind)
     pid_t pid = -1;
     for(int i = 0; (i < POP_SIZE && pid == -1); i++) {
         if(i != ind){
-            if(pst->stdata[ind].team == 0 
+            if(pst->stdata[i].team == 0 
                 && pst->stdata[ind].class == pst->stdata[i].class 
-                && pst->stdata[ind].nof_elems == pst->stdata[i].nof_elems) {
+                && pst->stdata[ind].nof_elems == pst->stdata[i].nof_elems
+                && pst->stdata[i].mark_ca > 26) {
                 pid = pst->stdata[i].student_pid;
-            } else if (pst->stdata[ind].team == 0 
+            } else if (pst->stdata[i].team == 0 
                 && pst->stdata[ind].class == pst->stdata[i].class) {
                 pid = pst->stdata[i].student_pid;
             }

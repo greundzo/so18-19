@@ -73,7 +73,6 @@ int main(int argc, char ** argv)
     puts("");
 
     ready(semid, 2);
-    puts("Start");
     
     take_sem(semid, 1);
 

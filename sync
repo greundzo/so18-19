@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ "$1" == "" ]]
-	then git pull; git log
+	then git pull; git log --oneline
 else	
 	while [[ "$1" != "" ]]; do
 		git add "$1"

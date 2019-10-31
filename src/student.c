@@ -77,7 +77,6 @@ int main(int argc, char ** argv)
     // General condition to access invitation code
     // 1) I'm not in a team
     // 2) I'm the leader but I've not yet closed the team
-    
     while (pst->stdata[st_ind].team == 0 
         || (pst->stdata[st_ind].leader == 1 
         && pst->stdata[st_ind].closed == 0)) 
@@ -128,14 +127,24 @@ int main(int argc, char ** argv)
             }
         }
 
+        // I'm not in a team, I search for team mates
         if ((pst->stdata[st_ind].leader == 1 && st_nof_el != nelem_team) || 
             (pst->stdata[st_ind].team == 0 && st_inv > 0)) 
         {
-            if ((pod = find_team_mate(st_ind)) != -1) { //find_team_mate(st_ind);
-                wait_answer = invite(st_ind, pod, st_mark_ca);
+            if (pst->stdata[st_ind].leader) {
+                if ((pod = find_team_mate(st_ind)) != -1) { 
+                    wait_answer = invite(st_ind, pod, st_mark_ca);
+                }
+            } else {
+                if ((pod = find_team_mate(st_ind)) != -1) { 
+                    wait_answer = invite(st_ind, pod, st_mark_ca);
+                } else {
+                    
+                }
             }
         }
 
+        // I'm leader, I've found all necessaries team mates, I close the team
         if (pst->stdata[st_ind].leader == 1 && st_nof_el == nelem_team) {
             lock_group(member_indexes, nelem_team, max_mark);
         }
@@ -143,6 +152,20 @@ int main(int argc, char ** argv)
         // No more to invite, I'm leader, I close the team
         if (pst->stdata[st_ind].leader == 1 && st_inv == 0 && wait_answer == 0) {
             lock_group(member_indexes, nelem_team, max_mark);
+        }
+
+        // I'm alone and the others are no more inviting, so I close the team
+        if(pst->stdata[st_ind].nof_invites == 0 
+            && pst->stdata[st_ind].team == 0 
+            && wait_answer == 0) {
+            if((pid = find_inviting_mate(st_ind)) == -1) {
+                pst->stdata[st_ind].leader = 1;
+                pst->stdata[st_ind].team = 1;
+                nelem_team = 1;
+                member_indexes = (int *)calloc(nelem_team,sizeof(int));
+                member_indexes[0] = st_ind;
+                lock_group(member_indexes, nelem_team, st_mark_ca);
+            }
         }
 
         release_sem(semid, 0);
@@ -161,13 +184,17 @@ int main(int argc, char ** argv)
                             member_indexes = (int *)calloc(nelem_team, sizeof(int));
                             member_indexes[0] = st_ind;
                             member_indexes[nelem_team - 1] = invitation.sender_index;
-                            max_mark = invitation.max_mark;
+                            if (invitation.max_mark > max_mark) {
+                                max_mark = invitation.max_mark;
+                            }
+                        } else {
+                            nelem_team++;
+                            member_indexes = (int *)realloc(member_indexes, nelem_team * sizeof(int));
+                            member_indexes[nelem_team - 1] = invitation.sender_index;
+                            if (invitation.max_mark > max_mark) {
+                                max_mark = invitation.max_mark;
+                            }
                         }
-                    } else {
-                        nelem_team++;
-                        member_indexes = (int *)realloc(member_indexes, nelem_team * sizeof(int));
-                        member_indexes[nelem_team - 1] = invitation.sender_index;
-                        max_mark = invitation.max_mark;
                     }
                     pst->stdata[st_ind].max_mark_ca = max_mark;
                     wait_answer = 0;

@@ -253,15 +253,39 @@ pid_t find_team_mate(int ind)
     pid_t pid = -1;
     for(int i = 0; (i < POP_SIZE && pid == -1); i++) {
         if(i != ind){
-            if(pst->stdata[ind].team == 0 &&
-               pst->stdata[ind].class == pst->stdata[i].class &&
-               pst->stdata[ind].nof_elems == pst->stdata[i].nof_elems) {
+            if(pst->stdata[ind].team == 0 
+                && pst->stdata[ind].class == pst->stdata[i].class 
+                && pst->stdata[ind].nof_elems == pst->stdata[i].nof_elems) {
+                pid = pst->stdata[i].student_pid;
+            } else if (pst->stdata[ind].team == 0 
+                && pst->stdata[ind].class == pst->stdata[i].class) {
                 pid = pst->stdata[i].student_pid;
             }
         }
     }
     return pid;
 }
+
+pid_t find_inviting_mate(int ind) 
+{
+    for(int i = 0; i < POP_SIZE; i++){
+        if(i != ind) {
+            if(pst->stdata[i].team == 0 
+                && pst->stdata[ind].class == pst->stdata[i].class 
+                && pst->stdata[i].nof_invites != 0) {
+                return pst->stdata[i].student_pid;
+            }
+
+            if(pst->stdata[i].team == 1 && pst->stdata[i].closed == 0 
+                && pst->stdata[ind].class == pst->stdata[i].class 
+                && pst->stdata[i].leader == 1 &&  pst->stdata[i].nof_invites != 0) {
+                return pst->stdata[i].student_pid;
+            }
+        }
+    }
+    return -1;
+}
+
 //chiude il gruppo
 void lock_group(int *team_members, int nelem_team, int max_mark ) {
     for(int i = 0; i < nelem_team; i++) {
@@ -271,12 +295,11 @@ void lock_group(int *team_members, int nelem_team, int max_mark ) {
     }
 }
 
-pid_t search_4_mate(int ind) {
-	int check, i = 0; //per distinguere i casi
+pid_t search_team_mate(int ind) {
+	int i = 0; //per distinguere i casi
 	pid_t pid = -1;
 
 	int search_mark = pst->stdata[ind].mark_ca;
-	//int search_team = pst->stdata[ind].team;
 	int search_class = pst->stdata[ind].turn;	
 	int search_elem = pst->stdata[ind].nof_elems;
 
@@ -285,28 +308,25 @@ pid_t search_4_mate(int ind) {
 	int other_class = pst->stdata[i].turn;
 	int other_elem = pst->stdata[i].nof_elems;
 	
-	while (i < POP_SIZE && i != ind) {
-	
-		if (other_team == 0 && other_mark > search_mark && search_class == other_class && search_elem == other_elem) { //compagno migliore
+	while (i < POP_SIZE && i != ind) {	
+		if (other_team == 0 && other_mark > search_mark 
+            && search_class == other_class && search_elem == other_elem) { // best mate
+			pid = pst->stdata[i].student_pid;	
+		} else if (other_team == 0 && other_mark < search_mark 
+            && search_class == other_class && search_elem == other_elem) { // worst mate 
 			pid = pst->stdata[i].student_pid;
-			check = 1;	
-		} else if (other_team == 0 && other_mark < search_mark && search_class == other_class && search_elem == other_elem) { //compagno peggiore 
+		} else if (other_team == 0 && search_class == other_class 
+            && search_elem == other_elem) { // random classmate with same nof_elems
 			pid = pst->stdata[i].student_pid;
-			check = 2;   
-		} else if (other_team == 0 && search_class == other_class && search_elem == other_elem) { //compgano qualsiasi(non si tiene conto del voto)
-			pid = pst->stdata[i].student_pid;
-			check = 3;
 		}else {	
-			if (pid == -1 && check != 2 && check != 3) {
-				if(other_team == 0 && other_mark > search_mark + 3 && search_class == other_class && search_elem == other_elem){
+			if (pid == -1) {
+				if(other_team == 0 && other_mark > search_mark + 3 
+                    && search_class == other_class && search_elem == other_elem) {
 					pid = pst->stdata[i].student_pid;
-				}
-			} else if (pid == -1 && check != 1 && check != 3) {
-				if (other_team == 0 && other_mark < search_mark && search_class == other_class && search_elem == other_elem) {
+				} else if (other_team == 0 && other_mark < search_mark 
+                    && search_class == other_class && search_elem == other_elem) {
 					pid = pst->stdata[i].student_pid;
-				} 		
-			} else if (pid == -1 && check != 1 && check != 2) {
-				if(other_team == 0 && search_class == other_class) {
+				} else if(other_team == 0 && search_class == other_class) { // totally random classmate
 					pid = pst->stdata[i].student_pid;
 				}				
 			}		

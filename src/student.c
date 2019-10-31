@@ -4,7 +4,7 @@
 #include "shared.h"
 
 int mark_os, max_reject, nelem_team, wait_answer, st_ind, reg_num, 
-    st_class, st_mark_ca, st_nof_el, st_inv;
+    st_class, st_mark_ca, st_nof_el, st_inv, last_minute;
 pid_t pod;
 
 void sthandler(int signal)
@@ -36,6 +36,7 @@ int main(int argc, char ** argv)
     st_mark_ca = generate_random_integer(pid);
     st_nof_el = get_pref();
     st_inv = read_conf("nof_invites");
+    last_minute = 0;
 
     sthandle.sa_handler = sthandler;
     sigemptyset(&mask);
@@ -55,7 +56,6 @@ int main(int argc, char ** argv)
     take_sem(semid, 0);    
     st_ind = pst->pc;
     pst->stdata[st_ind].student_pid = pid;
-    //pst->stdata[st_ind].registration_number = reg_num;
     pst->stdata[st_ind].class = st_class;
     pst->stdata[st_ind].mark_os = 0;
     pst->stdata[st_ind].mark_ca = st_mark_ca;
@@ -65,7 +65,6 @@ int main(int argc, char ** argv)
     pst->stdata[st_ind].closed = 0;
     pst->stdata[st_ind].nof_elems = st_nof_el;
     pst->stdata[st_ind].nof_invites = st_inv;
-    //pst->stdata[st_ind].nof_members = 0;
     pst->pc ++; 
     take_sem(semid, 2);   
     release_sem(semid, 0);
@@ -144,29 +143,33 @@ int main(int argc, char ** argv)
                     }
                 }
             }
-        }
+        } //search mates
 
         // I'm leader, I've found all necessaries team mates, I close the team
-        if (pst->stdata[st_ind].leader == 1 && st_nof_el == nelem_team) {
+        if (pst->stdata[st_ind].leader && st_nof_el == nelem_team) {
             lock_group(member_indexes, nelem_team, max_mark);
         }
 
         // No more to invite, I'm leader, I close the team
-        if (pst->stdata[st_ind].leader == 1 && st_inv == 0 && wait_answer == 0) {
+        if (pst->stdata[st_ind].leader && st_inv == 0 && wait_answer == 0) {
             lock_group(member_indexes, nelem_team, max_mark);
         }
 
-        // I'm alone and the others are no more inviting, so I close the team
-        if(pst->stdata[st_ind].nof_invites == 0 
-            && pst->stdata[st_ind].team == 0 
-            && wait_answer == 0) {
-            if((pid = find_inviting_mate(st_ind)) == -1) {
-                pst->stdata[st_ind].leader = 1;
-                pst->stdata[st_ind].team = 1;
-                nelem_team = 1;
-                member_indexes = (int *)calloc(nelem_team,sizeof(int));
-                member_indexes[0] = st_ind;
-                lock_group(member_indexes, nelem_team, st_mark_ca);
+        // I'm alone, I can't invite and the others are no more inviting, so I close the team
+        if (pst->stdata[st_ind].team == 0 && wait_answer == 0) {
+            if (pst->stdata[st_ind].nof_invites == 0) {
+                if((pid = find_inviting_mate(st_ind)) == -1) {
+                    pst->stdata[st_ind].leader = 1;
+                    pst->stdata[st_ind].team = 1;
+                    nelem_team = 1;
+                    member_indexes = (int *)calloc(nelem_team,sizeof(int));
+                    member_indexes[0] = st_ind;
+                    lock_group(member_indexes, nelem_team, st_mark_ca);
+                }
+            } else { // If I can invite I search for someone
+                if ((pod = find_random_mate(st_ind)) != -1) {
+                    wait_answer = invite(st_ind, pod, st_mark_ca);
+                }
             }
         }
 

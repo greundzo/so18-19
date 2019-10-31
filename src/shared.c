@@ -252,27 +252,27 @@ pid_t find_team_mate(int ind)
 {
     pid_t pid = -1;
     for(int i = 0; (i < POP_SIZE && pid == -1); i++) {
-        if(i != ind){
+        if(i != ind) {
             if(pst->stdata[i].team == 0 
                 && pst->stdata[ind].class == pst->stdata[i].class 
                 && pst->stdata[ind].nof_elems == pst->stdata[i].nof_elems) {
                 
-                if (pst->stdata[i].mark_ca > pst->stdata[ind].mark_ca) {
-                    pid = pst->stdata[i].student_pid;
-                } else if (pst->stdata[i].mark_ca == pst->stdata[ind].mark_ca) {
-                    pid = pst->stdata[i].student_pid;
-                } else {
-                    int other_mark = pst->stdata[i].mark_ca + 3;
-                    if (other_mark == pst->stdata[ind].mark_ca) {
-                        pid = pst->stdata[i].student_pid;
-                    }                
-                }                
+                // Team mate with better or equal mark than mine 
+                if (pst->stdata[i].mark_ca >= pst->stdata[ind].mark_ca) {
+                    return pst->stdata[i].student_pid;
+                } 
+                
+                // Team mate with better mark than mine diminished by 3
+                if (pst->stdata[i].mark_ca >= (pst->stdata[ind].mark_ca - 3)) {
+                    return pst->stdata[i].student_pid;
+                }                             
             }
         }
     }
     return pid;
 }
 
+// Totally random mate with same class
 pid_t find_random_mate(int ind) 
 {
     pid_t pid = -1;

@@ -42,18 +42,15 @@
 typedef struct student_data {
     pid_t student_pid;
     int class;
-    int registration_number;
     int nof_elems;
     int nof_invites;
-    int nof_members;
+    int nelem_team;
     int team;
     int leader;
     int closed;
     int mark_os;
     int mark_ca;
     int max_mark_ca;
-    int nelem_team;	
-    int turn;
 }student_data;
 
 typedef struct shared {

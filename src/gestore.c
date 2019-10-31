@@ -147,8 +147,12 @@ int main(int argc, char ** argv)
         printf("  %3d", os_count[i]);
     }
     printf("\n\n");
+    double average = average_os-average_ca;
+    if (average < 0) {
+        average *= -1;
+    }
     printf("Average CA = %2.2f   Average OS = %2.2f   Difference = %2.2f\n\n",
-            average_ca, average_os, average_os-average_ca);
+            average_ca, average_os, average);
 
     free(ca_count);    
     free(os_count);

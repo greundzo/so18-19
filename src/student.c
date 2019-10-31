@@ -139,7 +139,9 @@ int main(int argc, char ** argv)
                 if ((pod = find_team_mate(st_ind)) != -1) { 
                     wait_answer = invite(st_ind, pod, st_mark_ca);
                 } else {
-                    
+                    if ((pod = find_random_mate(st_ind)) != -1) {
+                        wait_answer = invite(st_ind, pod, st_mark_ca);
+                    }
                 }
             }
         }

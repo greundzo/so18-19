@@ -255,12 +255,32 @@ pid_t find_team_mate(int ind)
         if(i != ind){
             if(pst->stdata[i].team == 0 
                 && pst->stdata[ind].class == pst->stdata[i].class 
-                && pst->stdata[ind].nof_elems == pst->stdata[i].nof_elems
-                && pst->stdata[i].mark_ca > 26) {
-                pid = pst->stdata[i].student_pid;
-            } else if (pst->stdata[i].team == 0 
+                && pst->stdata[ind].nof_elems == pst->stdata[i].nof_elems) {
+                
+                if (pst->stdata[i].mark_ca > pst->stdata[ind].mark_ca) {
+                    pid = pst->stdata[i].student_pid;
+                } else if (pst->stdata[i].mark_ca == pst->stdata[ind].mark_ca) {
+                    pid = pst->stdata[i].student_pid;
+                } else {
+                    int other_mark = pst->stdata[i].mark_ca + 3;
+                    if (other_mark == pst->stdata[ind].mark_ca) {
+                        pid = pst->stdata[i].student_pid;
+                    }                
+                }                
+            }
+        }
+    }
+    return pid;
+}
+
+pid_t find_random_mate(int ind) 
+{
+    pid_t pid = -1;
+    for(int i = 0; i < POP_SIZE; i++){
+        if(i != ind) {
+            if(pst->stdata[i].team == 0 
                 && pst->stdata[ind].class == pst->stdata[i].class) {
-                pid = pst->stdata[i].student_pid;
+                return pst->stdata[i].student_pid;
             }
         }
     }
@@ -269,7 +289,7 @@ pid_t find_team_mate(int ind)
 
 pid_t find_inviting_mate(int ind) 
 {
-    for(int i = 0; i < POP_SIZE; i++){
+    for(int i = 0; i < POP_SIZE; i++) {
         if(i != ind) {
             if(pst->stdata[i].team == 0 
                 && pst->stdata[ind].class == pst->stdata[i].class 
@@ -294,44 +314,4 @@ void lock_group(int *team_members, int nelem_team, int max_mark ) {
         pst->stdata[team_members[i]].nelem_team = nelem_team;
         pst->stdata[team_members[i]].max_mark_ca = max_mark;   
     }
-}
-
-pid_t search_team_mate(int ind) {
-	int i = 0; //per distinguere i casi
-	pid_t pid = -1;
-
-	int search_mark = pst->stdata[ind].mark_ca;
-	int search_class = pst->stdata[ind].turn;	
-	int search_elem = pst->stdata[ind].nof_elems;
-
-	int other_mark = pst->stdata[i].mark_ca;
-	int other_team = pst->stdata[i].team;
-	int other_class = pst->stdata[i].turn;
-	int other_elem = pst->stdata[i].nof_elems;
-	
-	while (i < POP_SIZE && i != ind) {	
-		if (other_team == 0 && other_mark > search_mark 
-            && search_class == other_class && search_elem == other_elem) { // best mate
-			pid = pst->stdata[i].student_pid;	
-		} else if (other_team == 0 && other_mark < search_mark 
-            && search_class == other_class && search_elem == other_elem) { // worst mate 
-			pid = pst->stdata[i].student_pid;
-		} else if (other_team == 0 && search_class == other_class 
-            && search_elem == other_elem) { // random classmate with same nof_elems
-			pid = pst->stdata[i].student_pid;
-		}else {	
-			if (pid == -1) {
-				if(other_team == 0 && other_mark > search_mark + 3 
-                    && search_class == other_class && search_elem == other_elem) {
-					pid = pst->stdata[i].student_pid;
-				} else if (other_team == 0 && other_mark < search_mark 
-                    && search_class == other_class && search_elem == other_elem) {
-					pid = pst->stdata[i].student_pid;
-				} else if(other_team == 0 && search_class == other_class) { // totally random classmate
-					pid = pst->stdata[i].student_pid;
-				}				
-			}		
-		}	
-	}
-	return pid;
 }

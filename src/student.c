@@ -95,29 +95,29 @@ int main(int argc, char ** argv)
                             max_reject--;
                         }
                     } else {
-		          if (st_nof_el == pst->stdata[invitation.sender_index].nof_elems) {
-			      if (invitation.max_mark > st_mark_ca || st_nof_el == 0) {
-			          accept(st_ind);
-			      } else {
-				    decline(st_ind);
-				    max_reject --;
-			      }
-			  } else {
-				if ((invitation.max_mark - 3) > st_mark_ca || st_nof_el == 0) {
-                                    accept(st_ind);
-                	        } else {
-				      decline(st_ind);
-				      max_reject--;
-           		        }
-			  }	    
-		      }
-	        } else {
-	          accept(st_ind);
+		                if (st_nof_el == pst->stdata[invitation.sender_index].nof_elems) {
+                            if (invitation.max_mark > st_mark_ca || st_nof_el == 0) {
+                                accept(st_ind);
+                            } else {
+                                decline(st_ind);
+                                max_reject --;
+                            }
+                        } else {
+                            if ((invitation.max_mark - 3) > st_mark_ca || st_nof_el == 0) {
+                                accept(st_ind);
+                            } else {
+                                decline(st_ind);
+                                max_reject--;
+                            }
+                        }	    
+                    }
+	            } else {
+	                accept(st_ind);
                 }
             } else {
-	          decline(st_ind);
-	    }
-        }//while
+                decline(st_ind);
+			}
+		}//while
         
         // Student may not find messages in the queue so we check if a particular error occurred
         if (errno) {
@@ -158,7 +158,7 @@ int main(int argc, char ** argv)
         // I'm alone, I can't invite and the others are no more inviting, so I close the team
         if (pst->stdata[st_ind].team == 0 && wait_answer == 0) {
             if (pst->stdata[st_ind].nof_invites == 0) {
-                if((pid = find_inviting_mate(st_ind)) == -1) {
+                if((pod = find_inviting_mate(st_ind)) == -1) {
                     pst->stdata[st_ind].leader = 1;
                     pst->stdata[st_ind].team = 1;
                     nelem_team = 1;

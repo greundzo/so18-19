@@ -167,8 +167,12 @@ int main(int argc, char ** argv)
                     lock_group(member_indexes, nelem_team, st_mark_ca);
                 }
             } else { // If I can invite I search for someone
-                if ((pod = find_random_mate(st_ind)) != -1) {
+                if ((pod = find_team_mate(st_ind) != -1) && find_inviting_mate(st_ind) != -1) { 
                     wait_answer = invite(st_ind, pod, st_mark_ca);
+                } else {
+                    if ((pod = find_random_mate(st_ind)) != -1) {
+                        wait_answer = invite(st_ind, pod, st_mark_ca);
+                    }
                 }
             }
         }

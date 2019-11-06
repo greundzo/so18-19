@@ -73,7 +73,7 @@ int generate_regnum(pid_t pid);
 int read_conf(char *str);
 int get_pref();
 int get_turn(int matricule);
-void printinfo(int index, int reg, int mark);
+void printinfo(int index, int reg, int mark, int nof);
 void masksig();
 
 // Shared Memory functions declaration

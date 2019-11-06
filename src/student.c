@@ -17,7 +17,7 @@ void sthandler(int signal)
         take_sem(semid, 3);
         pst->stdata[st_ind].mark_os = max_mark;
         release_sem(semid, 3);
-        printinfo(st_ind, reg_num, st_mark_ca);
+        printinfo(st_ind, reg_num, st_mark_ca, st_nof_el);
     }
 
     if (pst->stdata[st_ind].leader == 1) {
@@ -127,19 +127,22 @@ int main(int argc, char ** argv)
         }
 
         // I'm not in a team, I search for team mates
-        if ((pst->stdata[st_ind].leader == 1 && st_nof_el != nelem_team) || 
-            (pst->stdata[st_ind].team == 0 && st_inv > 0)) 
+        if (((pst->stdata[st_ind].leader && st_nof_el != nelem_team) || 
+            pst->stdata[st_ind].team == 0) && st_inv > 0) 
         {
             if (pst->stdata[st_ind].leader) {
                 if ((pod = find_team_mate(st_ind)) != -1) { 
                     wait_answer = invite(st_ind, pod, st_mark_ca);
+                    st_inv--;
                 }
             } else {
                 if ((pod = find_team_mate(st_ind)) != -1) { 
                     wait_answer = invite(st_ind, pod, st_mark_ca);
+                    st_inv--;
                 } else {
                     if ((pod = find_random_mate(st_ind)) != -1) {
                         wait_answer = invite(st_ind, pod, st_mark_ca);
+                        st_inv--;
                     }
                 }
             }
@@ -157,7 +160,7 @@ int main(int argc, char ** argv)
 
         // I'm alone, I can't invite and the others are no more inviting, so I close the team
         if (pst->stdata[st_ind].team == 0 && wait_answer == 0) {
-            if (pst->stdata[st_ind].nof_invites == 0) {
+            if (st_inv != 0) {
                 if((pod = find_inviting_mate(st_ind)) == -1) {
                     pst->stdata[st_ind].leader = 1;
                     pst->stdata[st_ind].team = 1;
@@ -167,11 +170,10 @@ int main(int argc, char ** argv)
                     lock_group(member_indexes, nelem_team, st_mark_ca);
                 }
             } else { // If I can invite I search for someone
-                if ((pod = find_team_mate(st_ind) != -1) && find_inviting_mate(st_ind) != -1) { 
-                    wait_answer = invite(st_ind, pod, st_mark_ca);
-                } else {
+                if ((pod = find_inviting_mate(st_ind)) != -1) { 
                     if ((pod = find_random_mate(st_ind)) != -1) {
                         wait_answer = invite(st_ind, pod, st_mark_ca);
+                        st_inv--;
                     }
                 }
             }
@@ -222,7 +224,7 @@ int main(int argc, char ** argv)
         take_sem(semid, 3);
         pst->stdata[st_ind].mark_os = max_mark;
         release_sem(semid, 3);
-        printinfo(st_ind, reg_num, st_mark_ca);
+        printinfo(st_ind, reg_num, st_mark_ca, st_nof_el);
     }
 
     if (pst->stdata[st_ind].leader == 1) {

@@ -96,14 +96,14 @@ int main(int argc, char ** argv)
                         }
                     } else {
 		                if (st_nof_el == pst->stdata[invitation.sender_index].nof_elems) {
-                            if (invitation.max_mark > st_mark_ca || st_nof_el == 0) {
+                            if (invitation.max_mark >= st_mark_ca || st_nof_el == 0) {
                                 accept(st_ind);
                             } else {
                                 decline(st_ind);
                                 max_reject --;
                             }
                         } else {
-                            if ((invitation.max_mark - 3) > st_mark_ca || st_nof_el == 0) {
+                            if ((invitation.max_mark - 3) >= st_mark_ca || st_nof_el == 0) {
                                 accept(st_ind);
                             } else {
                                 decline(st_ind);

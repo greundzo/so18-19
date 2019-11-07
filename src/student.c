@@ -166,7 +166,7 @@ int main(int argc, char ** argv)
                     member_indexes[0] = st_ind;
                     lock_group(member_indexes, nelem_team, st_mark_ca);
                 }
-            } else { // If I can invite I search for someone
+            } else if (pst->stdata[st_ind].nof_invites > 0) { // If I can invite I search for someone
                 if ((pod = find_inviting_mate(st_ind)) != -1) { 
                     if ((pod = find_random_mate(st_ind)) != -1) {
                         wait_answer = invite(st_ind, pod, st_mark_ca);

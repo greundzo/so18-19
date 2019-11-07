@@ -100,7 +100,7 @@ int main(int argc, char ** argv)
                                 accept(st_ind);
                             } else {
                                 decline(st_ind);
-                                max_reject --;
+                                max_reject--;
                             }
                         } else {
                             if ((invitation.max_mark - 3) >= st_mark_ca || st_nof_el == 0) {
@@ -128,21 +128,18 @@ int main(int argc, char ** argv)
 
         // I'm not in a team, I search for team mates
         if (((pst->stdata[st_ind].leader && st_nof_el != nelem_team) || 
-            pst->stdata[st_ind].team == 0) && st_inv > 0) 
+            pst->stdata[st_ind].team == 0) && pst->stdata[st_ind].nof_invites > 0) 
         {
             if (pst->stdata[st_ind].leader) {
                 if ((pod = find_team_mate(st_ind)) != -1) { 
                     wait_answer = invite(st_ind, pod, st_mark_ca);
-                    st_inv--;
                 }
             } else {
                 if ((pod = find_team_mate(st_ind)) != -1) { 
                     wait_answer = invite(st_ind, pod, st_mark_ca);
-                    st_inv--;
                 } else {
                     if ((pod = find_random_mate(st_ind)) != -1) {
                         wait_answer = invite(st_ind, pod, st_mark_ca);
-                        st_inv--;
                     }
                 }
             }
@@ -154,13 +151,13 @@ int main(int argc, char ** argv)
         }
 
         // No more to invite, I'm leader, I close the team
-        if (pst->stdata[st_ind].leader && st_inv == 0 && wait_answer == 0) {
+        if (pst->stdata[st_ind].leader && pst->stdata[st_ind].nof_invites == 0 && wait_answer == 0) {
             lock_group(member_indexes, nelem_team, max_mark);
         }
 
         // I'm alone, I can't invite and the others are no more inviting, so I close the team
         if (pst->stdata[st_ind].team == 0 && wait_answer == 0) {
-            if (st_inv != 0) {
+            if (pst->stdata[st_ind].nof_invites == 0) {
                 if((pod = find_inviting_mate(st_ind)) == -1) {
                     pst->stdata[st_ind].leader = 1;
                     pst->stdata[st_ind].team = 1;
@@ -231,6 +228,6 @@ int main(int argc, char ** argv)
         free(member_indexes);
     }
 
-    //shmdt(pst);
+    shmdt(pst);
     exit(EXIT_SUCCESS);
 }

@@ -72,9 +72,9 @@ int get_turn(int matricule)
 /* Print student info*/
 void printinfo(int index, int reg, int mark, int nof) 
 {
-    printf("%3i: Register Number = %5i   CA Mark = %2i   OS Mark = %2i  Elems = %2i\n",
+    printf("%3i: Student %5i   CA Mark = %2i   OS Mark = %2i\n",
             index, reg,
-            mark, max_mark, nof);
+            mark, max_mark);
 }
 
 /* Mask SIGUSR1 signal if the process has already closed the team */

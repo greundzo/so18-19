@@ -25,7 +25,7 @@ void spawn(int size)
 
 int main(int argc, char ** argv)
 {
-    // Program termination handler
+    /* Program termination handler */
     handle.sa_handler = signalhandler;
     sigemptyset(&mask);
     handle.sa_mask = mask;
@@ -51,11 +51,11 @@ int main(int argc, char ** argv)
 
     memid = create_memory();
 
-    // Pointer to shm segment allocated at the beginning of the execution
+    /* Pointer to shm segment allocated at the beginning of the execution */
     pst = (shared *)connect(memid);
     pst->pc = 0;
 
-    // Semaphore creation and initialization
+    /* Semaphore creation and initialization */
     semid = create_sem();
     sem_init_val(0, 1);
     sem_init_val(1, 1);
@@ -78,7 +78,7 @@ int main(int argc, char ** argv)
 
     alarm(SIM_TIME); 
     
-    // EINTR is the Interrupted Signal
+    /* EINTR is the Interrupted Signal */
     if (pause() == -1) {
         if(errno != EINTR)
             TEST_ERROR

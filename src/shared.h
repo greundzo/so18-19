@@ -1,6 +1,6 @@
-//
+/*
 // Created by greundzo on 08/10/19.
-//
+*/
 #define TEST_ERROR		if (errno) {fprintf(stderr, \
 						"%s:%d: PID=%5d: Error %d (%s)\n",\
 					   	__FILE__,\
@@ -13,7 +13,7 @@
 #ifndef TEST
 #define POP_SIZE 100
 #define SIM_TIME 1
-#endif //test
+#endif 
 
 #include <stdio.h>
 #include <stdlib.h>

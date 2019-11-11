@@ -1,6 +1,6 @@
-//
+/*
 // Created by greundzo on 08/10/19.
-//
+*/
 #include "shared.h"
 
 int mark_os, max_reject, nelem_team, wait_answer, st_ind, reg_num, 
@@ -12,7 +12,7 @@ void sthandler(int signal)
     if (pst->stdata[st_ind].leader) {
         lock_group(member_indexes, nelem_team, max_mark);
     }
-    /* here child processes send data to parent*/
+    /* Here child processes send data to parent*/
     if (msgrcv(lastid, &lastmsg, sizeof(lastmsg), getpid(), 0) == -1) {
         TEST_ERROR
     } else {
@@ -54,7 +54,8 @@ int main(int argc, char ** argv)
     pst = (shared *)connect(memid);
     max_reject = read_conf("max_reject");
     semid = create_sem();
-    // CRITICAL AREA
+    
+    /* CRITICAL AREA */
         
     take_sem(semid, 0);    
     st_ind = pst->pc;
@@ -76,9 +77,9 @@ int main(int argc, char ** argv)
     lastid = msgget(LMS, 0666 | IPC_CREAT);
 
     ready(semid, 1);
-    // General condition to access invitation code
+    /* General condition to access invitation code
     // 1) I'm not in a team
-    // 2) I'm the leader but I've not yet closed the team
+    // 2) I'm the leader but I've not yet closed the team */
     while (pst->stdata[st_ind].team == 0 
         || (pst->stdata[st_ind].leader == 1 
         && pst->stdata[st_ind].closed == 0)) 
@@ -120,16 +121,16 @@ int main(int argc, char ** argv)
             } else {
                 decline(st_ind);
 			}
-		}//while
+		} /* while */
         
-        // Student may not find messages in the queue so we check if a particular error occurred
+        /* Student may not find messages in the queue so we check if a particular error occurred */
         if (errno) {
             if (errno != ENOMSG) {
                 TEST_ERROR
             }
         }
 
-        // I'm not in a team, I search for team mates
+        /* I'm not in a team, I search for team mates */
         if (((pst->stdata[st_ind].leader && st_nof_el != nelem_team) || 
             pst->stdata[st_ind].team == 0) && pst->stdata[st_ind].nof_invites > 0) 
         {
@@ -146,19 +147,19 @@ int main(int argc, char ** argv)
                     }
                 }
             }
-        } //search mates
+        } /* search mates */
 
-        // I'm leader, I've found all necessaries team mates, I close the team
+        /* I'm leader, I've found all necessaries team mates, I close the team */
         if (pst->stdata[st_ind].leader && st_nof_el == nelem_team) {
             lock_group(member_indexes, nelem_team, max_mark);
         }
 
-        // No more to invite, I'm leader, I close the team
+        /* No more to invite, I'm leader, I close the team */
         if (pst->stdata[st_ind].leader && pst->stdata[st_ind].nof_invites == 0 && wait_answer == 0) {
             lock_group(member_indexes, nelem_team, max_mark);
         }
 
-        // I'm alone, I can't invite and the others are no more inviting, so I close the team
+        /* I'm alone, I can't invite and the others are no more inviting, so I close the team */
         if (pst->stdata[st_ind].team == 0 && wait_answer == 0) {
             if (pst->stdata[st_ind].nof_invites == 0) {
                 if((pod = find_inviting_mate(st_ind)) == -1) {
@@ -169,7 +170,7 @@ int main(int argc, char ** argv)
                     member_indexes[0] = st_ind;
                     lock_group(member_indexes, nelem_team, st_mark_ca);
                 }
-            } else if (pst->stdata[st_ind].nof_invites > 0) { // If I can invite I search for someone
+            } else if (pst->stdata[st_ind].nof_invites > 0) { /* If I can invite I search for someone */
                 if ((pod = find_inviting_mate(st_ind)) != -1) { 
                     if ((pod = find_random_mate(st_ind)) != -1) {
                         wait_answer = invite(st_ind, pod, st_mark_ca);
@@ -181,7 +182,7 @@ int main(int argc, char ** argv)
 
         release_sem(semid, 0);
 
-        // If the process invited someone it executes this part of code
+        /* If the process invited someone it executes this part of code */
         while(wait_answer) {
             if (msgrcv(msgid, &invitation, sizeof(invitation), getpid(), 0) != -1) {
                 if (invitation.invited) {
@@ -212,11 +213,11 @@ int main(int argc, char ** argv)
                 }                
             }
         }	    
-    }//while
+    } /* while */
     
     masksig();
 
-    // Waiting for os mark..
+    /* Waiting for os mark.. */
     if (msgrcv(lastid, &lastmsg, sizeof(lastmsg), getpid(), 0) == -1) {
         TEST_ERROR
     } else {

@@ -1,5 +1,5 @@
 /*
-// Created by greundzo on 08/10/19.
+** Created by greundzo on 08/10/19.
 */
 #define TEST_ERROR		if (errno) {fprintf(stderr, \
 						"%s:%d: PID=%5d: Error %d (%s)\n",\
@@ -41,7 +41,7 @@
 
 typedef struct student_data {
     pid_t student_pid;
-    int class;
+    int fclass;
     int nof_elems;
     int nof_invites;
     int nelem_team;
@@ -63,7 +63,8 @@ sigset_t mask;
 void signalhandler(int signal);
 void sthandler(int signal);
 
-// Shared global variables and functions
+/* Shared global variables and functions */
+
 struct shared *pst;
 int *ca_count, *os_count, *member_indexes;
 int memid, semid, max_mark;
@@ -76,11 +77,13 @@ int get_turn(int matricule);
 void printinfo(int index, int reg, int mark, int nof);
 void masksig();
 
-// Shared Memory functions declaration
+/* Shared Memory functions declaration */
+
 int create_memory();
 void *connect(int id);
 
-// Semaphore functions declaration 
+/* Semaphore functions declaration */
+
 union semun {
     int val;
     struct semid_ds *buf;
@@ -94,7 +97,8 @@ void ready(int semid, int num);
 void take_sem(int semid, int num);
 void release_sem(int semid, int num);
 
-// Message Queue functions declaration 
+/* Message Queue functions declaration */ 
+
 struct msgbuf {
     long mtype;
     pid_t sender_pid;

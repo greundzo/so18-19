@@ -3,7 +3,7 @@
 int sim_time, status;
 
 /*
-* Creates POP_SIZE child processes
+* Create POP_SIZE child processes
 * and make them specialize using the execve syscall
 */
 void spawn(int size)
@@ -62,12 +62,13 @@ int main(int argc, char ** argv)
     sem_init_val(2, POP_SIZE);
     sem_init_val(3, POP_SIZE);
 
-
+    /* Msgqueue creation */
     msgid = create_queue();
     lastid = msgget(LMS, 0666|IPC_CREAT);
 
     puts("Creating students...");
 
+    /* Spawn students */
     spawn(POP_SIZE);
     puts("**********");
     puts("");
@@ -76,6 +77,7 @@ int main(int argc, char ** argv)
     
     take_sem(semid, 1);
 
+    /* Set the alarm */
     alarm(SIM_TIME); 
     
     /* EINTR is the Interrupted Signal */
@@ -86,6 +88,7 @@ int main(int argc, char ** argv)
 
     printf("End simulation.\n");   
     
+    /* Send to every student his final mark */
     for(int i = 0; i < POP_SIZE; i++) {
 
         lastmsg.mtype = pst->stdata[i].student_pid;
@@ -113,6 +116,7 @@ int main(int argc, char ** argv)
         }
     }
     
+    /* Allocate memory to check execution statistics */
     ca_count = (int *)calloc(13, sizeof(int));
     os_count = (int *)calloc(16, sizeof(int));
     average_ca = 0;
@@ -147,6 +151,8 @@ int main(int argc, char ** argv)
 
     average_ca /= POP_SIZE;
     average_os /= POP_SIZE;
+    
+    /* Free all IPCs */
     semctl(semid, 2, IPC_RMID);
     shmdt(pst);
     shmctl(memid, IPC_RMID, NULL);

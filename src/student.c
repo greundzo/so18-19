@@ -7,6 +7,7 @@ int mark_os, max_reject, nelem_team, wait_answer, st_ind, reg_num,
     st_class, st_mark_ca, st_nof_el, st_inv, last_minute;
 pid_t pod;
 
+/* SIGUSR1 handler function */
 void sthandler(int signal)
 {
     if (pst->stdata[st_ind].leader) {
@@ -33,6 +34,7 @@ void sthandler(int signal)
 
 int main(int argc, char ** argv)
 {
+    /* Variables initialization */
     pid_t pid = getpid();
     reg_num = generate_regnum(pid);
     st_class = get_turn(reg_num);
@@ -41,6 +43,7 @@ int main(int argc, char ** argv)
     st_inv = read_conf("nof_invites");
     last_minute = 0;
 
+    /* SIGUSR1 handler */
     sthandle.sa_handler = sthandler;
     sigemptyset(&mask);
     sthandle.sa_mask = mask;
@@ -50,6 +53,7 @@ int main(int argc, char ** argv)
         TEST_ERROR
     }
 
+    /* Connect to IPCs */
     memid = create_memory();
     pst = (shared *)connect(memid);
     max_reject = read_conf("max_reject");
@@ -60,7 +64,7 @@ int main(int argc, char ** argv)
     take_sem(semid, 0);    
     st_ind = pst->pc;
     pst->stdata[st_ind].student_pid = pid;
-    pst->stdata[st_ind].class = st_class;
+    pst->stdata[st_ind].fclass = st_class;
     pst->stdata[st_ind].mark_os = 0;
     pst->stdata[st_ind].mark_ca = st_mark_ca;
     pst->stdata[st_ind].max_mark_ca = st_mark_ca;

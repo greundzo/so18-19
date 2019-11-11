@@ -1,23 +1,23 @@
-//
+/*
 // Created by greundzo on 09/10/19.
-//
+*/
 #include "shared.h"
 
-// Generates a casual number between minNum and maxNum 
+/* Generate a casual number between minNum and maxNum */ 
 int generate_random_integer(pid_t pid) 
 {
     srand(pid);
     return rand()%13+18;
 }
 
-// Generates the register number
+/* Generate the register number */
 int generate_regnum(pid_t pid) 
 {
     srand(pid);
     return (rand() % 900000) + 100000;
 }
 
-// Opens the configuration file and returns a random value 
+/* Open the configuration file and return a random value */
 int read_conf(char *str) 
 {
     FILE *opt = fopen("../opt.conf", "r");
@@ -39,6 +39,7 @@ int read_conf(char *str)
 	return -1;
 }
 
+/* Return student team members preference */
 int get_pref() 
 {
     srand(getpid());
@@ -59,6 +60,7 @@ int get_pref()
     return 0;
 }
 
+/* Return student class */
 int get_turn(int matricule)
 {
     if (matricule % 2 == 0) {
@@ -67,6 +69,7 @@ int get_turn(int matricule)
     return 1;
 }
 
+/* Print student info*/
 void printinfo(int index, int reg, int mark, int nof) 
 {
     printf("%3i: Register Number = %5i   CA Mark = %2i   OS Mark = %2i  Elems = %2i\n",
@@ -74,6 +77,7 @@ void printinfo(int index, int reg, int mark, int nof)
             mark, max_mark, nof);
 }
 
+/* Mask SIGUSR1 signal if the process has already closed the team */
 void masksig()
 {
     sigemptyset(&mask);
@@ -81,6 +85,7 @@ void masksig()
     sigprocmask(SIG_BLOCK, &mask, NULL);
 }
 
+/* Main program signal handler */
 void signalhandler(int signum)
 {
 
@@ -104,7 +109,8 @@ void signalhandler(int signum)
     }
 }
 
-/* GESTIONE DELLA SHM */
+/* shm functions */
+/* Create shm and return identifier */
 int create_memory()
 {
     int shm;
@@ -114,13 +120,15 @@ int create_memory()
     return shm;
 }
 
+/* Perform shmat to connect to shm */
 void *connect(int id)
 {
     return shmat(id, 0, 0);
 }
 
-/* GESTIONE DEI SEMAFORI */
+/* semaphore functions */
 
+/* Create semaphore array and return identifier */
 int create_sem()
 {
     int sem;
@@ -130,6 +138,7 @@ int create_sem()
     return sem;
 }
 
+/* Initiliaze a specific sem */
 void sem_init_val(int index, int value)
 {
     if(semctl(semid, index, SETVAL, value) == -1) {
@@ -137,6 +146,7 @@ void sem_init_val(int index, int value)
     } 	
 }
 
+/* Wait for semval == 0 */
 void ready(int semid, int num) {
     ops.sem_num = num;
     ops.sem_op = 0;
@@ -145,6 +155,7 @@ void ready(int semid, int num) {
     }
 }
 
+/* Take sem and set semval -= 1 */
 void take_sem(int semid, int num)
 {      
     ops.sem_num = num;
@@ -154,6 +165,7 @@ void take_sem(int semid, int num)
     }
 }
 
+/* Release sem and set semval += 1 */
 void release_sem(int semid, int num)
 {   
     ops.sem_num = num;
@@ -163,8 +175,9 @@ void release_sem(int semid, int num)
     }
 }
 
-/* GESTIONE DEI MESSAGGI */
-int create_queue() //creates queue and returns id
+/* msgqueu functions */
+/*Create queue and return id */
+int create_queue() 
 {
     int queue;
     if (( queue = msgget(MSG, 0666|IPC_CREAT)) == -1) {
@@ -173,7 +186,8 @@ int create_queue() //creates queue and returns id
     return queue;
 }
 
-int remove_queue (int id) //removes queue and returns id
+/* Remove queue and return id */
+int remove_queue (int id) 
 {
     int rm_queue;
     if (( rm_queue = msgctl(id, IPC_RMID, NULL)) == -1) {
@@ -182,7 +196,8 @@ int remove_queue (int id) //removes queue and returns id
     return rm_queue;
 }
 
-int info_queue(int id) //get the status of the queue
+/* Get queue status */
+int info_queue(int id) 
 {
     int infos;
     if (( infos = msgctl(id, IPC_STAT, &buffer)) == -1) {
@@ -191,11 +206,13 @@ int info_queue(int id) //get the status of the queue
     return infos;
 }
 
-int receive_msg_nowait(int id) //receive a message in the queue, no wait
+/* Receive a message in the queue, no wait */
+int receive_msg_nowait(int id) 
 {
     return msgrcv(id, &invitation, sizeof(invitation), getpid(), IPC_NOWAIT);
 }
 
+/* Invite another process to build the team */
 int invite(int ind, int pid, int mark)
 {    
     invitation.mtype = pid; 
@@ -216,6 +233,7 @@ int invite(int ind, int pid, int mark)
     }
 }
 
+/* Accept invitation */
 void accept(int ind)
 {
     invitation.mtype = invitation.sender_pid; 
@@ -235,6 +253,7 @@ void accept(int ind)
     }
 }
 
+/* Decline invitation */
 void decline(int ind)
 {
     invitation.mtype = invitation.sender_pid; 
@@ -247,14 +266,15 @@ void decline(int ind)
         TEST_ERROR
     }
 }
-/* TEAM FUNCTIONS */
+/* team functions */
+/* Find the perfect mate to build the team */
 pid_t find_team_mate(int ind)
 {
     pid_t pid = -1;
     for(int i = 0; (i < POP_SIZE && pid == -1); i++) {
         if(i != ind) {
             if(pst->stdata[i].team == 0 
-                && pst->stdata[ind].class == pst->stdata[i].class 
+                && pst->stdata[ind].fclass == pst->stdata[i].fclass 
                 && pst->stdata[ind].nof_elems == pst->stdata[i].nof_elems) {
                 
                 // Team mate with better or equal mark than mine 
@@ -272,14 +292,14 @@ pid_t find_team_mate(int ind)
     return pid;
 }
 
-// Totally random mate with same class
+/* Find totally random mate with same class */
 pid_t find_random_mate(int ind) 
 {
     pid_t pid = -1;
     for(int i = 0; i < POP_SIZE; i++){
         if(i != ind) {
             if(pst->stdata[i].team == 0 
-                && pst->stdata[ind].class == pst->stdata[i].class) {
+                && pst->stdata[ind].fclass == pst->stdata[i].fclass) {
                 return pst->stdata[i].student_pid;
             }
         }
@@ -287,18 +307,19 @@ pid_t find_random_mate(int ind)
     return pid;
 }
 
+/* Check if other students are inviting */
 pid_t find_inviting_mate(int ind) 
 {
     for(int i = 0; i < POP_SIZE; i++) {
         if(i != ind) {
             if(pst->stdata[i].team == 0 
-                && pst->stdata[ind].class == pst->stdata[i].class 
+                && pst->stdata[ind].fclass == pst->stdata[i].fclass 
                 && pst->stdata[i].nof_invites != 0) {
                 return pst->stdata[i].student_pid;
             }
 
             if(pst->stdata[i].team == 1 && pst->stdata[i].closed == 0 
-                && pst->stdata[ind].class == pst->stdata[i].class 
+                && pst->stdata[ind].fclass == pst->stdata[i].fclass 
                 && pst->stdata[i].leader == 1 &&  pst->stdata[i].nof_invites != 0) {
                 return pst->stdata[i].student_pid;
             }
@@ -307,7 +328,7 @@ pid_t find_inviting_mate(int ind)
     return -1;
 }
 
-//chiude il gruppo
+/* Close team */
 void lock_group(int *team_members, int nelem_team, int max_mark ) {
     for(int i = 0; i < nelem_team; i++) {
         pst->stdata[team_members[i]].closed = 1;

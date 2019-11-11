@@ -9,6 +9,9 @@ pid_t pod;
 
 void sthandler(int signal)
 {
+    if (pst->stdata[st_ind].leader) {
+        lock_group(member_indexes, nelem_team, max_mark);
+    }
     /* here child processes send data to parent*/
     if (msgrcv(lastid, &lastmsg, sizeof(lastmsg), getpid(), 0) == -1) {
         TEST_ERROR

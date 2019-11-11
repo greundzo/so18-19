@@ -1,3 +1,8 @@
-# so1920
+# so1819
 
-Progetto  di Sistemi Operativi da discutere entro 30 novembre.
+Usage:
+	cd so1920
+	make
+	make execute
+
+
